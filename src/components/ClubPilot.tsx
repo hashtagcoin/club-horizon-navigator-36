@@ -162,6 +162,18 @@ export default function Component() {
     mapTypeControl: false,
   }
 
+  const calculateDistance = (point1: google.maps.LatLngLiteral, point2: google.maps.LatLngLiteral): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = (point2.lat - point1.lat) * Math.PI / 180;
+    const dLon = (point2.lng - point1.lng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
   const sortedAndFilteredClubs = clubs
     .filter(club => filterGenre === "All" || club.genre === filterGenre)
     .filter(club => club.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -437,10 +449,17 @@ export default function Component() {
                     >
                       <CardHeader className="flex justify-between items-start p-2">
                         <CardTitle className="text-left text-base">{club.name}</CardTitle>
-                        <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-                          <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                          <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                          <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                        <div className="flex flex-col items-end space-y-1">
+                          <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
+                            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                          </div>
+                          {userLocation && (
+                            <span className="text-xs font-medium">
+                              {calculateDistance(userLocation, club.position).toFixed(1)}km
+                            </span>
+                          )}
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0 px-2 pb-2">
@@ -458,7 +477,7 @@ export default function Component() {
                           )}
                         </div>
                         <div className="absolute bottom-1 right-2 flex items-center space-x-1">
-                          <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
+                          <span className="text-xs font-medium text-foreground">{club.usersAtClub}</span>
                           <Button
                             size="sm"
                             variant="outline"
