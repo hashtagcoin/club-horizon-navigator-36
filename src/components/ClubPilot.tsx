@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useJsApiLoader } from '@react-google-maps/api';
+import { useSpring, animated } from '@react-spring/web'
+import { useDrag } from '@use-gesture/react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -7,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Clock, Music, Users, MessageCircle, Search, User, Zap, Moon, Smile, X, Globe, MapPin } from 'lucide-react'
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { ClubMap } from './map/ClubMap'
 import { ChatWindow } from './chat/ChatWindow'
 import { UserProfile } from './user-profile'
@@ -317,6 +320,20 @@ export default function Component() {
     }
   }, [userLocation, selectedClub])
 
+  // Add new state for controlling the width of panels
+  const [{ width }, api] = useSpring(() => ({ width: '50%' }))
+  
+  // Setup drag gesture for resizing
+  const bind = useDrag(({ movement: [mx], down }) => {
+    if (down) {
+      const newWidth = Math.max(20, Math.min(80, 50 - (mx / window.innerWidth) * 100))
+      api.start({ width: `${newWidth}%` })
+    }
+  }, {
+    bounds: { left: -200, right: 200 },
+    rubberband: true
+  })
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 text-sm">
       {/* Top Bar */}
@@ -362,7 +379,11 @@ export default function Component() {
           {/* Main Content */}
           <div className="flex flex-1 overflow-hidden">
             {/* Club Cards */}
-            <div className="w-1/2 flex flex-col p-1 overflow-hidden">
+            <animated.div 
+              {...bind()}
+              style={{ width, touchAction: 'none' }}
+              className="flex flex-col p-1 overflow-hidden"
+            >
               <div className="mb-2 flex justify-between">
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-[180px] h-7 text-xs">
@@ -443,10 +464,13 @@ export default function Component() {
                   ))}
                 </div>
               </ScrollArea>
-            </div>
+            </animated.div>
 
             {/* Map and Chat Column */}
-            <div className="w-1/2 flex flex-col p-1 overflow-hidden relative">
+            <animated.div 
+              style={{ width: width.to(w => `calc(100% - ${w})`) }}
+              className="flex flex-col p-1 overflow-hidden relative"
+            >
               <div className="absolute top-2 right-2 z-10 flex flex-col items-end space-y-2">
                 <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
                   <DialogTrigger asChild>
@@ -551,7 +575,7 @@ export default function Component() {
                   clubs={clubs}
                 />
               )}
-            </div>
+            </animated.div>
           </div>
 
           {/* Bottom Bar */}
