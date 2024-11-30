@@ -541,7 +541,7 @@ export default function Component() {
                 {selectedClub && (
                   <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full">
                     <div className="flex items-center justify-between w-full">
-                      <h3 className="text-base font-semibold">{selectedClub.name}</h3>
+                      <h3 className="text-base font-semibold text-black">{selectedClub.name}</h3>
                       <div className="flex items-center space-x-0.5" aria-label={`${selectedClub.traffic} Traffic`}>
                         <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' || selectedClub.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
                         <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
