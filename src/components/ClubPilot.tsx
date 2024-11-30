@@ -14,6 +14,8 @@ import { ClubMap } from './map/ClubMap'
 import { ChatWindow } from './chat/ChatWindow'
 import { UserProfile } from './user-profile'
 import { Club, ChatMessages, ChatMessage } from '@/types/club'
+import { locations } from '@/data/locations';
+import { ClubCard } from './ClubCard';
 
 // Helper function to get random traffic
 const getRandomTraffic = () => {
@@ -109,18 +111,6 @@ const clubs: Club[] = [
 ]
 
 // Mock data for locations with coordinates
-const locations = {
-  "Indonesia": {
-    "Bali": {
-      "Kuta": { lat: -8.7180, lng: 115.1707 },
-      "Seminyak": { lat: -8.6897, lng: 115.1628 },
-      "Ubud": { lat: -8.5069, lng: 115.2625 },
-      "Canggu": { lat: -8.6478, lng: 115.1385 },
-      "Uluwatu": { lat: -8.8291, lng: 115.0849 },
-    },
-  },
-}
-
 export default function Component() {
   const [selectedClub, setSelectedClub] = useState<Club | null>(null)
   const [sortBy, setSortBy] = useState("usersAtClub")
@@ -438,62 +428,20 @@ export default function Component() {
               <ScrollArea className="flex-grow">
                 <div className="space-y-2 pr-2">
                   {sortedAndFilteredClubs.map(club => (
-                    <Card
+                    <ClubCard
                       key={club.id}
-                      className={`cursor-pointer relative ${selectedClub?.id === club.id ? 'border-primary' : ''}`}
-                      onClick={() => {
-                        setSelectedClub(club)
-                        setMapCenter(club.position)
-                        setMapZoom(16)
+                      club={club}
+                      selectedDay={selectedDay}
+                      isSelected={selectedClub?.id === club.id}
+                      onSelect={(club) => {
+                        setSelectedClub(club);
+                        setMapCenter(club.position);
+                        setMapZoom(16);
                       }}
-                    >
-                      <CardHeader className="flex justify-between items-start p-2">
-                        <CardTitle className="text-left text-base">{club.name}</CardTitle>
-                        <div className="flex flex-col items-end space-y-1">
-                          <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-                            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                          </div>
-                          {userLocation && (
-                            <span className="text-xs font-medium">
-                              {calculateDistance(userLocation, club.position).toFixed(1)}km
-                            </span>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-2 pb-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-1">
-                            <Music className="h-3 w-3" />
-                            <span className="text-xs">{club.genre}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-1 mt-1">
-                          <Clock className="h-3 w-3" />
-                          <span className="text-xs">{club.openingHours[selectedDay]}</span>
-                          {club.hasSpecial && (
-                            <Smile className="h-4 w-4 text-yellow-500 ml-1" />
-                          )}
-                        </div>
-                        <div className="absolute bottom-1 right-2 flex items-center space-x-1">
-                          <span className="text-xs font-medium text-foreground">{club.usersAtClub}</span>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="relative h-6 w-6 p-0"
-                            onClick={(e) => { e.stopPropagation(); openChat(club); }}
-                          >
-                            <MessageCircle className="h-3 w-3" />
-                            {newMessageCounts[club.id] > 0 && (
-                              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] rounded-full w-3 h-3 flex items-center justify-center">
-                                {newMessageCounts[club.id]}
-                              </span>
-                            )}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      onOpenChat={openChat}
+                      newMessageCount={newMessageCounts[club.id] || 0}
+                      distance={userLocation ? calculateDistance(userLocation, club.position) : undefined}
+                    />
                   ))}
                 </div>
               </ScrollArea>
@@ -507,7 +455,7 @@ export default function Component() {
               <div className="absolute top-2 right-2 z-10 flex flex-col items-end space-y-2">
                 <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
                   <DialogTrigger asChild>
-                    <h2 className="text-2xl font-bold text-primary cursor-pointer bg-white rounded-lg px-3 py-1 shadow-sm inline-block">
+                    <h2 className="text-2xl font-bold text-black cursor-pointer bg-white rounded-lg px-3 py-1 shadow-sm inline-block">
                       {currentSuburb}
                     </h2>
                   </DialogTrigger>
@@ -548,7 +496,7 @@ export default function Component() {
                         <User className={`h-4 w-4 ${selectedClub.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
                       </div>
                     </div>
-                    <div className="flex items-center space-x-1 mt-1 text-xs text-muted-foreground">
+                    <div className="flex items-center space-x-1 mt-1 text-xs text-black">
                       <MapPin className="h-3 w-3" />
                       <span>{selectedClub.address}</span>
                     </div>
@@ -565,7 +513,7 @@ export default function Component() {
                         </Button>
                       ))}
                     </div>
-                    <p className="mt-1 text-xs font-medium w-full text-left">
+                    <p className="mt-1 text-xs font-medium w-full text-left text-black">
                       Open: {selectedClub.openingHours[selectedDay]}
                     </p>
                   </div>
