@@ -148,7 +148,7 @@ export default function Component() {
   const [mapCenter, setMapCenter] = useState(locations["Indonesia"]["Bali"]["Kuta"])
   const [mapZoom, setMapZoom] = useState(14)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
-  const [path, setPath] = useState<Array<{lat: number, lng: number}>>([])
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -312,13 +312,27 @@ export default function Component() {
   useEffect(() => {
     if (userLocation && selectedClub) {
       // Calculate path between user location and selected club
-      const newPath = [
-        userLocation,
-        selectedClub.position
-      ]
-      setPath(newPath)
+      const directionsService = new google.maps.DirectionsService();
+      
+      directionsService.route(
+        {
+          origin: userLocation,
+          destination: selectedClub.position,
+          travelMode: google.maps.TravelMode.WALKING
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            console.error(`error fetching directions ${result}`);
+            setDirections(null);
+          }
+        }
+      );
+    } else {
+      setDirections(null);
     }
-  }, [userLocation, selectedClub])
+  }, [userLocation, selectedClub, isLoaded]);
 
   // Add new state for controlling the width of panels
   const [{ width }, api] = useSpring(() => ({ width: '50%' }))
@@ -548,7 +562,7 @@ export default function Component() {
                     mapZoom={mapZoom}
                     mapOptions={mapOptions}
                     userLocation={userLocation}
-                    path={path}
+                    directions={directions}
                     onClubSelect={(club) => {
                       setSelectedClub(club)
                       setMapCenter(club.position)

@@ -1,4 +1,4 @@
-import { GoogleMap, Marker, Polyline } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
 
 interface ClubMapProps {
@@ -8,7 +8,7 @@ interface ClubMapProps {
   mapZoom: number;
   mapOptions: google.maps.MapOptions;
   userLocation: google.maps.LatLngLiteral | null;
-  path: google.maps.LatLngLiteral[];
+  directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
 }
 
@@ -18,8 +18,8 @@ export function ClubMap({
   mapCenter, 
   mapZoom, 
   mapOptions, 
-  userLocation, 
-  path,
+  userLocation,
+  directions,
   onClubSelect 
 }: ClubMapProps) {
   if (!isLoaded) return <div>Loading map...</div>;
@@ -51,13 +51,15 @@ export function ClubMap({
           }}
         />
       )}
-      {path.length > 0 && (
-        <Polyline
-          path={path}
+      {directions && (
+        <DirectionsRenderer
+          directions={directions}
           options={{
-            strokeColor: "#4285F4",
-            strokeOpacity: 1,
-            strokeWeight: 3,
+            suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: "#4285F4",
+              strokeWeight: 4
+            }
           }}
         />
       )}
