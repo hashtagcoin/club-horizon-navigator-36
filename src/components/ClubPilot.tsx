@@ -14,7 +14,7 @@ import { Club, ChatMessages, ChatMessage } from '@/types/club'
 
 // Helper function to get random traffic
 const getRandomTraffic = () => {
-  const traffics = ["Low", "Medium", "High"]
+  const traffics = ["Low", "Medium", "High"] as const
   return traffics[Math.floor(Math.random() * traffics.length)]
 }
 
@@ -22,7 +22,7 @@ const getRandomTraffic = () => {
 const hasSpecialOffer = () => Math.random() < 0.3 // 30% chance of having a special offer
 
 // Mock data for clubs with randomized traffic and special offers
-const clubs = [
+const clubs: Club[] = [
   { 
     id: 1, 
     name: "Neon Dreams", 
@@ -119,19 +119,20 @@ const locations = {
 }
 
 export default function Component() {
-  const [selectedClub, setSelectedClub] = useState(null)
+  const [selectedClub, setSelectedClub] = useState<Club | null>(null)
   const [sortBy, setSortBy] = useState("usersAtClub")
   const [filterGenre, setFilterGenre] = useState("All")
   const [chatOpen, setChatOpen] = useState(false)
-  const [chatClub, setChatClub] = useState(null)
+  const [chatClub, setChatClub] = useState<Club | null>(null)
   const [chatMessage, setChatMessage] = useState("")
   const [chatMessages, setChatMessages] = useState<ChatMessages>({})
-  const [newMessageCounts, setNewMessageCounts] = useState({})
+  const [newMessageCounts, setNewMessageCounts] = useState<Record<number, number>>({})
   const [searchQuery, setSearchQuery] = useState("")
   const [isGeneralChat, setIsGeneralChat] = useState(false)
-  const chatScrollRef = useRef(null)
-  const observerRef = useRef(null)
-  const [messageOpacities, setMessageOpacities] = useState({})
+  const [showUserProfile, setShowUserProfile] = useState(false)
+  const chatScrollRef = useRef<HTMLDivElement>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const [messageOpacities, setMessageOpacities] = useState<Record<string, number>>({})
   const [showHighTraffic, setShowHighTraffic] = useState(false)
   const [sortByOpenLate, setSortByOpenLate] = useState(false)
   const [showSpecials, setShowSpecials] = useState(false)
@@ -143,8 +144,8 @@ export default function Component() {
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [mapCenter, setMapCenter] = useState(locations["Indonesia"]["Bali"]["Kuta"])
   const [mapZoom, setMapZoom] = useState(14)
-  const [userLocation, setUserLocation] = useState(null)
-  const [path, setPath] = useState([])
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+  const [path, setPath] = useState<Array<{lat: number, lng: number}>>([])
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
