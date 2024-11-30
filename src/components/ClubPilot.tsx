@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useJsApiLoader } from '@react-google-maps/api';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Clock, Music, Users, MessageCircle, Send, Search, User, UserCheck, Zap, Moon, Smile, X, Globe, MapPin } from 'lucide-react'
-import { GoogleMap, useJsApiLoader, Marker, Polyline } from '@react-google-maps/api';
+import { Clock, Music, Users, MessageCircle, Search, User, Zap, Moon, Smile, X, Globe, MapPin } from 'lucide-react'
+import { ClubMap } from './map/ClubMap'
+import { ChatWindow } from './chat/ChatWindow'
 import { UserProfile } from './user-profile'
+import { Club, ChatMessages, ChatMessage } from '@/types/club'
 
 // Helper function to get random traffic
 const getRandomTraffic = () => {
@@ -124,7 +125,7 @@ export default function Component() {
   const [chatOpen, setChatOpen] = useState(false)
   const [chatClub, setChatClub] = useState(null)
   const [chatMessage, setChatMessage] = useState("")
-  const [chatMessages, setChatMessages] = useState({})
+  const [chatMessages, setChatMessages] = useState<ChatMessages>({})
   const [newMessageCounts, setNewMessageCounts] = useState({})
   const [searchQuery, setSearchQuery] = useState("")
   const [isGeneralChat, setIsGeneralChat] = useState(false)
@@ -144,7 +145,6 @@ export default function Component() {
   const [mapZoom, setMapZoom] = useState(14)
   const [userLocation, setUserLocation] = useState(null)
   const [path, setPath] = useState([])
-  const [showUserProfile, setShowUserProfile] = useState(false)
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -183,7 +183,7 @@ export default function Component() {
       }
     })
 
-  const openChat = (club) => {
+  const openChat = (club: Club) => {
     setChatClub(club)
     setChatOpen(true)
     setIsGeneralChat(false)
@@ -201,7 +201,7 @@ export default function Component() {
 
   const sendMessage = () => {
     if (chatMessage.trim() !== "") {
-      const newMessage = { sender: "You", text: chatMessage, timestamp: Date.now(), clubId: chatClub?.id || 'general' }
+      const newMessage: ChatMessage = { sender: "You", text: chatMessage, timestamp: Date.now(), clubId: chatClub?.id || 'general' }
       if (isGeneralChat) {
         setChatMessages(prev => ({
           ...prev,
@@ -216,7 +216,7 @@ export default function Component() {
       setChatMessage("")
       // Simulate a response
       setTimeout(() => {
-        const responseMessage = { 
+        const responseMessage: ChatMessage = { 
           sender: isGeneralChat ? "Club Pilot" : chatClub.name, 
           text: isGeneralChat ? "Welcome to the general chat! How can we assist you today?" : "Thanks for your message! The vibe is great tonight!", 
           timestamp: Date.now(),
@@ -516,47 +516,20 @@ export default function Component() {
               {/* Google Map */}
               <div className="bg-white rounded-lg shadow-lg p-2 mb-2 flex-grow">
                 {isLoaded ? (
-                  <GoogleMap
-                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                    center={mapCenter}
-                    zoom={mapZoom}
-                    options={mapOptions}
-                  >
-                    {clubs.map((club) => (
-                      <Marker
-                        key={club.id}
-                        position={club.position}
-                        onClick={() => {
-                          setSelectedClub(club)
-                          setMapCenter(club.position)
-                          setMapZoom(16)
-                        }}
-                      />
-                    ))}
-                    {userLocation && (
-                      <Marker
-                        position={userLocation}
-                        icon={{
-                          path: google.maps.SymbolPath.CIRCLE,
-                          scale: 7,
-                          fillColor: "#4285F4",
-                          fillOpacity: 1,
-                          strokeWeight: 2,
-                          strokeColor: "#FFFFFF",
-                        }}
-                      />
-                    )}
-                    {path.length > 0 && (
-                      <Polyline
-                        path={path}
-                        options={{
-                          strokeColor: "#4285F4",
-                          strokeOpacity: 1,
-                          strokeWeight: 3,
-                        }}
-                      />
-                    )}
-                  </GoogleMap>
+                  <ClubMap
+                    isLoaded={isLoaded}
+                    clubs={clubs}
+                    mapCenter={mapCenter}
+                    mapZoom={mapZoom}
+                    mapOptions={mapOptions}
+                    userLocation={userLocation}
+                    path={path}
+                    onClubSelect={(club) => {
+                      setSelectedClub(club)
+                      setMapCenter(club.position)
+                      setMapZoom(16)
+                    }}
+                  />
                 ) : (
                   <div>Loading map...</div>
                 )}
@@ -564,61 +537,18 @@ export default function Component() {
 
               {/* Chat Window */}
               {chatOpen && (
-                <div className="bg-transparent flex flex-col overflow-hidden rounded-lg shadow-lg h-80">
-                  <div className="p-2 flex justify-between items-center bg-primary/80 backdrop-blur-sm text-primary-foreground">
-                    <span className="font-bold text-sm">{isGeneralChat ? "General Chat" : chatClub?.name}</span>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setChatOpen(false)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <ScrollArea className="flex-grow p-2">
-                    <div className="space-y-2" ref={chatScrollRef}>
-                      {allMessages.map((message, index) => (
-                        <div
-                          key={index}
-                          className={`flex items-start space-x-2 chat-message ${
-                            message.sender === "You" ? "justify-end" : "justify-start"
-                          }`}
-                          data-message-id={`${message.clubId}-${index}`}
-                          style={{ opacity: messageOpacities[`${message.clubId}-${index}`] || 1 }}
-                        >
-                          {message.sender !== "You" && (
-                            <Avatar className="h-6 w-6">
-                              <AvatarImage src={`/placeholder.svg?height=24&width=24`} alt={`${message.sender} Avatar`} />
-                              <AvatarFallback>{message.sender.slice(0, 2).toUpperCase()}</AvatarFallback>
-                            </Avatar>
-                          )}
-                          <div className={`flex flex-col ${message.sender === "You" ? "items-end" : "items-start"}`}>
-                            <span className="text-[0.6rem] text-muted-foreground mb-0.5">
-                              {isGeneralChat && message.sender !== "You" ? `${message.sender} (${clubs.find(c => c.id === message.clubId)?.name || 'General'})` : message.sender}
-                            </span>
-                            <span className="inline-block px-2 py-1 rounded-lg bg-primary/80 backdrop-blur-sm text-primary-foreground text-xs">
-                              {message.text}
-                            </span>
-                          </div>
-                          {message.sender === "You" && (
-                            <Avatar className="h-6 w-6">
-                              <AvatarImage src={`/placeholder.svg?height=24&width=24`} alt="User Avatar" />
-                              <AvatarFallback>YO</AvatarFallback>
-                            </Avatar>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                  <div className="p-2 flex bg-primary/80 backdrop-blur-sm">
-                    <Input
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      placeholder="Type your message..."
-                      className="flex-grow mr-2 bg-transparent border-none focus:ring-0 text-primary-foreground placeholder-primary-foreground/70 text-xs h-7"
-                      onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                    />
-                    <Button onClick={sendMessage} variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary-foreground">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <ChatWindow
+                  isGeneralChat={isGeneralChat}
+                  chatClub={chatClub}
+                  chatMessage={chatMessage}
+                  setChatMessage={setChatMessage}
+                  allMessages={allMessages}
+                  messageOpacities={messageOpacities}
+                  chatScrollRef={chatScrollRef}
+                  onClose={() => setChatOpen(false)}
+                  onSend={sendMessage}
+                  clubs={clubs}
+                />
               )}
             </div>
           </div>
