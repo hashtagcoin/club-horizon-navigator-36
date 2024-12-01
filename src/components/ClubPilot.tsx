@@ -440,7 +440,6 @@ export default function Component() {
                       }}
                       onOpenChat={openChat}
                       newMessageCount={newMessageCounts[club.id] || 0}
-                      distance={userLocation ? calculateDistance(userLocation, club.position) : undefined}
                     />
                   ))}
                 </div>
