@@ -31,9 +31,9 @@ export const ClubCard = ({
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'text-black' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'text-black' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'text-black' : 'text-muted-foreground'}`} />
           </div>
           {distance !== undefined && (
             <span className="text-xs font-medium text-black">
