@@ -1,6 +1,6 @@
 import { Club } from '@/types/club';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Clock, MessageCircle, User } from 'lucide-react';
+import { Music, Clock, MessageCircle, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface ClubCardProps {
@@ -19,8 +19,7 @@ export const ClubCard = ({
   isSelected,
   onSelect,
   onOpenChat,
-  newMessageCount,
-  distance
+  newMessageCount
 }: ClubCardProps) => {
   return (
     <Card
@@ -31,15 +30,10 @@ export const ClubCard = ({
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'text-black' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'text-black' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'text-black' : 'text-muted-foreground'}`} />
+            <Users className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'text-black' : 'text-muted-foreground'}`} />
+            <Users className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'text-black' : 'text-muted-foreground'}`} />
+            <Users className={`h-4 w-4 ${club.traffic === 'High' ? 'text-black' : 'text-muted-foreground'}`} />
           </div>
-          {distance !== undefined && (
-            <span className="text-xs font-medium text-black">
-              {distance.toFixed(1)}km
-            </span>
-          )}
         </div>
       </CardHeader>
       <CardContent className="pt-0 px-2 pb-2">
@@ -53,7 +47,7 @@ export const ClubCard = ({
           <Clock className="h-3 w-3 text-black" />
           <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
           {club.hasSpecial && (
-            <span className="text-yellow-500 ml-1">★</span>
+            <span className="text-yellow-500 ml-1">😊</span>
           )}
         </div>
         <div className="absolute bottom-1 right-2 flex items-center space-x-1">
