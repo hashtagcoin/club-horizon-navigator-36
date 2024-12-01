@@ -1,6 +1,6 @@
 import { Club } from '@/types/club';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Clock, MessageCircle, Users } from 'lucide-react';
+import { Music, Clock, MessageCircle, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface ClubCardProps {
@@ -10,7 +10,6 @@ interface ClubCardProps {
   onSelect: (club: Club) => void;
   onOpenChat: (club: Club) => void;
   newMessageCount: number;
-  distance?: number;
 }
 
 export const ClubCard = ({
@@ -30,9 +29,9 @@ export const ClubCard = ({
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-            <Users className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'text-black' : 'text-muted-foreground'}`} />
-            <Users className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'text-black' : 'text-muted-foreground'}`} />
-            <Users className={`h-4 w-4 ${club.traffic === 'High' ? 'text-black' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'text-black' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'text-black' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'text-black' : 'text-muted-foreground'}`} />
           </div>
         </div>
       </CardHeader>
