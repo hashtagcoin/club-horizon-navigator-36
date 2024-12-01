@@ -16,6 +16,7 @@ import { UserProfile } from './user-profile'
 import { Club, ChatMessages, ChatMessage } from '@/types/club'
 import { locations } from '@/data/locations';
 import { ClubCard } from './ClubCard';
+import { LocationControls } from './LocationControls';
 
 // Helper function to get random traffic
 const getRandomTraffic = () => {
@@ -451,48 +452,15 @@ export default function Component() {
               className="flex flex-col p-1 overflow-hidden relative"
             >
               <div className="absolute top-2 right-2 z-10 flex flex-col items-end space-y-2">
-                <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Change Location</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <Select value={currentCountry} onValueChange={setCurrentCountry}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.keys(locations).map((country) => (
-                            <SelectItem key={country} value={country}>{country}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={currentState} onValueChange={setCurrentState}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {locations[currentCountry] && Object.keys(locations[currentCountry]).map((state) => (
-                            <SelectItem key={state} value={state}>{state}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select suburb" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {locations[currentCountry] && locations[currentCountry][currentState] && 
-                            Object.keys(locations[currentCountry][currentState]).map((suburb) => (
-                              <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button onClick={() => setShowLocationModal(false)}>Close</Button>
-                  </DialogContent>
-                </Dialog>
+                <LocationControls
+                  currentCountry={currentCountry}
+                  currentState={currentState}
+                  currentSuburb={currentSuburb}
+                  onCountryChange={setCurrentCountry}
+                  onStateChange={setCurrentState}
+                  onSuburbChange={setCurrentSuburb}
+                />
+                
                 {selectedClub && (
                   <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full">
                     <div className="flex items-center justify-between w-full">
