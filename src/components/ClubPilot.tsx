@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, User, Zap, Moon, MessageCircle, Smile, X } from 'lucide-react';
+import { Search, User, Zap, Moon, MessageCircle, Smile } from 'lucide-react';
 import { ClubMap } from './map/ClubMap';
 import { ChatWindow } from './chat/ChatWindow';
 import { UserProfile } from './user-profile';
@@ -13,18 +12,13 @@ import { LocationModals } from './location/LocationModals';
 import { ClubDetailsPanel } from './club/ClubDetailsPanel';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
+import { ChatManager } from './chat/ChatManager';
 
 export default function ClubPilot() {
   const [selectedClub, setSelectedClub] = useState(null);
   const [sortBy, setSortBy] = useState("usersAtClub");
   const [filterGenre, setFilterGenre] = useState("All");
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatClub, setChatClub] = useState(null);
-  const [chatMessage, setChatMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState({});
-  const [newMessageCounts, setNewMessageCounts] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [isGeneralChat, setIsGeneralChat] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const chatScrollRef = useRef(null);
   const observerRef = useRef(null);
@@ -38,85 +32,12 @@ export default function ClubPilot() {
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
+  const chatManager = ChatManager({ selectedClub });
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0"
   });
-
-  const toggleGeneralChat = () => {
-    setChatOpen(prev => !prev);
-    setIsGeneralChat(true);
-    setChatClub(null);
-    if (!chatMessages.general) {
-      setChatMessages(prev => ({ ...prev, general: [] }));
-    }
-  };
-
-  const openChat = (club) => {
-    setChatClub(club);
-    setChatOpen(true);
-    setIsGeneralChat(false);
-    if (!chatMessages[club.id]) {
-      setChatMessages(prev => ({ ...prev, [club.id]: [] }));
-    }
-    setNewMessageCounts(prev => ({ ...prev, [club.id]: 0 }));
-  };
-
-  const sendMessage = () => {
-    if (chatMessage.trim() !== "") {
-      const newMessage = { 
-        sender: "You", 
-        text: chatMessage, 
-        timestamp: Date.now(), 
-        clubId: chatClub?.id || 'general' 
-      };
-      
-      if (isGeneralChat) {
-        setChatMessages(prev => ({
-          ...prev,
-          general: [...(prev.general || []), newMessage]
-        }));
-      } else if (chatClub) {
-        setChatMessages(prev => ({
-          ...prev,
-          [chatClub.id]: [...(prev[chatClub.id] || []), newMessage]
-        }));
-      }
-      
-      setChatMessage("");
-      
-      // Simulate a response
-      setTimeout(() => {
-        const responseMessage = { 
-          sender: isGeneralChat ? "Club Pilot" : chatClub?.name, 
-          text: isGeneralChat ? "Welcome to the general chat! How can we assist you today?" : "Thanks for your message! The vibe is great tonight!", 
-          timestamp: Date.now(),
-          clubId: chatClub?.id || 'general'
-        };
-        
-        if (isGeneralChat) {
-          setChatMessages(prev => ({
-            ...prev,
-            general: [...(prev.general || []), responseMessage]
-          }));
-        } else if (chatClub) {
-          setChatMessages(prev => ({
-            ...prev,
-            [chatClub.id]: [...(prev[chatClub.id] || []), responseMessage]
-          }));
-          setNewMessageCounts(prev => ({ 
-            ...prev, 
-            [chatClub.id]: (prev[chatClub.id] || 0) + 1 
-          }));
-        }
-      }, 1000);
-    }
-  };
-
-  const allMessages = isGeneralChat
-    ? (chatMessages.general || [])
-    : (chatMessages[chatClub?.id || ''] || []);
 
   useEffect(() => {
     const today = new Date().toLocaleString('en-us', {weekday: 'long'});
@@ -199,8 +120,8 @@ export default function ClubPilot() {
                         locationManagement.setMapCenter(club.position);
                         locationManagement.setMapZoom(16);
                       }}
-                      onOpenChat={openChat}
-                      newMessageCount={newMessageCounts[club.id] || 0}
+                      onOpenChat={chatManager.openChat}
+                      newMessageCount={chatManager.newMessageCounts[club.id] || 0}
                     />
                   ))
               )}
@@ -237,17 +158,17 @@ export default function ClubPilot() {
           </div>
 
           {/* Chat Window */}
-          {chatOpen && (
+          {chatManager.chatOpen && (
             <ChatWindow
-              isGeneralChat={isGeneralChat}
-              chatClub={chatClub}
-              chatMessage={chatMessage}
-              setChatMessage={setChatMessage}
-              allMessages={allMessages}
+              isGeneralChat={chatManager.isGeneralChat}
+              chatClub={chatManager.chatClub}
+              chatMessage={chatManager.chatMessage}
+              setChatMessage={chatManager.setChatMessage}
+              allMessages={chatManager.allMessages}
               messageOpacities={messageOpacities}
               chatScrollRef={chatScrollRef}
-              onClose={() => setChatOpen(false)}
-              onSend={sendMessage}
+              onClose={() => chatManager.setChatOpen(false)}
+              onSend={chatManager.sendMessage}
               clubs={clubs}
             />
           )}
@@ -274,9 +195,9 @@ export default function ClubPilot() {
             <span className="text-[0.6rem] mt-0.5">Open Late</span>
           </Button>
           <Button
-            variant={chatOpen && isGeneralChat ? "default" : "ghost"}
+            variant={chatManager.chatOpen && chatManager.isGeneralChat ? "default" : "ghost"}
             className="flex flex-col items-center h-12 w-16"
-            onClick={toggleGeneralChat}
+            onClick={chatManager.toggleGeneralChat}
           >
             <MessageCircle className="h-5 w-5" />
             <span className="text-[0.6rem] mt-0.5">Chat</span>
