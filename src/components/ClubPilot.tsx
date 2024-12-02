@@ -44,6 +44,15 @@ export default function ClubPilot() {
     googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0"
   });
 
+  const toggleGeneralChat = () => {
+    setChatOpen(prev => !prev);
+    setIsGeneralChat(true);
+    setChatClub(null);
+    if (!chatMessages.general) {
+      setChatMessages(prev => ({ ...prev, general: [] }));
+    }
+  };
+
   const openChat = (club) => {
     setChatClub(club);
     setChatOpen(true);
@@ -56,46 +65,58 @@ export default function ClubPilot() {
 
   const sendMessage = () => {
     if (chatMessage.trim() !== "") {
-      const newMessage = { sender: "You", text: chatMessage, timestamp: Date.now(), clubId: chatClub?.id || 'general' };
+      const newMessage = { 
+        sender: "You", 
+        text: chatMessage, 
+        timestamp: Date.now(), 
+        clubId: chatClub?.id || 'general' 
+      };
+      
       if (isGeneralChat) {
         setChatMessages(prev => ({
           ...prev,
           general: [...(prev.general || []), newMessage]
-        }))
-      } else {
+        }));
+      } else if (chatClub) {
         setChatMessages(prev => ({
           ...prev,
-          [chatClub.id]: [...prev[chatClub.id], newMessage]
+          [chatClub.id]: [...(prev[chatClub.id] || []), newMessage]
         }));
       }
+      
       setChatMessage("");
+      
       // Simulate a response
       setTimeout(() => {
         const responseMessage = { 
-          sender: isGeneralChat ? "Club Pilot" : chatClub.name, 
+          sender: isGeneralChat ? "Club Pilot" : chatClub?.name, 
           text: isGeneralChat ? "Welcome to the general chat! How can we assist you today?" : "Thanks for your message! The vibe is great tonight!", 
           timestamp: Date.now(),
           clubId: chatClub?.id || 'general'
         };
+        
         if (isGeneralChat) {
           setChatMessages(prev => ({
             ...prev,
             general: [...(prev.general || []), responseMessage]
           }));
-        } else {
+        } else if (chatClub) {
           setChatMessages(prev => ({
             ...prev,
-            [chatClub.id]: [...prev[chatClub.id], responseMessage]
+            [chatClub.id]: [...(prev[chatClub.id] || []), responseMessage]
           }));
-          setNewMessageCounts(prev => ({ ...prev, [chatClub.id]: (prev[chatClub.id] || 0) + 1 }));
+          setNewMessageCounts(prev => ({ 
+            ...prev, 
+            [chatClub.id]: (prev[chatClub.id] || 0) + 1 
+          }));
         }
       }, 1000);
     }
   };
 
   const allMessages = isGeneralChat
-    ? Object.values(chatMessages).flat().sort((a, b) => a.timestamp - b.timestamp)
-    : chatMessages[chatClub?.id] || [];
+    ? (chatMessages.general || [])
+    : (chatMessages[chatClub?.id || ''] || []);
 
   useEffect(() => {
     const today = new Date().toLocaleString('en-us', {weekday: 'long'});

@@ -13,7 +13,7 @@ interface ClubMapProps {
 
 export const ClubMap = ({
   isLoaded,
-  clubs,
+  clubs = [], // Provide default empty array
   mapCenter,
   mapZoom,
   userLocation,
@@ -36,7 +36,7 @@ export const ClubMap = ({
       zoom={mapZoom}
       options={mapOptions}
     >
-      {clubs.map((club) => (
+      {clubs?.map((club) => (
         <Marker
           key={club.id}
           position={club.position}
@@ -56,7 +56,7 @@ export const ClubMap = ({
           }}
         />
       )}
-      {path.length > 0 && (
+      {path?.length > 0 && (
         <Polyline
           path={path}
           options={{
