@@ -4,6 +4,7 @@ import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
+import { Zap, Moon, MessageCircle, Smile } from 'lucide-react'
 import { ClubMap } from './map/ClubMap'
 import { ChatWindow } from './chat/ChatWindow'
 import { UserProfile } from './user-profile'
