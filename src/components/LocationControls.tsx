@@ -1,5 +1,7 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import { Globe } from 'lucide-react'
 import { locations } from '@/data/locations'
 import { useState } from 'react'
 
@@ -20,57 +22,87 @@ export function LocationControls({
   onStateChange,
   onSuburbChange
 }: LocationControlsProps) {
-  const [showControls, setShowControls] = useState(false)
+  const [showLocationModal, setShowLocationModal] = useState(false)
+  const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
 
   return (
     <div className="space-y-2">
-      <Button 
-        variant="outline" 
-        size="sm" 
-        onClick={() => setShowControls(!showControls)}
-        className="mb-2"
-      >
-        {currentSuburb} - Change Location
-      </Button>
+      <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
+        <DialogTrigger asChild>
+          <h2 className="text-2xl font-bold text-primary cursor-pointer bg-white rounded-lg px-3 py-1 shadow-sm inline-block">
+            {currentSuburb}
+          </h2>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Select Suburb</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Select value={currentSuburb} onValueChange={onSuburbChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select suburb" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations[currentCountry] && locations[currentCountry][currentState] && 
+                  Object.keys(locations[currentCountry][currentState]).map((suburb) => (
+                    <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex justify-between items-center">
+            <Button onClick={() => setShowLocationModal(false)}>Close</Button>
+            <Button onClick={() => setShowGlobalLocationModal(true)} variant="outline">
+              <Globe className="h-4 w-4 mr-2" />
+              Change Location
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-      {showControls && (
-        <div className="space-y-2">
-          <Select value={currentCountry} onValueChange={onCountryChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select country" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.keys(locations).map((country) => (
-                <SelectItem key={country} value={country}>{country}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={currentState} onValueChange={onStateChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select state" />
-            </SelectTrigger>
-            <SelectContent>
-              {locations[currentCountry] && Object.keys(locations[currentCountry]).map((state) => (
-                <SelectItem key={state} value={state}>{state}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      <Select value={currentSuburb} onValueChange={onSuburbChange}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select suburb" />
-        </SelectTrigger>
-        <SelectContent>
-          {locations[currentCountry] && locations[currentCountry][currentState] && 
-            Object.keys(locations[currentCountry][currentState]).map((suburb) => (
-              <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
-            ))
-          }
-        </SelectContent>
-      </Select>
+      <Dialog open={showGlobalLocationModal} onOpenChange={setShowGlobalLocationModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Change Location</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Select value={currentCountry} onValueChange={onCountryChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select country" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(locations).map((country) => (
+                  <SelectItem key={country} value={country}>{country}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={currentState} onValueChange={onStateChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select state" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations[currentCountry] && Object.keys(locations[currentCountry]).map((state) => (
+                  <SelectItem key={state} value={state}>{state}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={currentSuburb} onValueChange={onSuburbChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select suburb" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations[currentCountry] && locations[currentCountry][currentState] && 
+                  Object.keys(locations[currentCountry][currentState]).map((suburb) => (
+                    <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={() => setShowGlobalLocationModal(false)}>Close</Button>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
