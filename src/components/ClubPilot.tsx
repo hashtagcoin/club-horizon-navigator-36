@@ -13,6 +13,7 @@ import { ClubDetailsPanel } from './club/ClubDetailsPanel';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
 import { ChatManager } from './chat/ChatManager';
+import { sortClubs } from '@/utils/sortClubs';
 
 export default function ClubPilot() {
   const [selectedClub, setSelectedClub] = useState(null);
@@ -20,9 +21,6 @@ export default function ClubPilot() {
   const [filterGenre, setFilterGenre] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserProfile, setShowUserProfile] = useState(false);
-  const chatScrollRef = useRef(null);
-  const observerRef = useRef(null);
-  const [messageOpacities, setMessageOpacities] = useState({});
   const [showHighTraffic, setShowHighTraffic] = useState(false);
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
   const [showSpecials, setShowSpecials] = useState(false);
@@ -45,14 +43,12 @@ export default function ClubPilot() {
   }, []);
 
   useEffect(() => {
-    // Set a random club as the user's current location
     const randomClub = clubs[Math.floor(Math.random() * clubs.length)];
     setUserLocation(randomClub?.position);
   }, [clubs]);
 
   useEffect(() => {
     if (userLocation && selectedClub) {
-      // Calculate path between user location and selected club
       const newPath = [
         userLocation,
         selectedClub.position
@@ -60,6 +56,16 @@ export default function ClubPilot() {
       setPath(newPath);
     }
   }, [userLocation, selectedClub]);
+
+  const filteredAndSortedClubs = () => {
+    let filtered = clubs
+      .filter(club => filterGenre === "All" || club.genre === filterGenre)
+      .filter(club => club.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .filter(club => !showHighTraffic || club.traffic === "High")
+      .filter(club => !showSpecials || club.hasSpecial);
+
+    return sortClubs(filtered, sortBy);
+  };
 
   if (showUserProfile) {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
@@ -105,25 +111,21 @@ export default function ClubPilot() {
               {isLoadingClubs ? (
                 <div>Loading clubs...</div>
               ) : (
-                clubs
-                  .filter(club => filterGenre === "All" || club.genre === filterGenre)
-                  .filter(club => club.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                  .filter(club => !showHighTraffic || club.traffic === "High")
-                  .map(club => (
-                    <ClubCard
-                      key={club.id}
-                      club={club}
-                      selectedDay={selectedDay}
-                      isSelected={selectedClub?.id === club.id}
-                      onSelect={(club) => {
-                        setSelectedClub(club);
-                        locationManagement.setMapCenter(club.position);
-                        locationManagement.setMapZoom(16);
-                      }}
-                      onOpenChat={chatManager.openChat}
-                      newMessageCount={chatManager.newMessageCounts[club.id] || 0}
-                    />
-                  ))
+                filteredAndSortedClubs().map(club => (
+                  <ClubCard
+                    key={club.id}
+                    club={club}
+                    selectedDay={selectedDay}
+                    isSelected={selectedClub?.id === club.id}
+                    onSelect={(club) => {
+                      setSelectedClub(club);
+                      locationManagement.setMapCenter(club.position);
+                      locationManagement.setMapZoom(16);
+                    }}
+                    onOpenChat={chatManager.openChat}
+                    newMessageCount={chatManager.newMessageCounts[club.id] || 0}
+                  />
+                ))
               )}
             </div>
           </ScrollArea>
@@ -165,8 +167,8 @@ export default function ClubPilot() {
               chatMessage={chatManager.chatMessage}
               setChatMessage={chatManager.setChatMessage}
               allMessages={chatManager.allMessages}
-              messageOpacities={messageOpacities}
-              chatScrollRef={chatScrollRef}
+              messageOpacities={chatManager.messageOpacities}
+              chatScrollRef={chatManager.chatScrollRef}
               onClose={() => chatManager.setChatOpen(false)}
               onSend={chatManager.sendMessage}
               clubs={clubs}
