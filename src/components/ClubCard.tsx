@@ -27,6 +27,9 @@ export const ClubCard = ({
     >
       <CardHeader className="flex justify-between items-start p-2">
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
+        {club.hasSpecial && (
+          <span className="text-yellow-500 absolute top-2 right-2">😊</span>
+        )}
         <div className="flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
             <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
@@ -45,11 +48,8 @@ export const ClubCard = ({
         <div className="flex items-center space-x-1 mt-1">
           <Clock className="h-3 w-3 text-black" />
           <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
-          {club.hasSpecial && (
-            <span className="text-yellow-500 ml-1">😊</span>
-          )}
         </div>
-        <div className="absolute bottom-1 right-2 flex items-center space-x-1">
+        <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
           <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
           <Button
             size="sm"
