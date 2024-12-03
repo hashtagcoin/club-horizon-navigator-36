@@ -28,15 +28,13 @@ export function ChatWindow({
   clubs
 }: ChatWindowProps) {
   return (
-    <div className="fixed bottom-16 left-4 w-80 h-96 bg-background/30 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg">
+    <div className="fixed bottom-16 left-4 w-80 h-96 bg-background/5 rounded-lg overflow-hidden shadow-lg">
       <ScrollArea className="h-[calc(100%-3rem)] p-4">
         <div className="space-y-3" ref={chatScrollRef}>
           {allMessages.map((message, index) => (
             <div
               key={index}
-              className={`flex items-start space-x-2 ${
-                message.sender === "You" ? "flex-row-reverse space-x-reverse" : "flex-row"
-              }`}
+              className="flex items-start space-x-2"
               data-message-id={`${message.clubId}-${index}`}
               style={{ opacity: messageOpacities[`${message.clubId}-${index}`] || 1 }}
             >
@@ -49,11 +47,11 @@ export function ChatWindow({
                   {message.sender.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className={`flex flex-col ${message.sender === "You" ? "items-end" : "items-start"}`}>
+              <div className="flex flex-col">
                 <span className="text-xs text-muted-foreground mb-1">
                   {message.sender}
                 </span>
-                <div className="bg-primary/90 backdrop-blur-sm text-primary-foreground px-3 py-2 rounded-lg max-w-[80%] break-words">
+                <div className="bg-primary/90 text-primary-foreground px-3 py-2 rounded-lg max-w-[80%] break-words">
                   <p className="text-sm">{message.text}</p>
                 </div>
               </div>
@@ -61,7 +59,7 @@ export function ChatWindow({
           ))}
         </div>
       </ScrollArea>
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/50 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/5">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
