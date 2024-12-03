@@ -70,6 +70,7 @@ export function ChatManager({ selectedClub }: ChatManagerProps) {
     toggleGeneralChat,
     setChatMessage,
     sendMessage,
-    setChatOpen
+    setChatOpen,
+    openChat: toggleGeneralChat // Added this to fix the build error
   };
 }

@@ -28,35 +28,52 @@ export function ChatWindow({
   clubs
 }: ChatWindowProps) {
   return (
-    <div className="fixed bottom-16 left-4 w-80 h-96 bg-background/5 rounded-lg overflow-hidden shadow-lg">
+    <div className="fixed bottom-16 left-4 w-64 h-72 bg-background/5 rounded-lg overflow-hidden shadow-lg">
       <ScrollArea className="h-[calc(100%-3rem)] p-4">
         <div className="space-y-3" ref={chatScrollRef}>
-          {allMessages.map((message, index) => (
-            <div
-              key={index}
-              className="flex items-start space-x-2"
-              data-message-id={`${message.clubId}-${index}`}
-              style={{ opacity: messageOpacities[`${message.clubId}-${index}`] || 1 }}
-            >
-              <Avatar className="h-8 w-8 shrink-0">
-                <AvatarImage 
-                  src={`/placeholder.svg?height=32&width=32`} 
-                  alt={`${message.sender} Avatar`} 
-                />
-                <AvatarFallback>
-                  {message.sender.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-xs text-muted-foreground mb-1">
-                  {message.sender}
-                </span>
-                <div className="bg-primary/90 text-primary-foreground px-3 py-2 rounded-lg max-w-[80%] break-words">
-                  <p className="text-sm">{message.text}</p>
+          {allMessages.map((message, index) => {
+            // Calculate fade based on position
+            const messageElement = document.querySelector(`[data-message-id="${message.clubId}-${index}"]`);
+            const scrollArea = messageElement?.closest('.scroll-area');
+            let opacity = 1;
+            
+            if (messageElement && scrollArea) {
+              const rect = messageElement.getBoundingClientRect();
+              const scrollRect = scrollArea.getBoundingClientRect();
+              const relativePosition = (rect.top - scrollRect.top) / scrollRect.height;
+              
+              if (relativePosition < 0.33) { // Top third of the chat
+                opacity = Math.max(0.3, 1 - ((0.33 - relativePosition) * 3));
+              }
+            }
+
+            return (
+              <div
+                key={index}
+                className="flex items-start space-x-2"
+                data-message-id={`${message.clubId}-${index}`}
+                style={{ opacity }}
+              >
+                <Avatar className="h-6 w-6 shrink-0">
+                  <AvatarImage 
+                    src={`/placeholder.svg?height=24&width=24`} 
+                    alt={`${message.sender} Avatar`} 
+                  />
+                  <AvatarFallback>
+                    {message.sender.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground mb-1">
+                    {message.sender}
+                  </span>
+                  <div className="bg-primary/90 text-primary-foreground px-3 py-2 rounded-lg max-w-[80%] break-words">
+                    <p className="text-xs">{message.text}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </ScrollArea>
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/5">
@@ -71,15 +88,15 @@ export function ChatWindow({
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 bg-transparent border-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent border-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-xs h-7"
           />
           <Button 
             type="submit" 
             size="icon"
             variant="ghost"
-            className="h-8 w-8 shrink-0"
+            className="h-6 w-6 shrink-0"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-3 w-3" />
           </Button>
         </form>
       </div>
