@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { ChatWindow } from '../chat/ChatWindow';
@@ -34,6 +34,9 @@ export const MapColumn: FC<MapColumnProps> = ({
   locationManagement,
   chatManager
 }) => {
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const messageOpacities = useRef<{ [key: string]: number }>({});
+
   return (
     <div className="w-1/2 flex flex-col p-1 overflow-hidden relative">
       <div className="absolute top-2 right-2 z-10 flex flex-col items-end space-y-2">
@@ -67,6 +70,8 @@ export const MapColumn: FC<MapColumnProps> = ({
           onClose={() => chatManager.setChatOpen(false)}
           onSend={chatManager.sendMessage}
           clubs={clubs}
+          messageOpacities={messageOpacities.current}
+          chatScrollRef={chatScrollRef}
         />
       )}
     </div>

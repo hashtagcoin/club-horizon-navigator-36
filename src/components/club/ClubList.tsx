@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
@@ -36,6 +36,16 @@ export const ClubList: FC<ClubListProps> = ({
   isLoading
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
+  const selectedClubRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedClub && selectedClubRef.current) {
+      selectedClubRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }, [selectedClub]);
 
   return (
     <div className="w-1/2 flex flex-col p-1 overflow-hidden">
@@ -54,15 +64,19 @@ export const ClubList: FC<ClubListProps> = ({
             <div>Loading clubs...</div>
           ) : (
             clubs.map(club => (
-              <ClubCard
-                key={club.id}
-                club={club}
-                selectedDay={selectedDay}
-                isSelected={selectedClub?.id === club.id}
-                onSelect={onSelectClub}
-                onOpenChat={onOpenChat}
-                newMessageCount={newMessageCounts[club.id] || 0}
-              />
+              <div 
+                key={club.id} 
+                ref={selectedClub?.id === club.id ? selectedClubRef : null}
+              >
+                <ClubCard
+                  club={club}
+                  selectedDay={selectedDay}
+                  isSelected={selectedClub?.id === club.id}
+                  onSelect={onSelectClub}
+                  onOpenChat={onOpenChat}
+                  newMessageCount={newMessageCounts[club.id] || 0}
+                />
+              </div>
             ))
           )}
         </div>
