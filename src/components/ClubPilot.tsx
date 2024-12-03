@@ -54,6 +54,18 @@ export default function ClubPilot() {
       .filter(club => !showHighTraffic || club.traffic === "High")
       .filter(club => !showSpecials || club.hasSpecial);
 
+    if (sortByOpenLate) {
+      filtered = filtered.filter(club => {
+        const hours = club.openingHours[selectedDay];
+        if (!hours || hours === "Closed") return false;
+        const closingTime = hours.split(" - ")[1];
+        if (!closingTime) return false;
+        const [hourStr] = closingTime.split(":");
+        const hour = parseInt(hourStr);
+        return hour < 6 || hour >= 22; // Consider "late" as closing after 10 PM or before 6 AM
+      });
+    }
+
     return sortClubs(filtered, sortBy);
   };
 
