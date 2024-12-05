@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useJsApiLoader } from '@react-google-maps/api';
+import { useJsApiLoader, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import { UserProfile } from './user-profile';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
@@ -20,8 +20,8 @@ export default function ClubPilot() {
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
   const [showSpecials, setShowSpecials] = useState(false);
   const [selectedDay, setSelectedDay] = useState('Monday');
-  const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 }); // Sydney coordinates
-  const [path, setPath] = useState([]);
+  const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
+  const [directions, setDirections] = useState(null);
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
@@ -29,7 +29,8 @@ export default function ClubPilot() {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0"
+    googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0",
+    libraries: ["places", "directions"]
   });
 
   useEffect(() => {
@@ -38,14 +39,25 @@ export default function ClubPilot() {
   }, []);
 
   useEffect(() => {
-    if (userLocation && selectedClub) {
-      const newPath = [
-        userLocation,
-        selectedClub.position
-      ];
-      setPath(newPath);
+    if (isLoaded && userLocation && selectedClub) {
+      const directionsService = new google.maps.DirectionsService();
+
+      directionsService.route(
+        {
+          origin: userLocation,
+          destination: selectedClub.position,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            console.error(`error fetching directions ${result}`);
+          }
+        }
+      );
     }
-  }, [userLocation, selectedClub]);
+  }, [isLoaded, userLocation, selectedClub]);
 
   const filteredAndSortedClubs = () => {
     let filtered = clubs
@@ -75,7 +87,10 @@ export default function ClubPilot() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 text-sm">
-      <TopBar />
+      <TopBar 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       
       <div className="flex flex-1 overflow-hidden">
         <ClubList
@@ -86,8 +101,6 @@ export default function ClubPilot() {
           setSortBy={setSortBy}
           filterGenre={filterGenre}
           setFilterGenre={setFilterGenre}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
           onSelectClub={(club) => {
             setSelectedClub(club);
             locationManagement.setMapCenter(club.position);
@@ -107,7 +120,7 @@ export default function ClubPilot() {
           mapCenter={locationManagement.mapCenter}
           mapZoom={locationManagement.mapZoom}
           userLocation={userLocation}
-          path={path}
+          directions={directions}
           onClubSelect={(club) => {
             setSelectedClub(club);
             locationManagement.setMapCenter(club.position);
