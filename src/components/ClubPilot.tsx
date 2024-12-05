@@ -87,6 +87,8 @@ export default function ClubPilot() {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
   }
 
+  const filteredClubs = filteredAndSortedClubs();
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 text-sm">
       <TopBar 
@@ -96,7 +98,7 @@ export default function ClubPilot() {
       
       <div className="flex flex-1 overflow-hidden">
         <ClubList
-          clubs={filteredAndSortedClubs()}
+          clubs={filteredClubs}
           selectedClub={selectedClub}
           selectedDay={selectedDay}
           sortBy={sortBy}
@@ -117,7 +119,7 @@ export default function ClubPilot() {
 
         <MapColumn
           isLoaded={isLoaded}
-          clubs={clubs}
+          clubs={filteredClubs}
           selectedClub={selectedClub}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
