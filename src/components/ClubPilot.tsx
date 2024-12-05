@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useJsApiLoader, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { useJsApiLoader } from '@react-google-maps/api';
 import { UserProfile } from './user-profile';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
@@ -9,6 +9,8 @@ import { TopBar } from './layout/TopBar';
 import { BottomBar } from './layout/BottomBar';
 import { ClubList } from './club/ClubList';
 import { MapColumn } from './map/MapColumn';
+
+const libraries = ["places", "directions"];
 
 export default function ClubPilot() {
   const [selectedClub, setSelectedClub] = useState(null);
@@ -30,7 +32,7 @@ export default function ClubPilot() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0",
-    libraries: ["places", "directions"]
+    libraries
   });
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function ClubPilot() {
         if (!closingTime) return false;
         const [hourStr] = closingTime.split(":");
         const hour = parseInt(hourStr);
-        return hour < 6 || hour >= 22; // Consider "late" as closing after 10 PM or before 6 AM
+        return hour < 6 || hour >= 22;
       });
     }
 
@@ -101,6 +103,8 @@ export default function ClubPilot() {
           setSortBy={setSortBy}
           filterGenre={filterGenre}
           setFilterGenre={setFilterGenre}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
           onSelectClub={(club) => {
             setSelectedClub(club);
             locationManagement.setMapCenter(club.position);

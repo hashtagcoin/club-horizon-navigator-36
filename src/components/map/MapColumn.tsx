@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { ChatWindow } from '../chat/ChatWindow';
@@ -14,7 +14,7 @@ interface MapColumnProps {
   mapCenter: google.maps.LatLngLiteral;
   mapZoom: number;
   userLocation: google.maps.LatLngLiteral | null;
-  path: google.maps.LatLngLiteral[];
+  directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
   chatManager: any;
@@ -29,14 +29,11 @@ export const MapColumn: FC<MapColumnProps> = ({
   mapCenter,
   mapZoom,
   userLocation,
-  path,
+  directions,
   onClubSelect,
   locationManagement,
   chatManager
 }) => {
-  const chatScrollRef = useRef<HTMLDivElement>(null);
-  const messageOpacities = useRef<{ [key: string]: number }>({});
-
   return (
     <div className="w-1/2 flex flex-col p-1 overflow-hidden relative">
       <div className="absolute top-2 right-2 z-10 flex flex-col items-end space-y-2">
@@ -55,7 +52,7 @@ export const MapColumn: FC<MapColumnProps> = ({
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}
-          path={path}
+          directions={directions}
           onClubSelect={onClubSelect}
         />
       </div>
@@ -63,15 +60,15 @@ export const MapColumn: FC<MapColumnProps> = ({
       {chatManager.chatOpen && (
         <ChatWindow
           isGeneralChat={chatManager.isGeneralChat}
-          chatClub={chatManager.chatClub}
+          chatClub={chatManager.activeClubChat}
           chatMessage={chatManager.chatMessage}
           setChatMessage={chatManager.setChatMessage}
           allMessages={chatManager.allMessages}
           onClose={() => chatManager.setChatOpen(false)}
           onSend={chatManager.sendMessage}
           clubs={clubs}
-          messageOpacities={messageOpacities.current}
-          chatScrollRef={chatScrollRef}
+          messageOpacities={{}}
+          chatScrollRef={null}
         />
       )}
     </div>

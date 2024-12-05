@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Club, ChatMessage, ChatMessages } from '@/types/club';
 import { ChatWindow } from './ChatWindow';
 
@@ -12,32 +12,44 @@ export function ChatManager({ selectedClub }: ChatManagerProps) {
   const [chatMessages, setChatMessages] = useState<ChatMessages>({ general: [] });
   const [newMessageCounts, setNewMessageCounts] = useState<Record<number, number>>({});
   const [isGeneralChat, setIsGeneralChat] = useState(true);
+  const [activeClubChat, setActiveClubChat] = useState<Club | null>(null);
 
   const toggleGeneralChat = () => {
     setChatOpen(prev => !prev);
     setIsGeneralChat(true);
+    setActiveClubChat(null);
     if (!chatMessages.general) {
       setChatMessages(prev => ({ ...prev, general: [] }));
     }
   };
 
+  const openChat = (club: Club) => {
+    setChatOpen(true);
+    setIsGeneralChat(false);
+    setActiveClubChat(club);
+    if (!chatMessages[club.id]) {
+      setChatMessages(prev => ({ ...prev, [club.id]: [] }));
+    }
+  };
+
   const sendMessage = () => {
     if (chatMessage.trim() !== "") {
+      const chatId = isGeneralChat ? 'general' : (activeClubChat?.id || 'general');
       const newMessage: ChatMessage = {
         sender: "You",
         text: chatMessage,
         timestamp: Date.now(),
-        clubId: 'general'
+        clubId: chatId
       };
 
       setChatMessages(prev => ({
         ...prev,
-        general: [...(prev.general || []), newMessage]
+        [chatId]: [...(prev[chatId] || []), newMessage]
       }));
 
       setChatMessage("");
 
-      // Simulate responses from other users
+      // Simulate responses
       setTimeout(() => {
         const users = ["Alice", "Bob", "Charlie"];
         const responses = [
@@ -50,12 +62,12 @@ export function ChatManager({ selectedClub }: ChatManagerProps) {
           sender: users[Math.floor(Math.random() * users.length)],
           text: responses[Math.floor(Math.random() * responses.length)],
           timestamp: Date.now(),
-          clubId: 'general'
+          clubId: chatId
         };
 
         setChatMessages(prev => ({
           ...prev,
-          general: [...(prev.general || []), responseMessage]
+          [chatId]: [...(prev[chatId] || []), responseMessage]
         }));
       }, 1000);
     }
@@ -65,12 +77,13 @@ export function ChatManager({ selectedClub }: ChatManagerProps) {
     chatOpen,
     isGeneralChat,
     chatMessage,
-    allMessages: chatMessages.general || [],
+    activeClubChat,
+    allMessages: isGeneralChat ? (chatMessages.general || []) : (chatMessages[activeClubChat?.id || ''] || []),
     newMessageCounts,
     toggleGeneralChat,
     setChatMessage,
     sendMessage,
     setChatOpen,
-    openChat: toggleGeneralChat // Added this to fix the build error
+    openChat
   };
 }
