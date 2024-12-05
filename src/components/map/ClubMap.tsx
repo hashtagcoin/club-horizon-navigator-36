@@ -41,6 +41,14 @@ export const ClubMap = ({
           key={club.id}
           position={club.position}
           onClick={() => onClubSelect(club)}
+          icon={club.position.lat === mapCenter.lat && club.position.lng === mapCenter.lng ? {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: '#FFD700', // Yellow
+            fillOpacity: 1,
+            strokeColor: '#000000', // Black outline
+            strokeWeight: 2,
+          } : undefined}
         />
       ))}
       {userLocation && (
