@@ -1,12 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Club, ChatMessage, ChatMessages } from '@/types/club';
-import { ChatWindow } from './ChatWindow';
 
-interface ChatManagerProps {
-  selectedClub: Club | null;
-}
-
-export function ChatManager({ selectedClub }: ChatManagerProps) {
+export function useChatManager(selectedClub: Club | null) {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessages>({ general: [] });

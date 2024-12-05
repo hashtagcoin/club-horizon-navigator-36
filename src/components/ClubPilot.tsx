@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useJsApiLoader } from '@react-google-maps/api';
+import { useJsApiLoader, Libraries } from '@react-google-maps/api';
 import { UserProfile } from './user-profile';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
-import { ChatManager } from './chat/ChatManager';
+import { useChatManager } from './chat/ChatManager';
 import { sortClubs } from '@/utils/sortClubs';
 import { TopBar } from './layout/TopBar';
 import { BottomBar } from './layout/BottomBar';
 import { ClubList } from './club/ClubList';
 import { MapColumn } from './map/MapColumn';
 
-const libraries = ["places", "directions"];
+const libraries: Libraries = ["places", "directions"];
 
 export default function ClubPilot() {
   const [selectedClub, setSelectedClub] = useState(null);
@@ -27,7 +27,7 @@ export default function ClubPilot() {
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
-  const chatManager = ChatManager({ selectedClub });
+  const chatManager = useChatManager(selectedClub);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
