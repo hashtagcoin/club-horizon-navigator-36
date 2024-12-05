@@ -10,7 +10,7 @@ import { BottomBar } from './layout/BottomBar';
 import { ClubList } from './club/ClubList';
 import { MapColumn } from './map/MapColumn';
 
-const libraries: Libraries = ["places", "directions"];
+const libraries: Libraries = ['places'];
 
 export default function ClubPilot() {
   const [selectedClub, setSelectedClub] = useState(null);
