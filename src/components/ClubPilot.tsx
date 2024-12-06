@@ -54,10 +54,8 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(selectedClub);
 
-  // Spring animation for the list panel
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
-  // Gesture binding for swipe
   const bind = useDrag(({ movement: [mx], direction: [dx], cancel, active }) => {
     if (active && Math.abs(mx) > window.innerWidth * 0.3) {
       cancel();
@@ -93,9 +91,10 @@ export default function ClubPilot() {
             width: '50%',
             position: 'absolute',
             height: '100%',
-            touchAction: 'none'
+            touchAction: 'none',
+            zIndex: 40
           }}
-          className="z-10"
+          className="bg-white"
         >
           <ClubList
             clubs={filteredClubs}
@@ -119,7 +118,7 @@ export default function ClubPilot() {
         </animated.div>
 
         <div 
-          className={`transition-all duration-300 ease-in-out ${
+          className={`transition-all duration-300 ease-in-out h-full ${
             isListCollapsed ? 'w-full' : 'w-1/2 ml-[50%]'
           }`}
         >
