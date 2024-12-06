@@ -48,7 +48,7 @@ export const ClubList: FC<ClubListProps> = ({
   }, [selectedClub]);
 
   return (
-    <div className="w-1/2 flex flex-col p-1 overflow-hidden">
+    <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
       <ClubFilters
         sortBy={sortBy}
         setSortBy={setSortBy}

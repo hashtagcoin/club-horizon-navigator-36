@@ -10,12 +10,15 @@ import { ClubList } from './club/ClubList';
 import { MapColumn } from './map/MapColumn';
 import { useMapState } from '@/hooks/useMapState';
 import { useClubFilters } from '@/hooks/useClubFilters';
+import { useSpring, animated } from '@react-spring/web';
+import { useDrag } from '@use-gesture/react';
 
 const libraries: Libraries = ['places'];
 
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
+  const [isListCollapsed, setIsListCollapsed] = useState(false);
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
@@ -51,6 +54,24 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(selectedClub);
 
+  // Spring animation for the list panel
+  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+
+  // Gesture binding for swipe
+  const bind = useDrag(({ movement: [mx], direction: [dx], cancel, active }) => {
+    if (active && Math.abs(mx) > window.innerWidth * 0.3) {
+      cancel();
+      setIsListCollapsed(dx > 0);
+      api.start({ x: dx > 0 ? window.innerWidth * 0.5 : 0, immediate: false });
+    } else {
+      api.start({ x: active ? mx : isListCollapsed ? window.innerWidth * 0.5 : 0, immediate: active });
+    }
+  }, {
+    axis: 'x',
+    bounds: { left: 0, right: window.innerWidth * 0.5 },
+    rubberband: true
+  });
+
   if (showUserProfile) {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
   }
@@ -64,45 +85,63 @@ export default function ClubPilot() {
         setSearchQuery={setSearchQuery}
       />
       
-      <div className="flex flex-1 overflow-hidden">
-        <ClubList
-          clubs={filteredClubs}
-          selectedClub={selectedClub}
-          selectedDay={selectedDay}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          filterGenre={filterGenre}
-          setFilterGenre={setFilterGenre}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onSelectClub={(club) => {
-            setSelectedClub(club);
-            locationManagement.setMapCenter(club.position);
-            locationManagement.setMapZoom(16);
+      <div className="flex flex-1 overflow-hidden relative">
+        <animated.div 
+          {...bind()}
+          style={{ 
+            x,
+            width: '50%',
+            position: 'absolute',
+            height: '100%',
+            touchAction: 'none'
           }}
-          onOpenChat={chatManager.openChat}
-          newMessageCounts={chatManager.newMessageCounts}
-          isLoading={isLoadingClubs}
-        />
+          className="z-10"
+        >
+          <ClubList
+            clubs={filteredClubs}
+            selectedClub={selectedClub}
+            selectedDay={selectedDay}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            filterGenre={filterGenre}
+            setFilterGenre={setFilterGenre}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onSelectClub={(club) => {
+              setSelectedClub(club);
+              locationManagement.setMapCenter(club.position);
+              locationManagement.setMapZoom(16);
+            }}
+            onOpenChat={chatManager.openChat}
+            newMessageCounts={chatManager.newMessageCounts}
+            isLoading={isLoadingClubs}
+          />
+        </animated.div>
 
-        <MapColumn
-          isLoaded={isLoaded}
-          clubs={filteredClubs}
-          selectedClub={selectedClub}
-          selectedDay={selectedDay}
-          setSelectedDay={setSelectedDay}
-          mapCenter={locationManagement.mapCenter}
-          mapZoom={locationManagement.mapZoom}
-          userLocation={userLocation}
-          directions={directions}
-          onClubSelect={(club) => {
-            setSelectedClub(club);
-            locationManagement.setMapCenter(club.position);
-            locationManagement.setMapZoom(16);
-          }}
-          locationManagement={locationManagement}
-          chatManager={chatManager}
-        />
+        <div 
+          className={`transition-all duration-300 ease-in-out ${
+            isListCollapsed ? 'w-full' : 'w-1/2 ml-[50%]'
+          }`}
+        >
+          <MapColumn
+            isLoaded={isLoaded}
+            clubs={filteredClubs}
+            selectedClub={selectedClub}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+            mapCenter={locationManagement.mapCenter}
+            mapZoom={locationManagement.mapZoom}
+            userLocation={userLocation}
+            directions={directions}
+            onClubSelect={(club) => {
+              setSelectedClub(club);
+              locationManagement.setMapCenter(club.position);
+              locationManagement.setMapZoom(16);
+            }}
+            locationManagement={locationManagement}
+            chatManager={chatManager}
+          />
+        </div>
       </div>
 
       <BottomBar
