@@ -57,17 +57,27 @@ export default function ClubPilot() {
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
   const bind = useDrag(({ movement: [mx], direction: [dx], cancel, active }) => {
-    if (active && Math.abs(mx) > window.innerWidth * 0.3) {
+    if (active && Math.abs(mx) > window.innerWidth * 0.15) {
       cancel();
-      setIsListCollapsed(dx > 0);
-      api.start({ x: dx > 0 ? window.innerWidth * 0.5 : 0, immediate: false });
+      const shouldCollapse = dx > 0;
+      setIsListCollapsed(shouldCollapse);
+      api.start({ 
+        x: shouldCollapse ? window.innerWidth * 0.5 : 0, 
+        immediate: false,
+        config: { tension: 200, friction: 25 }
+      });
     } else {
-      api.start({ x: active ? mx : isListCollapsed ? window.innerWidth * 0.5 : 0, immediate: active });
+      api.start({ 
+        x: active ? mx : isListCollapsed ? window.innerWidth * 0.5 : 0, 
+        immediate: active,
+        config: { tension: 200, friction: 25 }
+      });
     }
   }, {
     axis: 'x',
     bounds: { left: 0, right: window.innerWidth * 0.5 },
-    rubberband: true
+    rubberband: true,
+    from: () => [x.get(), 0]
   });
 
   if (showUserProfile) {
@@ -92,9 +102,10 @@ export default function ClubPilot() {
             position: 'absolute',
             height: '100%',
             touchAction: 'none',
-            zIndex: 40
+            zIndex: 40,
+            transform: x.to(x => `translateX(${x}px)`)
           }}
-          className="bg-white"
+          className="bg-white shadow-lg"
         >
           <ClubList
             clubs={filteredClubs}
