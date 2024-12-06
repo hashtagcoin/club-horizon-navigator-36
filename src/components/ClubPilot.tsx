@@ -12,6 +12,8 @@ import { useMapState } from '@/hooks/useMapState';
 import { useClubFilters } from '@/hooks/useClubFilters';
 import { useSpring, animated } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
+import { ChevronLeft } from 'lucide-react';
+import { Button } from './ui/button';
 
 const libraries: Libraries = ['places'];
 
@@ -55,6 +57,15 @@ export default function ClubPilot() {
   const chatManager = useChatManager(selectedClub);
 
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
+
+  const toggleList = () => {
+    setIsListCollapsed(!isListCollapsed);
+    api.start({ 
+      x: !isListCollapsed ? window.innerWidth * 0.5 : 0,
+      immediate: false,
+      config: { tension: 200, friction: 25 }
+    });
+  };
 
   const bind = useDrag(({ movement: [mx], direction: [dx], cancel, active }) => {
     if (active && Math.abs(mx) > window.innerWidth * 0.15) {
@@ -126,6 +137,16 @@ export default function ClubPilot() {
             newMessageCounts={chatManager.newMessageCounts}
             isLoading={isLoadingClubs}
           />
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`absolute -right-10 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-50 transition-transform ${
+              isListCollapsed ? 'rotate-180' : ''
+            }`}
+            onClick={toggleList}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
         </animated.div>
 
         <div 
