@@ -2,7 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Send } from 'lucide-react'
+import { Send, X } from 'lucide-react'
 import { ChatMessage, ChatMessages, Club } from '@/types/club'
 
 interface ChatWindowProps {
@@ -16,6 +16,7 @@ interface ChatWindowProps {
   onClose: () => void;
   onSend: () => void;
   clubs: Club[];
+  position?: 'left' | 'right';
 }
 
 export function ChatWindow({
@@ -24,29 +25,35 @@ export function ChatWindow({
   allMessages,
   messageOpacities,
   chatScrollRef,
+  onClose,
   onSend,
-  clubs
+  chatClub,
+  position = 'left'
 }: ChatWindowProps) {
+  const positionClasses = position === 'left' 
+    ? "left-4" 
+    : "right-4";
+
   return (
-    <div className="fixed bottom-16 left-4 w-64 h-72 bg-background/5 rounded-lg overflow-hidden shadow-lg">
-      <ScrollArea className="h-[calc(100%-3rem)] p-4">
+    <div className={`fixed bottom-16 ${positionClasses} w-64 h-72 bg-background rounded-lg overflow-hidden shadow-lg border border-border`}>
+      <div className="flex justify-between items-center p-2 bg-primary/5 border-b border-border">
+        <span className="text-sm font-medium">
+          {chatClub ? chatClub.name : 'General Chat'}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={onClose}
+        >
+          <X className="h-3 w-3" />
+        </Button>
+      </div>
+      <ScrollArea className="h-[calc(100%-6rem)] p-4">
         <div className="space-y-3" ref={chatScrollRef}>
           {allMessages.map((message, index) => {
-            // Calculate fade based on position
-            const messageElement = document.querySelector(`[data-message-id="${message.clubId}-${index}"]`);
-            const scrollArea = messageElement?.closest('.scroll-area');
-            let opacity = 1;
+            const opacity = messageOpacities[`${message.clubId}-${index}`] || 1;
             
-            if (messageElement && scrollArea) {
-              const rect = messageElement.getBoundingClientRect();
-              const scrollRect = scrollArea.getBoundingClientRect();
-              const relativePosition = (rect.top - scrollRect.top) / scrollRect.height;
-              
-              if (relativePosition < 0.33) { // Top third of the chat
-                opacity = Math.max(0.3, 1 - ((0.33 - relativePosition) * 3));
-              }
-            }
-
             return (
               <div
                 key={index}
@@ -76,7 +83,7 @@ export function ChatWindow({
           })}
         </div>
       </ScrollArea>
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/5">
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/5 border-t border-border">
         <form 
           onSubmit={(e) => {
             e.preventDefault();

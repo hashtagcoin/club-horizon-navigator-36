@@ -69,7 +69,27 @@ export const MapColumn: FC<MapColumnProps> = ({
           clubs={clubs}
           messageOpacities={{}}
           chatScrollRef={null}
+          position="left"
         />
+      )}
+
+      {clubs.map(club => 
+        chatManager.clubChats[club.id] && (
+          <ChatWindow
+            key={club.id}
+            isGeneralChat={false}
+            chatClub={club}
+            chatMessage={chatManager.chatMessage}
+            setChatMessage={chatManager.setChatMessage}
+            allMessages={chatManager.getClubMessages(club.id)}
+            onClose={() => chatManager.closeChat(club)}
+            onSend={() => chatManager.sendMessage(club.id)}
+            clubs={clubs}
+            messageOpacities={{}}
+            chatScrollRef={null}
+            position="right"
+          />
+        )
       )}
     </div>
   );
