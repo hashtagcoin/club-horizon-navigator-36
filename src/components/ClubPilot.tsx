@@ -6,14 +6,12 @@ import { useClubData } from '@/hooks/useClubData';
 import { useChatManager } from './chat/ChatManager';
 import { TopBar } from './layout/TopBar';
 import { BottomBar } from './layout/BottomBar';
-import { ClubList } from './club/ClubList';
 import { MapColumn } from './map/MapColumn';
 import { useMapState } from '@/hooks/useMapState';
 import { useClubFilters } from '@/hooks/useClubFilters';
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
-import { ChevronLeft } from 'lucide-react';
-import { Button } from './ui/button';
+import { AnimatedClubList } from './club/AnimatedClubList';
 
 const libraries: Libraries = ['places'];
 
@@ -105,49 +103,29 @@ export default function ClubPilot() {
       />
       
       <div className="flex flex-1 overflow-hidden relative">
-        <animated.div 
-          {...bind()}
-          style={{ 
-            x,
-            width: '50%',
-            position: 'absolute',
-            height: '100%',
-            touchAction: 'none',
-            zIndex: 40,
-            transform: x.to(x => `translateX(${x}px)`)
+        <AnimatedClubList
+          x={x}
+          bind={bind}
+          isCollapsed={isListCollapsed}
+          onToggle={toggleList}
+          clubs={filteredClubs}
+          selectedClub={selectedClub}
+          selectedDay={selectedDay}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          filterGenre={filterGenre}
+          setFilterGenre={setFilterGenre}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSelectClub={(club) => {
+            setSelectedClub(club);
+            locationManagement.setMapCenter(club.position);
+            locationManagement.setMapZoom(16);
           }}
-          className="bg-white shadow-lg"
-        >
-          <ClubList
-            clubs={filteredClubs}
-            selectedClub={selectedClub}
-            selectedDay={selectedDay}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            filterGenre={filterGenre}
-            setFilterGenre={setFilterGenre}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onSelectClub={(club) => {
-              setSelectedClub(club);
-              locationManagement.setMapCenter(club.position);
-              locationManagement.setMapZoom(16);
-            }}
-            onOpenChat={chatManager.openChat}
-            newMessageCounts={chatManager.newMessageCounts}
-            isLoading={isLoadingClubs}
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`absolute -right-10 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-50 transition-transform ${
-              isListCollapsed ? 'rotate-180' : ''
-            }`}
-            onClick={toggleList}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </animated.div>
+          onOpenChat={chatManager.openChat}
+          newMessageCounts={chatManager.newMessageCounts}
+          isLoading={isLoadingClubs}
+        />
 
         <div 
           className={`transition-all duration-300 ease-in-out h-full ${
