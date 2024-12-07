@@ -59,7 +59,7 @@ export default function ClubPilot() {
   const toggleList = () => {
     setIsListCollapsed(!isListCollapsed);
     api.start({ 
-      x: !isListCollapsed ? window.innerWidth * 0.5 : 0,
+      x: !isListCollapsed ? -window.innerWidth * 0.5 : 0,
       immediate: false,
       config: { tension: 200, friction: 25 }
     });
@@ -68,23 +68,23 @@ export default function ClubPilot() {
   const bind = useDrag(({ movement: [mx], direction: [dx], cancel, active }) => {
     if (active && Math.abs(mx) > window.innerWidth * 0.15) {
       cancel();
-      const shouldCollapse = dx > 0;
+      const shouldCollapse = dx < 0;
       setIsListCollapsed(shouldCollapse);
       api.start({ 
-        x: shouldCollapse ? window.innerWidth * 0.5 : 0, 
+        x: shouldCollapse ? -window.innerWidth * 0.5 : 0, 
         immediate: false,
         config: { tension: 200, friction: 25 }
       });
     } else {
       api.start({ 
-        x: active ? mx : isListCollapsed ? window.innerWidth * 0.5 : 0, 
+        x: active ? mx : isListCollapsed ? -window.innerWidth * 0.5 : 0, 
         immediate: active,
         config: { tension: 200, friction: 25 }
       });
     }
   }, {
     axis: 'x',
-    bounds: { left: 0, right: window.innerWidth * 0.5 },
+    bounds: { left: -window.innerWidth * 0.5, right: 0 },
     rubberband: true,
     from: () => [x.get(), 0]
   });
@@ -129,7 +129,7 @@ export default function ClubPilot() {
 
         <div 
           className={`transition-all duration-300 ease-in-out h-full ${
-            isListCollapsed ? 'w-full' : 'w-1/2 ml-[50%]'
+            isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
           }`}
         >
           <MapColumn

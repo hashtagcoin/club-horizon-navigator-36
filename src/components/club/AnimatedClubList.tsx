@@ -1,7 +1,7 @@
 import { animated, SpringValue } from '@react-spring/web';
 import { UseDragResult } from '@use-gesture/react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
 
@@ -44,18 +44,20 @@ export const AnimatedClubList = ({
         zIndex: 40,
         transform: x.to(x => `translateX(${x}px)`)
       }}
-      className="bg-white shadow-lg"
+      className="bg-white shadow-xl"
     >
       <ClubList {...clubListProps} />
       <Button
-        variant="ghost"
+        variant="default"
         size="icon"
-        className={`absolute -right-10 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-50 transition-transform ${
-          isCollapsed ? 'rotate-180' : ''
+        className={`absolute -right-12 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-50 transition-all duration-300 hover:bg-gray-100 ${
+          isCollapsed ? 'translate-x-10' : ''
         }`}
         onClick={onToggle}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronRight className={`h-6 w-6 transition-transform duration-300 ${
+          isCollapsed ? '' : 'rotate-180'
+        }`} />
       </Button>
     </animated.div>
   );
