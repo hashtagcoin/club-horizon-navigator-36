@@ -69,7 +69,6 @@ export const MapColumn: FC<MapColumnProps> = ({
           clubs={clubs}
           messageOpacities={{}}
           chatScrollRef={null}
-          position={{ x: window.innerWidth - 300, y: window.innerHeight - 400 }}
         />
       )}
 
@@ -87,10 +86,6 @@ export const MapColumn: FC<MapColumnProps> = ({
             clubs={clubs}
             messageOpacities={{}}
             chatScrollRef={null}
-            position={{ 
-              x: window.innerWidth - 300 - (index + 1) * 20, 
-              y: window.innerHeight - 400 - (index + 1) * 20 
-            }}
           />
         )
       )}

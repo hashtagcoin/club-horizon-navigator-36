@@ -28,15 +28,26 @@ export function ChatWindow({
   onClose,
   onSend,
   chatClub,
-  position = { x: window.innerWidth - 300, y: window.innerHeight - 400 }
+  isGeneralChat,
 }: ChatWindowProps) {
+  const getPosition = () => {
+    if (isGeneralChat) {
+      return {
+        left: '16px',
+        bottom: '16px',
+      };
+    } else {
+      return {
+        right: '16px',
+        bottom: '16px',
+      };
+    }
+  };
+
   return (
     <div 
       className="fixed bg-background rounded-lg overflow-hidden shadow-lg border border-border w-64 h-72 z-50"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`
-      }}
+      style={getPosition()}
     >
       <div className="flex justify-between items-center p-2 bg-primary/5 border-b border-border">
         <span className="text-sm font-medium">
