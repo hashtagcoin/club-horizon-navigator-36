@@ -16,7 +16,7 @@ interface ChatWindowProps {
   onClose: () => void;
   onSend: () => void;
   clubs: Club[];
-  position?: 'left' | 'right';
+  position?: { x: number; y: number };
 }
 
 export function ChatWindow({
@@ -28,14 +28,16 @@ export function ChatWindow({
   onClose,
   onSend,
   chatClub,
-  position = 'left'
+  position = { x: window.innerWidth - 300, y: window.innerHeight - 400 }
 }: ChatWindowProps) {
-  const positionClasses = position === 'left' 
-    ? "left-4" 
-    : "right-4";
-
   return (
-    <div className={`fixed bottom-16 ${positionClasses} w-64 h-72 bg-background rounded-lg overflow-hidden shadow-lg border border-border`}>
+    <div 
+      className="fixed bg-background rounded-lg overflow-hidden shadow-lg border border-border w-64 h-72 z-50"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`
+      }}
+    >
       <div className="flex justify-between items-center p-2 bg-primary/5 border-b border-border">
         <span className="text-sm font-medium">
           {chatClub ? chatClub.name : 'General Chat'}

@@ -69,11 +69,11 @@ export const MapColumn: FC<MapColumnProps> = ({
           clubs={clubs}
           messageOpacities={{}}
           chatScrollRef={null}
-          position="left"
+          position={{ x: window.innerWidth - 300, y: window.innerHeight - 400 }}
         />
       )}
 
-      {clubs.map(club => 
+      {clubs.map((club, index) => 
         chatManager.clubChats[club.id] && (
           <ChatWindow
             key={club.id}
@@ -87,7 +87,10 @@ export const MapColumn: FC<MapColumnProps> = ({
             clubs={clubs}
             messageOpacities={{}}
             chatScrollRef={null}
-            position="right"
+            position={{ 
+              x: window.innerWidth - 300 - (index + 1) * 20, 
+              y: window.innerHeight - 400 - (index + 1) * 20 
+            }}
           />
         )
       )}
