@@ -38,18 +38,23 @@ export const ClubMap = ({
       },
       {
         featureType: "poi",
+        elementType: "labels",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "transit",
+        elementType: "geometry",
+        stylers: [{ color: "#2f3948" }],
+      },
+      {
+        featureType: "transit.station",
         elementType: "labels.text.fill",
         stylers: [{ color: "#d59563" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "geometry",
-        stylers: [{ color: "#263c3f" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#6b9a76" }],
       },
       {
         featureType: "road",
@@ -80,16 +85,6 @@ export const ClubMap = ({
         featureType: "road.highway",
         elementType: "labels.text.fill",
         stylers: [{ color: "#f3d19c" }],
-      },
-      {
-        featureType: "transit",
-        elementType: "geometry",
-        stylers: [{ color: "#2f3948" }],
-      },
-      {
-        featureType: "transit.station",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#d59563" }],
       },
       {
         featureType: "water",
@@ -124,26 +119,13 @@ export const ClubMap = ({
           icon={club.position.lat === mapCenter.lat && club.position.lng === mapCenter.lng ? {
             path: google.maps.SymbolPath.CIRCLE,
             scale: 10,
-            fillColor: '#FFD700', // Yellow
+            fillColor: '#FFD700',
             fillOpacity: 1,
-            strokeColor: '#000000', // Black outline
+            strokeColor: '#000000',
             strokeWeight: 2,
           } : undefined}
         />
       ))}
-      {userLocation && (
-        <Marker
-          position={userLocation}
-          icon={{
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 7,
-            fillColor: "#4285F4",
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-          }}
-        />
-      )}
       {directions && (
         <DirectionsRenderer
           directions={directions}
