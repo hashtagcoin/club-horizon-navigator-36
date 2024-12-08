@@ -1,5 +1,5 @@
 import { animated, SpringValue } from '@react-spring/web';
-import { UseDragResult } from '@use-gesture/react';
+import { UserHandlers } from '@use-gesture/react';
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from 'lucide-react';
 import { ClubList } from './ClubList';
@@ -7,7 +7,7 @@ import { Club } from '@/types/club';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
-  bind: (...args: any[]) => UseDragResult;
+  bind: (...args: any[]) => UserHandlers;
   isCollapsed: boolean;
   onToggle: () => void;
   clubs: Club[];
@@ -50,8 +50,8 @@ export const AnimatedClubList = ({
       <Button
         variant="default"
         size="icon"
-        className={`absolute -right-12 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-50 transition-all duration-300 hover:bg-gray-100 ${
-          isCollapsed ? 'translate-x-10' : ''
+        className={`fixed left-[50%] top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-50 transition-all duration-300 hover:bg-gray-100 ${
+          isCollapsed ? 'translate-x-[-24px]' : 'translate-x-[-12px]'
         }`}
         onClick={onToggle}
       >

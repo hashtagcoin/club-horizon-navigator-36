@@ -35,7 +35,7 @@ export const MapColumn: FC<MapColumnProps> = ({
   chatManager
 }) => {
   return (
-    <div className="h-full flex flex-col p-1 overflow-hidden relative">
+    <div className="h-full flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
@@ -45,7 +45,7 @@ export const MapColumn: FC<MapColumnProps> = ({
         />
       </div>
       
-      <div className="bg-white rounded-lg shadow-lg p-2 mb-2 flex-grow h-full">
+      <div className="flex-grow h-full">
         <ClubMap
           isLoaded={isLoaded}
           clubs={clubs}
