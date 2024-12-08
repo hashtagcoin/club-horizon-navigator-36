@@ -40,7 +40,7 @@ export const AnimatedClubList = ({
           width: '50%',
           position: 'absolute',
           height: '100%',
-          touchAction: 'none',
+          touchAction: isCollapsed ? 'none' : 'pan-x',
           zIndex: 40,
           transform: x.to(x => `translateX(${x}px)`)
         }}
@@ -50,15 +50,15 @@ export const AnimatedClubList = ({
       </animated.div>
       
       <Button
-        variant="default"
+        variant="ghost"
         size="icon"
-        className={`fixed left-[50%] top-4 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100 ${
+        className={`fixed left-[50%] top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100 ${
           isCollapsed ? '-translate-x-6' : '-translate-x-6'
         }`}
         onClick={onToggle}
       >
         <ChevronLeft 
-          className={`h-6 w-6 transition-transform duration-300 ${
+          className={`h-6 w-6 transition-transform duration-300 text-black ${
             isCollapsed ? 'rotate-180' : ''
           }`}
         />
