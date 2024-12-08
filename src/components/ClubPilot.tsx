@@ -55,7 +55,7 @@ export default function ClubPilot() {
   const toggleList = () => {
     setIsListCollapsed(!isListCollapsed);
     api.start({ 
-      x: !isListCollapsed ? -window.innerWidth * 0.5 : 0,
+      x: !isListCollapsed ? -window.innerWidth * 0.5 + 20 : 0,
       immediate: false,
       config: { tension: 200, friction: 25 }
     });
@@ -67,20 +67,20 @@ export default function ClubPilot() {
       const shouldCollapse = dx < 0;
       setIsListCollapsed(shouldCollapse);
       api.start({ 
-        x: shouldCollapse ? -window.innerWidth * 0.5 : 0, 
+        x: shouldCollapse ? -window.innerWidth * 0.5 + 20 : 0, 
         immediate: false,
         config: { tension: 200, friction: 25 }
       });
     } else {
       api.start({ 
-        x: active ? mx : isListCollapsed ? -window.innerWidth * 0.5 : 0, 
+        x: active ? mx : isListCollapsed ? -window.innerWidth * 0.5 + 20 : 0, 
         immediate: active,
         config: { tension: 200, friction: 25 }
       });
     }
   }, {
     axis: 'x',
-    bounds: { left: -window.innerWidth * 0.5, right: 0 },
+    bounds: { left: -window.innerWidth * 0.5 + 20, right: 0 },
     rubberband: true,
     from: () => [x.get(), 0]
   });

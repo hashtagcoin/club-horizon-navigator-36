@@ -47,22 +47,19 @@ export const AnimatedClubList = ({
         className="bg-white shadow-xl"
       >
         <ClubList {...clubListProps} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className={`absolute -right-6 top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100`}
+          onClick={onToggle}
+        >
+          <ChevronLeft 
+            className={`h-6 w-6 transition-transform duration-300 text-black ${
+              isCollapsed ? 'rotate-180' : ''
+            }`}
+          />
+        </Button>
       </animated.div>
-      
-      <Button
-        variant="ghost"
-        size="icon"
-        className={`fixed left-[50%] top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100 ${
-          isCollapsed ? '-translate-x-6' : '-translate-x-6'
-        }`}
-        onClick={onToggle}
-      >
-        <ChevronLeft 
-          className={`h-6 w-6 transition-transform duration-300 text-black ${
-            isCollapsed ? 'rotate-180' : ''
-          }`}
-        />
-      </Button>
     </>
   );
 };
