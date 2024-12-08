@@ -1,5 +1,5 @@
 import { animated, SpringValue } from '@react-spring/web';
-import { UserHandlers } from '@use-gesture/react';
+import { UserGestureConfig } from '@use-gesture/react';
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from 'lucide-react';
 import { ClubList } from './ClubList';
@@ -7,7 +7,7 @@ import { Club } from '@/types/club';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
-  bind: (...args: any[]) => UserHandlers;
+  bind: (...args: any[]) => UserGestureConfig;
   isCollapsed: boolean;
   onToggle: () => void;
   clubs: Club[];

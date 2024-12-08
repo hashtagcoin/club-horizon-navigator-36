@@ -4,14 +4,14 @@ import { UserProfile } from './user-profile';
 import { useLocationManagement } from '@/hooks/useLocationManagement';
 import { useClubData } from '@/hooks/useClubData';
 import { useChatManager } from './chat/ChatManager';
-import { TopBar } from './layout/TopBar';
-import { BottomBar } from './layout/BottomBar';
-import { MapColumn } from './map/MapColumn';
-import { useMapState } from '@/hooks/useMapState';
+import { useMapControls } from '@/hooks/useMapControls';
 import { useClubFilters } from '@/hooks/useClubFilters';
 import { useSpring } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { AnimatedClubList } from './club/AnimatedClubList';
+import { MainLayout } from './layout/MainLayout';
+import { MapView } from './map/MapView';
+import { ChatWindow } from './chat/ChatWindow';
 
 const libraries: Libraries = ['places'];
 
@@ -28,11 +28,7 @@ export default function ClubPilot() {
     libraries
   });
 
-  const {
-    selectedClub,
-    setSelectedClub,
-    directions
-  } = useMapState(isLoaded, userLocation);
+  const mapControls = useMapControls(isLoaded, userLocation);
 
   const {
     sortBy,
@@ -52,7 +48,7 @@ export default function ClubPilot() {
     filterAndSortClubs
   } = useClubFilters();
 
-  const chatManager = useChatManager(selectedClub);
+  const chatManager = useChatManager(mapControls.selectedClub);
 
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
@@ -96,74 +92,99 @@ export default function ClubPilot() {
   const filteredClubs = filterAndSortClubs(clubs);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 text-sm">
-      <TopBar 
+    <MainLayout
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      showHighTraffic={showHighTraffic}
+      setShowHighTraffic={setShowHighTraffic}
+      sortByOpenLate={sortByOpenLate}
+      setSortByOpenLate={setSortByOpenLate}
+      showSpecials={showSpecials}
+      setShowSpecials={setShowSpecials}
+      chatOpen={chatManager.chatOpen}
+      isGeneralChat={chatManager.isGeneralChat}
+      toggleGeneralChat={chatManager.toggleGeneralChat}
+    >
+      <AnimatedClubList
+        x={x}
+        bind={bind}
+        isCollapsed={isListCollapsed}
+        onToggle={toggleList}
+        clubs={filteredClubs}
+        selectedClub={mapControls.selectedClub}
+        selectedDay={selectedDay}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        filterGenre={filterGenre}
+        setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        onSelectClub={(club) => {
+          mapControls.handleClubSelect(club);
+          locationManagement.setMapCenter(club.position);
+          locationManagement.setMapZoom(16);
+        }}
+        onOpenChat={chatManager.openChat}
+        newMessageCounts={chatManager.newMessageCounts}
+        isLoading={isLoadingClubs}
       />
-      
-      <div className="flex flex-1 overflow-hidden relative">
-        <AnimatedClubList
-          x={x}
-          bind={bind}
-          isCollapsed={isListCollapsed}
-          onToggle={toggleList}
+
+      <div 
+        className={`transition-all duration-300 ease-in-out h-full ${
+          isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
+        }`}
+      >
+        <MapView
+          isLoaded={isLoaded}
           clubs={filteredClubs}
-          selectedClub={selectedClub}
+          selectedClub={mapControls.selectedClub}
           selectedDay={selectedDay}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          filterGenre={filterGenre}
-          setFilterGenre={setFilterGenre}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onSelectClub={(club) => {
-            setSelectedClub(club);
+          setSelectedDay={setSelectedDay}
+          mapCenter={locationManagement.mapCenter}
+          mapZoom={locationManagement.mapZoom}
+          userLocation={userLocation}
+          directions={mapControls.directions}
+          onClubSelect={(club) => {
+            mapControls.handleClubSelect(club);
             locationManagement.setMapCenter(club.position);
             locationManagement.setMapZoom(16);
           }}
-          onOpenChat={chatManager.openChat}
-          newMessageCounts={chatManager.newMessageCounts}
-          isLoading={isLoadingClubs}
+          locationManagement={locationManagement}
         />
-
-        <div 
-          className={`transition-all duration-300 ease-in-out h-full ${
-            isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
-          }`}
-        >
-          <MapColumn
-            isLoaded={isLoaded}
-            clubs={filteredClubs}
-            selectedClub={selectedClub}
-            selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
-            mapCenter={locationManagement.mapCenter}
-            mapZoom={locationManagement.mapZoom}
-            userLocation={userLocation}
-            directions={directions}
-            onClubSelect={(club) => {
-              setSelectedClub(club);
-              locationManagement.setMapCenter(club.position);
-              locationManagement.setMapZoom(16);
-            }}
-            locationManagement={locationManagement}
-            chatManager={chatManager}
-          />
-        </div>
       </div>
 
-      <BottomBar
-        showHighTraffic={showHighTraffic}
-        setShowHighTraffic={setShowHighTraffic}
-        sortByOpenLate={sortByOpenLate}
-        setSortByOpenLate={setSortByOpenLate}
-        showSpecials={showSpecials}
-        setShowSpecials={setShowSpecials}
-        chatOpen={chatManager.chatOpen}
-        isGeneralChat={chatManager.isGeneralChat}
-        toggleGeneralChat={chatManager.toggleGeneralChat}
-      />
-    </div>
+      {chatManager.chatOpen && (
+        <ChatWindow
+          isGeneralChat={chatManager.isGeneralChat}
+          chatClub={chatManager.activeClubChat}
+          chatMessage={chatManager.chatMessage}
+          setChatMessage={chatManager.setChatMessage}
+          allMessages={chatManager.allMessages}
+          onClose={() => chatManager.setChatOpen(false)}
+          onSend={chatManager.sendMessage}
+          clubs={clubs}
+          messageOpacities={{}}
+          chatScrollRef={null}
+        />
+      )}
+
+      {clubs.map((club) => 
+        chatManager.clubChats[club.id] && (
+          <ChatWindow
+            key={club.id}
+            isGeneralChat={false}
+            chatClub={club}
+            chatMessage={chatManager.chatMessage}
+            setChatMessage={chatManager.setChatMessage}
+            allMessages={chatManager.getClubMessages(club.id)}
+            onClose={() => chatManager.closeChat(club)}
+            onSend={() => chatManager.sendMessage(club.id)}
+            clubs={clubs}
+            messageOpacities={{}}
+            chatScrollRef={null}
+          />
+        )
+      )}
+    </MainLayout>
   );
 }
