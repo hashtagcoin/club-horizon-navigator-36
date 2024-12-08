@@ -1,13 +1,12 @@
 import { animated, SpringValue } from '@react-spring/web';
-import { UserGestureConfig } from '@use-gesture/react';
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
-  bind: (...args: any[]) => any; // Updated type to be more permissive
+  bind: (...args: any[]) => any;
   isCollapsed: boolean;
   onToggle: () => void;
   clubs: Club[];
@@ -33,32 +32,37 @@ export const AnimatedClubList = ({
   ...clubListProps
 }: AnimatedClubListProps) => {
   return (
-    <animated.div 
-      {...bind()}
-      style={{ 
-        x,
-        width: '50%',
-        position: 'absolute',
-        height: '100%',
-        touchAction: 'none',
-        zIndex: 40,
-        transform: x.to(x => `translateX(${x}px)`)
-      }}
-      className="bg-white shadow-xl"
-    >
-      <ClubList {...clubListProps} />
+    <>
+      <animated.div 
+        {...bind()}
+        style={{ 
+          x,
+          width: '50%',
+          position: 'absolute',
+          height: '100%',
+          touchAction: 'none',
+          zIndex: 40,
+          transform: x.to(x => `translateX(${x}px)`)
+        }}
+        className="bg-white shadow-xl"
+      >
+        <ClubList {...clubListProps} />
+      </animated.div>
+      
       <Button
         variant="default"
         size="icon"
-        className={`fixed left-[50%] top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full p-2 z-50 transition-all duration-300 hover:bg-gray-100 ${
-          isCollapsed ? 'translate-x-[-24px]' : 'translate-x-[-12px]'
+        className={`fixed left-[50%] top-4 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100 ${
+          isCollapsed ? '-translate-x-6' : '-translate-x-6'
         }`}
         onClick={onToggle}
       >
-        <ChevronRight className={`h-6 w-6 transition-transform duration-300 ${
-          isCollapsed ? '' : 'rotate-180'
-        }`} />
+        <ChevronLeft 
+          className={`h-6 w-6 transition-transform duration-300 ${
+            isCollapsed ? 'rotate-180' : ''
+          }`}
+        />
       </Button>
-    </animated.div>
+    </>
   );
 };
