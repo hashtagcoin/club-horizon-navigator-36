@@ -7,7 +7,7 @@ import { Club } from '@/types/club';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
-  bind: (...args: any[]) => UserGestureConfig;
+  bind: (...args: any[]) => any; // Updated type to be more permissive
   isCollapsed: boolean;
   onToggle: () => void;
   clubs: Club[];
