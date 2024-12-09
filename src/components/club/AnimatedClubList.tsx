@@ -37,7 +37,7 @@ export const AnimatedClubList = ({
         {...bind()}
         style={{ 
           x,
-          width: '25%',
+          width: '50%',
           position: 'absolute',
           height: '100%',
           touchAction: isCollapsed ? 'none' : 'pan-x',
@@ -50,11 +50,11 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute -right-6 top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg rounded-full p-2 transition-all duration-300 hover:bg-gray-100`}
+          className={`absolute -right-10 top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
           onClick={onToggle}
         >
           <ChevronLeft 
-            className={`h-6 w-6 transition-transform duration-300 text-black ${
+            className={`h-6 w-6 transition-transform duration-300 text-gray-600 ${
               isCollapsed ? 'rotate-180' : ''
             }`}
           />
