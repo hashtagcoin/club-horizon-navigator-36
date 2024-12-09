@@ -32,7 +32,7 @@ export const AnimatedClubList = ({
   ...clubListProps
 }: AnimatedClubListProps) => {
   return (
-    <>
+    <div className="relative h-full">
       <animated.div 
         {...bind()}
         style={{ 
@@ -42,24 +42,25 @@ export const AnimatedClubList = ({
           height: '100%',
           touchAction: isCollapsed ? 'none' : 'pan-x',
           zIndex: 40,
-          transform: x.to(x => `translateX(${x}px)`)
         }}
         className="bg-white shadow-xl"
       >
         <ClubList {...clubListProps} />
-        <Button
-          variant="ghost"
-          size="icon"
-          className={`absolute -right-10 top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
-          onClick={onToggle}
-        >
-          <ChevronLeft 
-            className={`h-6 w-6 transition-transform duration-300 text-gray-600 ${
-              isCollapsed ? 'rotate-180' : ''
-            }`}
-          />
-        </Button>
       </animated.div>
-    </>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={`fixed left-[calc(50%-10px)] top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300 ${
+          isCollapsed ? 'translate-x-[-40px]' : ''
+        }`}
+        onClick={onToggle}
+      >
+        <ChevronLeft 
+          className={`h-6 w-6 transition-transform duration-300 text-gray-600 ${
+            isCollapsed ? 'rotate-180' : ''
+          }`}
+        />
+      </Button>
+    </div>
   );
 };
