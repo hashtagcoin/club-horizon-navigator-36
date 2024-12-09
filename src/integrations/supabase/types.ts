@@ -81,6 +81,165 @@ export type Database = {
         }
         Relationships: []
       }
+      club_cards_duplicate: {
+        Row: {
+          address: string | null
+          area: string | null
+          friday_hours: string | null
+          id: number
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          monday_hours: string | null
+          name: string | null
+          phone: string | null
+          place_id: string | null
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          sunday_hours: string | null
+          thursday_hours: string | null
+          traffic: string | null
+          tuesday_hours: string | null
+          venue_type: string | null
+          website: string | null
+          wednesday_hours: string | null
+        }
+        Insert: {
+          address?: string | null
+          area?: string | null
+          friday_hours?: string | null
+          id?: number
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          monday_hours?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string | null
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          sunday_hours?: string | null
+          thursday_hours?: string | null
+          traffic?: string | null
+          tuesday_hours?: string | null
+          venue_type?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+        }
+        Update: {
+          address?: string | null
+          area?: string | null
+          friday_hours?: string | null
+          id?: number
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          monday_hours?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string | null
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          sunday_hours?: string | null
+          thursday_hours?: string | null
+          traffic?: string | null
+          tuesday_hours?: string | null
+          venue_type?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+        }
+        Relationships: []
+      }
+      club_lIst_Sydney: {
+        Row: {
+          address: string | null
+          area: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          name: string | null
+          phone: string | null
+          place_id: string | null
+          price_level: number | null
+          rating: number | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type: string | null
+          website: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          area?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string | null
+          price_level?: number | null
+          rating?: number | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type?: string | null
+          website?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          area?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string | null
+          price_level?: number | null
+          rating?: number | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type?: string | null
+          website?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

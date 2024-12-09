@@ -37,7 +37,7 @@ export const AnimatedClubList = ({
         {...bind()}
         style={{ 
           x,
-          width: '50%',
+          width: '25%',
           position: 'absolute',
           height: '100%',
           touchAction: isCollapsed ? 'none' : 'pan-x',
