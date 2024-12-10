@@ -32,7 +32,7 @@ export function MapView({
 }: MapViewProps) {
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
-      <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
+      <div className="absolute top-2 right-2 z-[60] flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
