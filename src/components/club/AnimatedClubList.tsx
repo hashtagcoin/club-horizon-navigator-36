@@ -47,10 +47,19 @@ export const AnimatedClubList = ({
         className="bg-white shadow-xl"
       >
         <ClubList {...clubListProps} />
+      </animated.div>
+      <animated.div
+        style={{
+          x,
+          position: 'absolute',
+          zIndex: 50,
+          transform: x.to(x => `translateX(${x}px)`),
+        }}
+      >
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute -right-10 top-1/2 -translate-y-1/2 z-50 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
+          className={`absolute left-[100%] top-1/2 -translate-y-1/2 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
           onClick={onToggle}
         >
           <ChevronLeft 
