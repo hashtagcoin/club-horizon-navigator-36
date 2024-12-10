@@ -34,12 +34,12 @@ export function ChatWindow({
     if (isGeneralChat) {
       return {
         left: '16px',
-        bottom: '16px',
+        bottom: '72px', // Adjusted to account for bottom nav bar height
       };
     } else {
       return {
         right: '16px',
-        bottom: '16px',
+        bottom: '72px', // Adjusted to account for bottom nav bar height
       };
     }
   };
