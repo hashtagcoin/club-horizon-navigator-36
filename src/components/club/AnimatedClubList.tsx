@@ -50,7 +50,7 @@ export const AnimatedClubList = ({
       </animated.div>
       <animated.div
         style={{
-          x,
+          x: x.to(x => x + (isCollapsed ? 0 : window.innerWidth * 0.5 - 40)),
           position: 'absolute',
           zIndex: 50,
           transform: x.to(x => `translateX(${x}px)`),
@@ -59,7 +59,7 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute left-[100%] top-1/2 -translate-y-1/2 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
+          className={`absolute top-1/2 -translate-y-1/2 bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300`}
           onClick={onToggle}
         >
           <ChevronLeft 
