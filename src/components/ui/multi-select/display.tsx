@@ -1,21 +1,36 @@
-import React from 'react';
+import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, XIcon } from 'lucide-react';
+import { XCircle, XIcon, ChevronDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { multiSelectVariants } from "./styles";
+import { MultiSelectOption } from "./types";
 
-interface MultiSelectDisplayProps {
+interface DisplayProps {
   selectedValues: string[];
-  options: { label: string; value: string }[];
+  options: MultiSelectOption[];
   placeholder: string;
+  maxCount: number;
+  variant?: "default" | "secondary" | "destructive" | "inverted";
+  isAnimating?: boolean;
+  animation?: number;
   onClear: () => void;
+  onToggleOption: (value: string) => void;
+  onClearExtra: () => void;
 }
 
 export const MultiSelectDisplay = ({
   selectedValues,
   options,
   placeholder,
-  onClear
-}: MultiSelectDisplayProps) => {
+  maxCount,
+  variant,
+  isAnimating,
+  animation,
+  onClear,
+  onToggleOption,
+  onClearExtra,
+}: DisplayProps) => {
   const getDisplayText = () => {
     if (selectedValues.length === 0) {
       return placeholder;
