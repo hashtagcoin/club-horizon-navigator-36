@@ -64,14 +64,6 @@ export function MapView({
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-[999] flex flex-col items-end space-y-2">
-        <div className="bg-white p-2 rounded-lg shadow-md flex items-center space-x-2">
-          <Switch
-            id="show-selected"
-            checked={showSelectedOnly}
-            onCheckedChange={setShowSelectedOnly}
-          />
-          <Label htmlFor="show-selected" className="text-sm">Show selected club only</Label>
-        </div>
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
@@ -80,7 +72,7 @@ export function MapView({
         />
       </div>
       
-      <div className="flex-grow h-full">
+      <div className="flex-grow h-full relative">
         <ClubMap
           isLoaded={isLoaded}
           clubs={displayedClubs}
@@ -90,6 +82,14 @@ export function MapView({
           directions={directionsResult}
           onClubSelect={onClubSelect}
         />
+        <div className="absolute bottom-24 left-2 z-[999] bg-white p-2 rounded-lg shadow-md flex items-center space-x-2">
+          <Switch
+            id="show-selected"
+            checked={showSelectedOnly}
+            onCheckedChange={setShowSelectedOnly}
+          />
+          <Label htmlFor="show-selected" className="text-sm whitespace-nowrap">Show selected only</Label>
+        </div>
       </div>
     </div>
   );
