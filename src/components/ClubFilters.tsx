@@ -40,7 +40,7 @@ export function ClubFilters({
     <div className="mb-2 flex justify-between">
       <Select value={sortBy} onValueChange={setSortBy}>
         <SelectTrigger className="w-[180px] h-7 text-xs">
-          <SelectValue placeholder="Sort by" />
+          <SelectValue placeholder="Sort By" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="usersAtClub">Users at Club</SelectItem>
