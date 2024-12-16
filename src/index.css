@@ -48,32 +48,8 @@
   @apply animate-fade-in;
 }
 
-@keyframes gradient-border {
-  0% {
-    border-image: linear-gradient(45deg, #ff0000, #ff8000) 1;
-  }
-  20% {
-    border-image: linear-gradient(45deg, #ff8000, #ffff00) 1;
-  }
-  40% {
-    border-image: linear-gradient(45deg, #ffff00, #00ff00) 1;
-  }
-  60% {
-    border-image: linear-gradient(45deg, #00ff00, #0000ff) 1;
-  }
-  80% {
-    border-image: linear-gradient(45deg, #0000ff, #8000ff) 1;
-  }
-  100% {
-    border-image: linear-gradient(45deg, #8000ff, #ff0000) 1;
-  }
-}
-
 .selected-club-card {
-  border-width: 4px;
-  border-style: solid;
-  border-radius: 1rem;
-  animation: gradient-border 6s linear infinite;
+  @apply border-2 border-black rounded-xl;
 }
 
 @keyframes fade-in {
