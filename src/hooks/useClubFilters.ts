@@ -3,7 +3,7 @@ import { Club } from '@/types/club';
 import { sortClubs } from '@/utils/sortClubs';
 
 export function useClubFilters() {
-  const [sortBy, setSortBy] = useState("usersAtClub");
+  const [sortBy, setSortBy] = useState("closest");
   const [filterGenre, setFilterGenre] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showHighTraffic, setShowHighTraffic] = useState(false);
@@ -16,7 +16,7 @@ export function useClubFilters() {
     setSelectedDay(today);
   }, []);
 
-  const filterAndSortClubs = (clubs: Club[]) => {
+  const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
     let filtered = clubs
       .filter(club => filterGenre === "All" || club.genre === filterGenre)
       .filter(club => club.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -35,7 +35,7 @@ export function useClubFilters() {
       });
     }
 
-    return sortClubs(filtered, sortBy);
+    return sortClubs(filtered, sortBy, userLocation);
   };
 
   return {

@@ -43,6 +43,7 @@ export function ClubFilters({
           <SelectValue placeholder="Sort By" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="closest">Closest</SelectItem>
           <SelectItem value="usersAtClub">Users at Club</SelectItem>
           <SelectItem value="traffic">Traffic</SelectItem>
           <SelectItem value="alphabetical">Alphabetical</SelectItem>

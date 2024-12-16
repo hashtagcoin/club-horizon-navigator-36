@@ -1,9 +1,44 @@
 import { Club } from '@/types/club';
 
-export const sortClubs = (clubs: Club[], sortBy: string) => {
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
+
+export const sortClubs = (clubs: Club[], sortBy: string, userLocation?: { lat: number; lng: number }) => {
   const clubsCopy = [...clubs];
 
   switch (sortBy) {
+    case 'closest':
+      if (!userLocation) return clubsCopy;
+      return clubsCopy.sort((a, b) => {
+        const distanceA = calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          a.position.lat,
+          a.position.lng
+        );
+        const distanceB = calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          b.position.lat,
+          b.position.lng
+        );
+        return distanceA - distanceB;
+      });
+
     case 'alphabetical':
       return clubsCopy.sort((a, b) => a.name.localeCompare(b.name));
     

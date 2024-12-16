@@ -89,7 +89,7 @@ export default function ClubPilot() {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
   }
 
-  const filteredClubs = filterAndSortClubs(clubs);
+  const filteredClubs = filterAndSortClubs(clubs, userLocation);
 
   return (
     <MainLayout
