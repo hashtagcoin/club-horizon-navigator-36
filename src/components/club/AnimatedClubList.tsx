@@ -1,6 +1,6 @@
 import { animated, SpringValue } from '@react-spring/web';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Maximize2 } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
 
@@ -48,6 +48,8 @@ export const AnimatedClubList = ({
       >
         <ClubList {...clubListProps} />
       </animated.div>
+
+      {/* Minimize button */}
       <animated.div
         style={{
           x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5 - 40)),
@@ -56,6 +58,8 @@ export const AnimatedClubList = ({
           left: 0,
           zIndex: 50,
           transform: x.to(x => `translateX(${x}px)`),
+          opacity: isCollapsed ? 0 : 1,
+          pointerEvents: isCollapsed ? 'none' : 'auto',
         }}
       >
         <Button
@@ -71,6 +75,30 @@ export const AnimatedClubList = ({
           />
         </Button>
       </animated.div>
+
+      {/* Maximize button - only visible when collapsed */}
+      <div
+        style={{
+          position: 'fixed',
+          top: '50vh',
+          left: 0,
+          zIndex: 50,
+          opacity: isCollapsed ? 1 : 0,
+          pointerEvents: isCollapsed ? 'auto' : 'none',
+          transition: 'opacity 0.3s ease-in-out',
+        }}
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
+          onClick={onToggle}
+        >
+          <Maximize2 
+            className="h-6 w-6 text-gray-600"
+          />
+        </Button>
+      </div>
     </>
   );
 };
