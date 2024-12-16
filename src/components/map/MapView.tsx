@@ -3,6 +3,8 @@ import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -32,6 +34,7 @@ export function MapView({
   locationManagement,
 }: MapViewProps) {
   const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
 
   useEffect(() => {
     if (isLoaded && userLocation && selectedClub) {
@@ -54,9 +57,21 @@ export function MapView({
     }
   }, [isLoaded, userLocation, selectedClub]);
 
+  const displayedClubs = showSelectedOnly && selectedClub
+    ? [selectedClub]
+    : clubs;
+
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-[999] flex flex-col items-end space-y-2">
+        <div className="bg-white p-2 rounded-lg shadow-md flex items-center space-x-2">
+          <Switch
+            id="show-selected"
+            checked={showSelectedOnly}
+            onCheckedChange={setShowSelectedOnly}
+          />
+          <Label htmlFor="show-selected" className="text-sm">Show selected club only</Label>
+        </div>
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
@@ -68,7 +83,7 @@ export function MapView({
       <div className="flex-grow h-full">
         <ClubMap
           isLoaded={isLoaded}
-          clubs={clubs}
+          clubs={displayedClubs}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}
