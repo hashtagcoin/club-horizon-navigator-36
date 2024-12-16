@@ -16,7 +16,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { MultiSelectProps } from "./types";
+import { MultiSelectProps, MultiSelectOption } from "./types";
 import { MultiSelectDisplay } from "./display";
 
 export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
@@ -30,6 +30,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       modalPopover = false,
       className,
       showSelectAll = false,
+      maxCount = 3,
       ...props
     },
     ref
@@ -61,18 +62,16 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     };
 
     return (
-      <Popover
-        open={isPopoverOpen}
-        onOpenChange={setIsPopoverOpen}
-        modal={modalPopover}
-      >
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen} modal={modalPopover}>
         <PopoverTrigger asChild>
           <Button
             ref={ref}
             {...props}
-            onClick={() => setIsPopoverOpen(true)}
+            variant="outline"
+            role="combobox"
+            aria-expanded={isPopoverOpen}
             className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+              "w-full justify-between",
               className
             )}
           >
@@ -80,6 +79,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               selectedValues={selectedValues}
               options={options}
               placeholder={placeholder}
+              maxCount={maxCount}
+              variant={variant}
+              onClear={handleClear}
             />
           </Button>
         </PopoverTrigger>
@@ -132,14 +134,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 })}
               </CommandGroup>
               <CommandSeparator />
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => setIsPopoverOpen(false)}
-                  className="justify-center cursor-pointer"
-                >
-                  Close
-                </CommandItem>
-              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
