@@ -27,10 +27,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       variant,
       defaultValue = [],
       placeholder = "Select options",
-      animation = 0,
-      maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       showSelectAll = false,
       ...props
@@ -94,16 +91,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               selectedValues={selectedValues}
               options={options}
               placeholder={placeholder}
-              maxCount={maxCount}
-              variant={variant}
-              animation={animation}
-              onClear={handleClear}
-              onToggleOption={toggleOption}
-              onClearExtra={() => {
-                const newSelectedValues = selectedValues.slice(0, maxCount);
-                setSelectedValues(newSelectedValues);
-                onValueChange(newSelectedValues);
-              }}
             />
           </Button>
         </PopoverTrigger>
