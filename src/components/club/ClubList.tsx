@@ -49,6 +49,11 @@ export const ClubList: FC<ClubListProps> = ({
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
+      <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
+        <span className="text-sm font-medium text-gray-600">
+          {clubs.length} {clubs.length === 1 ? 'Club' : 'Clubs'}
+        </span>
+      </div>
       <ClubFilters
         sortBy={sortBy}
         setSortBy={setSortBy}

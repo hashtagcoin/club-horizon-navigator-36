@@ -17,12 +17,23 @@ export function useClubFilters() {
   }, []);
 
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
-    let filtered = clubs
-      .filter(club => filterGenre === "All" || club.genre === filterGenre)
-      .filter(club => club.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      .filter(club => !showHighTraffic || club.traffic === "High")
-      .filter(club => !showSpecials || club.hasSpecial);
+    let filtered = [...clubs]; // Start with all clubs
 
+    // Apply filters only if they're set
+    if (filterGenre !== "All") {
+      filtered = filtered.filter(club => club.genre === filterGenre);
+    }
+    if (searchQuery) {
+      filtered = filtered.filter(club => 
+        club.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    if (showHighTraffic) {
+      filtered = filtered.filter(club => club.traffic === "High");
+    }
+    if (showSpecials) {
+      filtered = filtered.filter(club => club.hasSpecial);
+    }
     if (sortByOpenLate) {
       filtered = filtered.filter(club => {
         const hours = club.openingHours[selectedDay];
