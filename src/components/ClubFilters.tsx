@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search } from 'lucide-react'
 import { Toggle } from "@/components/ui/toggle"
 import {
   Select,
@@ -13,10 +11,8 @@ import {
 interface ClubFiltersProps {
   sortBy: string;
   setSortBy: (value: string) => void;
-  filterGenre: string[];  // Changed to array
-  setFilterGenre: (value: string[]) => void;  // Changed to array
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
+  filterGenre: string[];
+  setFilterGenre: (value: string[]) => void;
   genres: string[];
 }
 
@@ -25,8 +21,6 @@ export function ClubFilters({
   setSortBy,
   filterGenre,
   setFilterGenre,
-  searchQuery,
-  setSearchQuery,
   genres
 }: ClubFiltersProps) {
   // Function to format type strings
@@ -67,17 +61,6 @@ export function ClubFilters({
             <SelectItem value="openingHours">Opening Hours</SelectItem>
           </SelectContent>
         </Select>
-        
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search clubs..."
-            className="pl-7 w-48 h-7 text-xs"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
