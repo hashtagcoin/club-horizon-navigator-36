@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Button } from "@/components/ui/button";
-import { Zap, Moon, MessageCircle, Smile } from 'lucide-react';
+import { Zap, Moon, MessageCircle, Smile, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface BottomBarProps {
@@ -60,6 +60,13 @@ export const BottomBar: FC<BottomBarProps> = ({
         >
           <Smile className="h-5 w-5" />
           <span className="text-[0.6rem] mt-0.5">Offers</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className="flex flex-col items-center h-12 w-16"
+        >
+          <Users className="h-5 w-5" />
+          <span className="text-[0.6rem] mt-0.5">Friends</span>
         </Button>
       </div>
     </div>
