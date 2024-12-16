@@ -42,3 +42,16 @@ export const locations = {
     },
   },
 };
+
+export const genres = [
+  "Nightclub",
+  "Bar",
+  "Lounge",
+  "Pub",
+  "Live Music Venue",
+  "Dance Club",
+  "Sports Bar",
+  "Karaoke Bar",
+  "Cocktail Bar",
+  "Wine Bar"
+];
