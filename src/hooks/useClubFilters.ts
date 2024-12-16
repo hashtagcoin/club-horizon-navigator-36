@@ -17,23 +17,28 @@ export function useClubFilters() {
   }, []);
 
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
-    let filtered = [...clubs]; // Start with all clubs
+    let filtered = [...clubs];
 
-    // Apply filters only if they're set
+    // Apply filters
     if (filterGenre !== "All") {
       filtered = filtered.filter(club => club.genre === filterGenre);
     }
+    
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(club => 
-        club.name.toLowerCase().includes(searchQuery.toLowerCase())
+        club.name.toLowerCase().includes(query)
       );
     }
+    
     if (showHighTraffic) {
       filtered = filtered.filter(club => club.traffic === "High");
     }
+    
     if (showSpecials) {
       filtered = filtered.filter(club => club.hasSpecial);
     }
+    
     if (sortByOpenLate) {
       filtered = filtered.filter(club => {
         const hours = club.openingHours[selectedDay];

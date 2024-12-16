@@ -24,16 +24,16 @@ export function ClubFilters({
 }: ClubFiltersProps) {
   // Function to format type strings
   const formatType = (type: string) => {
+    if (!type) return '';
     return type
-      .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
 
   // Sort and format genres
   const sortedTypes = [...genres]
-    .map(type => formatType(type))
+    .filter(type => type) // Filter out null/undefined values
     .sort((a, b) => a.localeCompare(b));
 
   return (
@@ -60,7 +60,7 @@ export function ClubFilters({
           <SelectContent>
             <SelectItem value="All">All Types</SelectItem>
             {sortedTypes.map(type => (
-              <SelectItem key={type} value={type}>{type}</SelectItem>
+              <SelectItem key={type} value={type}>{formatType(type)}</SelectItem>
             ))}
           </SelectContent>
         </Select>
