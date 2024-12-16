@@ -5,6 +5,7 @@ import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { EyeOff } from "lucide-react";
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -82,13 +83,14 @@ export function MapView({
           directions={directionsResult}
           onClubSelect={onClubSelect}
         />
-        <div className="absolute bottom-24 left-2 z-[999] bg-white p-2 rounded-lg shadow-md flex items-center space-x-2">
+        <div className="absolute bottom-8 left-2 z-[999] bg-white/90 rounded-lg shadow-md flex items-center gap-1 p-1">
+          <EyeOff className="h-3 w-3" />
           <Switch
             id="show-selected"
             checked={showSelectedOnly}
             onCheckedChange={setShowSelectedOnly}
+            className="scale-75"
           />
-          <Label htmlFor="show-selected" className="text-sm whitespace-nowrap">Show selected only</Label>
         </div>
       </div>
     </div>
