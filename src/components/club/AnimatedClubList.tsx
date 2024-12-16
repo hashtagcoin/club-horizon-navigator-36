@@ -52,10 +52,9 @@ export const AnimatedClubList = ({
       {/* Minimize button */}
       <animated.div
         style={{
-          x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5 - 40)),
+          x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5)),
           position: 'fixed',
           top: '50vh',
-          left: '8px', // Added 8px offset
           zIndex: 50,
           transform: x.to(x => `translateX(${x}px)`),
           opacity: isCollapsed ? 0 : 1,
@@ -65,11 +64,11 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
+          className="bg-white shadow-lg h-20 w-10 rounded-l-xl border-l border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
           onClick={onToggle}
         >
           <ChevronLeft 
-            className={`h-6 w-6 transition-transform duration-300 text-gray-600`}
+            className="h-6 w-6 transition-transform duration-300 text-gray-600 rotate-180"
           />
         </Button>
       </animated.div>
@@ -79,7 +78,7 @@ export const AnimatedClubList = ({
         style={{
           position: 'fixed',
           top: '50vh',
-          left: '8px', // Added 8px offset
+          left: 0,
           zIndex: 50,
           opacity: isCollapsed ? 1 : 0,
           pointerEvents: isCollapsed ? 'auto' : 'none',
@@ -93,7 +92,7 @@ export const AnimatedClubList = ({
           onClick={onToggle}
         >
           <ChevronLeft 
-            className="h-6 w-6 text-gray-600 rotate-180"
+            className="h-6 w-6 text-gray-600"
           />
         </Button>
       </div>
