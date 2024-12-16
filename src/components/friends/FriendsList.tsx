@@ -43,7 +43,8 @@ export function FriendsList({
           last_seen
         )
       `)
-      .eq('user_id', user.id);
+      .eq('user_id', user.id)
+      .eq('status', 'accepted');
 
     // Then get friends where the user is the recipient
     const { data: receivedFriends, error: receivedError } = await supabase
@@ -59,7 +60,8 @@ export function FriendsList({
           last_seen
         )
       `)
-      .eq('friend_id', user.id);
+      .eq('friend_id', user.id)
+      .eq('status', 'accepted');
 
     if (sentError || receivedError) {
       toast({
@@ -73,9 +75,9 @@ export function FriendsList({
     const allFriends = [
       ...(sentFriends || []),
       ...(receivedFriends || [])
-    ].filter(friend => friend.status === 'accepted');
+    ];
 
-    setFriends(allFriends);
+    setFriends(allFriends as Friend[]);
   };
 
   const subscribeToPresence = () => {
@@ -123,8 +125,6 @@ export function FriendsList({
     onStartGroupChat(selectedFriends, chatName);
     setSelectedFriends([]);
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed bottom-16 left-4 w-80 bg-background border rounded-lg shadow-lg p-4 z-50">
