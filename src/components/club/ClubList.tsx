@@ -10,8 +10,8 @@ interface ClubListProps {
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
-  filterGenre: string[];  // Changed to array
-  setFilterGenre: (value: string[]) => void;  // Changed to array
+  filterGenre: string[];
+  setFilterGenre: (value: string[]) => void;
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   onSelectClub: (club: Club) => void;
@@ -64,8 +64,6 @@ export const ClubList: FC<ClubListProps> = ({
         setSortBy={setSortBy}
         filterGenre={filterGenre}
         setFilterGenre={setFilterGenre}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         genres={genres}
       />
       <ScrollArea className="flex-grow">
