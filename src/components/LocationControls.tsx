@@ -29,7 +29,7 @@ export function LocationControls({
     <div className="space-y-2">
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
         <DialogTrigger asChild>
-          <h2 className="text-2xl font-bold text-primary cursor-pointer bg-white rounded-lg px-3 py-1 shadow-sm inline-block">
+          <h2 className="text-2xl font-bold text-white bg-black cursor-pointer rounded-lg px-3 py-1 shadow-sm inline-block">
             {currentSuburb}
           </h2>
         </DialogTrigger>

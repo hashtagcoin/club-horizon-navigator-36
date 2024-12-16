@@ -50,9 +50,14 @@ export const ClubList: FC<ClubListProps> = ({
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
       <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
-        <span className="text-sm font-medium text-gray-600">
-          {clubs.length} {clubs.length === 1 ? 'Club' : 'Clubs'}
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="bg-black text-white px-3 py-1 rounded-lg">
+            {clubs.length}
+          </div>
+          <span className="text-sm font-medium text-gray-600">
+            {clubs.length === 1 ? 'Venue' : 'Venues'}
+          </span>
+        </div>
       </div>
       <ClubFilters
         sortBy={sortBy}
@@ -66,7 +71,7 @@ export const ClubList: FC<ClubListProps> = ({
       <ScrollArea className="flex-grow">
         <div className="space-y-2 pr-2">
           {isLoading ? (
-            <div>Loading clubs...</div>
+            <div>Loading venues...</div>
           ) : (
             clubs.map(club => (
               <div 
