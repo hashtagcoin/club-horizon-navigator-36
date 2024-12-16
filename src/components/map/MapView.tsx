@@ -4,7 +4,6 @@ import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { EyeOff } from "lucide-react";
 
 interface MapViewProps {
@@ -36,11 +35,16 @@ export function MapView({
 }: MapViewProps) {
   const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [calculatedBounds, setCalculatedBounds] = useState<google.maps.LatLngBounds | null>(null);
 
   useEffect(() => {
     if (isLoaded && userLocation && selectedClub) {
-      const directionsService = new google.maps.DirectionsService();
+      const bounds = new google.maps.LatLngBounds();
+      bounds.extend(userLocation);
+      bounds.extend(selectedClub.position);
+      setCalculatedBounds(bounds);
 
+      const directionsService = new google.maps.DirectionsService();
       directionsService.route(
         {
           origin: userLocation,
@@ -55,6 +59,8 @@ export function MapView({
           }
         }
       );
+    } else {
+      setCalculatedBounds(null);
     }
   }, [isLoaded, userLocation, selectedClub]);
 
@@ -82,6 +88,7 @@ export function MapView({
           userLocation={userLocation}
           directions={directionsResult}
           onClubSelect={onClubSelect}
+          calculatedBounds={calculatedBounds}
         />
         <div className="absolute bottom-8 left-2 z-[999] bg-white/90 rounded-lg shadow-md flex items-center gap-1 p-1">
           <EyeOff className="h-3 w-3" />

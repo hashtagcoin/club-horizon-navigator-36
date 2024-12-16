@@ -9,6 +9,7 @@ interface ClubMapProps {
   userLocation: google.maps.LatLngLiteral | null;
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
+  calculatedBounds: google.maps.LatLngBounds | null;
 }
 
 export const ClubMap = ({
@@ -18,7 +19,8 @@ export const ClubMap = ({
   mapZoom,
   userLocation,
   directions,
-  onClubSelect
+  onClubSelect,
+  calculatedBounds
 }: ClubMapProps) => {
   if (!isLoaded) return <div>Loading map...</div>;
 
@@ -110,6 +112,13 @@ export const ClubMap = ({
       center={mapCenter}
       zoom={mapZoom}
       options={mapOptions}
+      onLoad={map => {
+        if (calculatedBounds) {
+          map.fitBounds(calculatedBounds, {
+            padding: { top: 50, right: 50, bottom: 50, left: 50 }
+          });
+        }
+      }}
     >
       {clubs?.map((club) => (
         <Marker
