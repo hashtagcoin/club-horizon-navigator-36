@@ -1,6 +1,6 @@
 import { animated, SpringValue } from '@react-spring/web';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Maximize2 } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
 
@@ -69,9 +69,7 @@ export const AnimatedClubList = ({
           onClick={onToggle}
         >
           <ChevronLeft 
-            className={`h-6 w-6 transition-transform duration-300 text-gray-600 ${
-              isCollapsed ? 'rotate-180' : ''
-            }`}
+            className={`h-6 w-6 transition-transform duration-300 text-gray-600`}
           />
         </Button>
       </animated.div>
@@ -94,8 +92,8 @@ export const AnimatedClubList = ({
           className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
           onClick={onToggle}
         >
-          <Maximize2 
-            className="h-6 w-6 text-gray-600"
+          <ChevronLeft 
+            className="h-6 w-6 text-gray-600 rotate-180"
           />
         </Button>
       </div>
