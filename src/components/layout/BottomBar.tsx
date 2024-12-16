@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Zap, Moon, MessageCircle, Smile, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FriendsList } from '../friends/FriendsList';
 
 interface BottomBarProps {
   showHighTraffic: boolean;
@@ -25,6 +26,17 @@ export const BottomBar: FC<BottomBarProps> = ({
   toggleGeneralChat
 }) => {
   const navigate = useNavigate();
+  const [showFriendsList, setShowFriendsList] = useState(false);
+
+  const handleStartChat = (friendId: string) => {
+    // Handle starting a private chat
+    console.log('Starting chat with friend:', friendId);
+  };
+
+  const handleStartGroupChat = (members: string[], name: string) => {
+    // Handle starting a group chat
+    console.log('Starting group chat:', { members, name });
+  };
 
   return (
     <div className="bg-primary text-primary-foreground p-2">
@@ -62,13 +74,21 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Offers</span>
         </Button>
         <Button
-          variant="ghost"
+          variant={showFriendsList ? "default" : "ghost"}
           className="flex flex-col items-center h-12 w-16"
+          onClick={() => setShowFriendsList(!showFriendsList)}
         >
           <Users className="h-5 w-5" />
           <span className="text-[0.6rem] mt-0.5">Friends</span>
         </Button>
       </div>
+
+      <FriendsList
+        isOpen={showFriendsList}
+        onClose={() => setShowFriendsList(false)}
+        onStartChat={handleStartChat}
+        onStartGroupChat={handleStartGroupChat}
+      />
     </div>
   );
 };
