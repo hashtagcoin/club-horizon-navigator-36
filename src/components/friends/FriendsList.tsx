@@ -36,7 +36,7 @@ export function FriendsList({
         id,
         friend_id,
         status,
-        profile:profiles!friend_id(
+        profile:profiles!friends_friend_id_fkey(
           username,
           avatar_url,
           favorite_club,
@@ -53,7 +53,7 @@ export function FriendsList({
         id,
         friend_id,
         status,
-        profile:profiles!user_id(
+        profile:profiles!friends_friend_id_fkey(
           username,
           avatar_url,
           favorite_club,
@@ -125,6 +125,8 @@ export function FriendsList({
     onStartGroupChat(selectedFriends, chatName);
     setSelectedFriends([]);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed bottom-16 left-4 w-80 bg-background border rounded-lg shadow-lg p-4 z-50">
