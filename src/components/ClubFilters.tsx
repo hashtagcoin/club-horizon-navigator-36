@@ -37,7 +37,7 @@ export function ClubFilters({
         <MultiSelect
           options={options(genres)}
           onValueChange={setFilterGenre}
-          defaultValue={genres}
+          defaultValue={filterGenre}
           placeholder="Select venue types"
           maxCount={3}
           className="w-full"

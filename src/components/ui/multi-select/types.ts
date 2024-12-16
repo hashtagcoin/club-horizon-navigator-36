@@ -17,4 +17,5 @@ export interface MultiSelectProps
   modalPopover?: boolean;
   className?: string;
   showSelectAll?: boolean;
+  maxCount?: number;
 }
