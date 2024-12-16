@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface ClubFiltersProps {
   sortBy: string;
@@ -47,43 +41,35 @@ export function ClubFilters({
 
   return (
     <div className="mb-2 space-y-4">
-      <div className="flex justify-between">
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-[180px] h-7 text-xs">
-            <SelectValue placeholder="Sort By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="closest">Closest</SelectItem>
-            <SelectItem value="usersAtClub">Users at Club</SelectItem>
-            <SelectItem value="traffic">Traffic</SelectItem>
-            <SelectItem value="alphabetical">Alphabetical</SelectItem>
-            <SelectItem value="genre">Type</SelectItem>
-            <SelectItem value="openingHours">Opening Hours</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        <Toggle
-          pressed={filterGenre.length === 0}
-          onPressedChange={() => setFilterGenre([])}
-          size="sm"
-          className="text-xs h-7"
+      <div className="flex justify-between items-center">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => setFilterGenre([])}
+          className={`text-xs h-7 ${filterGenre.length === 0 ? 'bg-black text-white hover:bg-black/90' : ''}`}
         >
           All Types
-        </Toggle>
-        {sortedTypes.map(type => (
-          <Toggle
-            key={type}
-            pressed={filterGenre.includes(type)}
-            onPressedChange={() => handleGenreToggle(type)}
-            size="sm"
-            className="text-xs h-7"
-          >
-            {formatType(type)}
-          </Toggle>
-        ))}
+        </Button>
+        <div className="text-xs text-muted-foreground">
+          {filterGenre.length} selected
+        </div>
       </div>
+
+      <ScrollArea className="h-[120px] w-full rounded-md border p-2">
+        <div className="grid grid-cols-2 gap-2 pr-4 md:grid-cols-3">
+          {sortedTypes.map(type => (
+            <Toggle
+              key={type}
+              pressed={filterGenre.includes(type)}
+              onPressedChange={() => handleGenreToggle(type)}
+              size="sm"
+              className="text-xs h-8 w-full justify-start"
+            >
+              {formatType(type)}
+            </Toggle>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 }
