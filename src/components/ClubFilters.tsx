@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
 
 interface ClubFiltersProps {
@@ -42,6 +41,7 @@ export function ClubFilters({
           placeholder="Select venue types"
           maxCount={3}
           className="w-full"
+          showSelectAll={true}
         />
       </div>
     </div>
