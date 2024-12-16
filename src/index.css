@@ -48,19 +48,31 @@
   @apply animate-fade-in;
 }
 
-@keyframes rainbow-border {
-  0% { border-color: #ff0000; }
-  16.67% { border-color: #ff8000; }
-  33.33% { border-color: #ffff00; }
-  50% { border-color: #00ff00; }
-  66.67% { border-color: #0000ff; }
-  83.33% { border-color: #8000ff; }
-  100% { border-color: #ff0000; }
+@keyframes gradient-border {
+  0% {
+    border-image: linear-gradient(45deg, #ff0000, #ff8000) 1;
+  }
+  20% {
+    border-image: linear-gradient(45deg, #ff8000, #ffff00) 1;
+  }
+  40% {
+    border-image: linear-gradient(45deg, #ffff00, #00ff00) 1;
+  }
+  60% {
+    border-image: linear-gradient(45deg, #00ff00, #0000ff) 1;
+  }
+  80% {
+    border-image: linear-gradient(45deg, #0000ff, #8000ff) 1;
+  }
+  100% {
+    border-image: linear-gradient(45deg, #8000ff, #ff0000) 1;
+  }
 }
 
 .selected-club-card {
-  @apply border-4;
-  animation: rainbow-border 6s linear infinite;
+  border-width: 4px;
+  border-style: solid;
+  animation: gradient-border 6s linear infinite;
 }
 
 @keyframes fade-in {
