@@ -9,6 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          id: number
+          key: string
+          value: string
+        }
+        Insert: {
+          id?: number
+          key: string
+          value: string
+        }
+        Update: {
+          id?: number
+          key?: string
+          value?: string
+        }
+        Relationships: []
+      }
       club_cards: {
         Row: {
           address: string | null

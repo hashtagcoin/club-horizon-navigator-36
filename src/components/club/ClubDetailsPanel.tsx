@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, User, Share2 } from 'lucide-react';
 import { Club } from '@/types/club';
+import { ContactSelectionModal } from '../contact/ContactSelectionModal';
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ClubDetailsPanelProps {
   selectedClub: Club | null;
@@ -13,21 +17,49 @@ export const ClubDetailsPanel = ({
   selectedDay,
   setSelectedDay
 }: ClubDetailsPanelProps) => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const { toast } = useToast();
+
   if (!selectedClub) return null;
 
-  const handleShare = () => {
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${selectedClub.position.lat},${selectedClub.position.lng}`;
-    const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${mapsUrl}`;
-    
-    if (navigator.share) {
-      navigator.share({
-        title: selectedClub.name,
-        text: shareText,
-        url: mapsUrl
-      }).catch((error) => console.log('Error sharing:', error));
-    } else {
-      const smsUrl = `sms:?body=${encodeURIComponent(shareText)}`;
-      window.location.href = smsUrl;
+  const handleShare = async () => {
+    setIsContactModalOpen(true);
+  };
+
+  const handleShareWithContacts = async (selectedContacts: { name: string, tel: string }[]) => {
+    try {
+      // Get website URL from app_settings
+      const { data: settings, error: settingsError } = await supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'website_url')
+        .single();
+
+      if (settingsError) throw settingsError;
+
+      const websiteUrl = settings?.value || 'https://clubpilot.lovable.dev';
+      const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${websiteUrl}`;
+      
+      // Create SMS links for each contact
+      const smsLinks = selectedContacts.map(contact => {
+        const encodedMessage = encodeURIComponent(shareText);
+        return `sms:${contact.tel}?body=${encodedMessage}`;
+      });
+
+      // Open SMS links in new tabs
+      smsLinks.forEach(link => window.open(link, '_blank'));
+
+      toast({
+        title: "Success",
+        description: `Sharing with ${selectedContacts.length} contact${selectedContacts.length !== 1 ? 's' : ''}`,
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to share. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -71,6 +103,12 @@ export const ClubDetailsPanel = ({
       <p className="mt-1 text-xs font-medium w-full text-left">
         {selectedClub.openingHours[selectedDay]}
       </p>
+
+      <ContactSelectionModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        onShare={handleShareWithContacts}
+      />
     </div>
   );
 };
