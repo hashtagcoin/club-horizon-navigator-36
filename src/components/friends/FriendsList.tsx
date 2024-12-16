@@ -26,13 +26,9 @@ export function FriendsList({
   }, [isOpen]);
 
   const fetchFriends = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    console.log('Current user:', user); // Debug log
-
-    if (!user) {
-      console.log('No authenticated user found'); // Debug log
-      return;
-    }
+    // Use test user ID for development
+    const testUserId = '00000000-0000-0000-0000-000000000004';
+    console.log('Using test user ID:', testUserId);
 
     // First get friends where the user is the requester
     const { data: sentFriends, error: sentError } = await supabase
@@ -48,10 +44,10 @@ export function FriendsList({
           last_seen
         )
       `)
-      .eq('user_id', user.id)
+      .eq('user_id', testUserId)
       .eq('status', 'accepted');
 
-    console.log('Sent friends query result:', { sentFriends, sentError }); // Debug log
+    console.log('Sent friends query result:', { sentFriends, sentError });
 
     // Then get friends where the user is the recipient
     const { data: receivedFriends, error: receivedError } = await supabase
@@ -67,10 +63,10 @@ export function FriendsList({
           last_seen
         )
       `)
-      .eq('friend_id', user.id)
+      .eq('friend_id', testUserId)
       .eq('status', 'accepted');
 
-    console.log('Received friends query result:', { receivedFriends, receivedError }); // Debug log
+    console.log('Received friends query result:', { receivedFriends, receivedError });
 
     if (sentError || receivedError) {
       console.error('Error fetching friends:', { sentError, receivedError });
@@ -87,7 +83,7 @@ export function FriendsList({
       ...(receivedFriends || [])
     ];
 
-    console.log('All friends combined:', allFriends); // Debug log
+    console.log('All friends combined:', allFriends);
     setFriends(allFriends as Friend[]);
   };
 
@@ -104,13 +100,12 @@ export function FriendsList({
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await channel.track({
-              user_id: user.id,
-              online_at: new Date().toISOString(),
-            });
-          }
+          // Use test user ID for development
+          const testUserId = '00000000-0000-0000-0000-000000000004';
+          await channel.track({
+            user_id: testUserId,
+            online_at: new Date().toISOString(),
+          });
         }
       });
 
@@ -129,8 +124,8 @@ export function FriendsList({
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    // Use test user ID for development
+    const testUserId = '00000000-0000-0000-0000-000000000004';
 
     const chatName = `Group Chat (${selectedFriends.length + 1})`;
     onStartGroupChat(selectedFriends, chatName);
