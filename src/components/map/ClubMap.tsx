@@ -126,6 +126,21 @@ export const ClubMap = ({
           } : undefined}
         />
       ))}
+
+      {userLocation && (
+        <Marker
+          position={userLocation}
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#4285F4',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          }}
+        />
+      )}
+
       {directions && (
         <DirectionsRenderer
           directions={directions}
@@ -133,8 +148,8 @@ export const ClubMap = ({
             suppressMarkers: true,
             polylineOptions: {
               strokeColor: "#4285F4",
-              strokeOpacity: 1,
-              strokeWeight: 3,
+              strokeOpacity: 0.8,
+              strokeWeight: 4,
             },
           }}
         />

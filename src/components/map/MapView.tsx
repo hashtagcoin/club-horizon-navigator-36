@@ -2,6 +2,7 @@ import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 import { Club } from '@/types/club';
+import { useState, useEffect } from 'react';
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -30,9 +31,32 @@ export function MapView({
   onClubSelect,
   locationManagement,
 }: MapViewProps) {
+  const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
+
+  useEffect(() => {
+    if (isLoaded && userLocation && selectedClub) {
+      const directionsService = new google.maps.DirectionsService();
+
+      directionsService.route(
+        {
+          origin: userLocation,
+          destination: selectedClub.position,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirectionsResult(result);
+          } else {
+            console.error(`Error fetching directions: ${status}`);
+          }
+        }
+      );
+    }
+  }, [isLoaded, userLocation, selectedClub]);
+
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
-      <div className="absolute top-2 right-2 z-[60] flex flex-col items-end space-y-2">
+      <div className="absolute top-2 right-2 z-[999] flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
@@ -48,7 +72,7 @@ export function MapView({
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}
-          directions={directions}
+          directions={directionsResult}
           onClubSelect={onClubSelect}
         />
       </div>
