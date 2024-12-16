@@ -47,6 +47,23 @@ export function FriendsList({
       .eq('user_id', testUserId)
       .eq('status', 'accepted');
 
+    console.log('SQL Query for sent friends:', supabase
+      .from('friends')
+      .select(`
+        id,
+        friend_id,
+        status,
+        profile:profiles!friends_friend_id_fkey(
+          username,
+          avatar_url,
+          favorite_club,
+          last_seen
+        )
+      `)
+      .eq('user_id', testUserId)
+      .eq('status', 'accepted')
+      .toSQL());
+
     console.log('Sent friends query result:', { sentFriends, sentError });
 
     // Then get friends where the user is the recipient
@@ -65,6 +82,23 @@ export function FriendsList({
       `)
       .eq('friend_id', testUserId)
       .eq('status', 'accepted');
+
+    console.log('SQL Query for received friends:', supabase
+      .from('friends')
+      .select(`
+        id,
+        friend_id,
+        status,
+        profile:profiles!friends_friend_id_fkey(
+          username,
+          avatar_url,
+          favorite_club,
+          last_seen
+        )
+      `)
+      .eq('friend_id', testUserId)
+      .eq('status', 'accepted')
+      .toSQL());
 
     console.log('Received friends query result:', { receivedFriends, receivedError });
 
