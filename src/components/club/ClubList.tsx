@@ -51,7 +51,7 @@ export const ClubList: FC<ClubListProps> = ({
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
       <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
         <div className="flex items-center gap-2">
-          <div className="bg-black text-white px-3 py-1 rounded-lg">
+          <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
             {clubs.length}
           </div>
           <span className="text-sm font-medium text-gray-600">
