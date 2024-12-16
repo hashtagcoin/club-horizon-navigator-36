@@ -55,7 +55,7 @@ export const AnimatedClubList = ({
           x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5 - 40)),
           position: 'fixed',
           top: '50vh',
-          left: 0,
+          left: '8px', // Added 8px offset
           zIndex: 50,
           transform: x.to(x => `translateX(${x}px)`),
           opacity: isCollapsed ? 0 : 1,
@@ -79,7 +79,7 @@ export const AnimatedClubList = ({
         style={{
           position: 'fixed',
           top: '50vh',
-          left: 0,
+          left: '8px', // Added 8px offset
           zIndex: 50,
           opacity: isCollapsed ? 1 : 0,
           pointerEvents: isCollapsed ? 'auto' : 'none',
