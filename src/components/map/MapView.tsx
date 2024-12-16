@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
@@ -35,6 +35,11 @@ export function MapView({
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
   const [showAllClubs, setShowAllClubs] = useState(true);
+
+  // Reset showAllClubs to true when mapCenter changes (suburb change)
+  useEffect(() => {
+    setShowAllClubs(true);
+  }, [mapCenter]);
 
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
