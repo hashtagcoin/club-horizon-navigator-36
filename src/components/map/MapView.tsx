@@ -3,8 +3,8 @@ import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
-import { Toggle } from "@/components/ui/toggle";
-import { MapIcon } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Eye, EyeOff } from "lucide-react";
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -49,15 +49,17 @@ export function MapView({
         />
       </div>
       
-      <div className="absolute bottom-4 left-4 z-50">
-        <Toggle
-          pressed={showAllClubs}
-          onPressedChange={setShowAllClubs}
+      <div className="absolute bottom-4 left-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
+        {showAllClubs ? (
+          <Eye className="h-4 w-4 text-primary" />
+        ) : (
+          <EyeOff className="h-4 w-4 text-muted-foreground" />
+        )}
+        <Switch
+          checked={showAllClubs}
+          onCheckedChange={setShowAllClubs}
           aria-label="Toggle all clubs visibility"
-          className="bg-white shadow-md hover:bg-gray-100 data-[state=on]:bg-primary"
-        >
-          <MapIcon className="h-4 w-4" />
-        </Toggle>
+        />
       </div>
       
       <div className="flex-grow h-full relative">
