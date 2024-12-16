@@ -92,7 +92,7 @@ export function LocationControls({
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
         <DialogTrigger asChild>
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-white bg-black cursor-pointer rounded-lg px-3 py-1 shadow-sm inline-block hover:bg-black/90 transition-colors">
+            <h2 className="text-2xl font-bold text-white bg-black cursor-pointer rounded-lg px-3 py-1 shadow-sm inline-block hover:bg-black/90 transition-colors border-4 border-white">
               {isLoadingLocation ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
