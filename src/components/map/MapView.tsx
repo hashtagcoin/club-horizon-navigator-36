@@ -3,6 +3,8 @@ import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
+import { Toggle } from "@/components/ui/toggle";
+import { MapIcon } from "lucide-react";
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -22,8 +24,8 @@ export function MapView({
   isLoaded,
   clubs,
   selectedClub,
-  selectedDay: listSelectedDay,  // renamed to clarify it's from the list
-  setSelectedDay: setListSelectedDay,  // we won't use this anymore
+  selectedDay: listSelectedDay,
+  setSelectedDay: setListSelectedDay,
   mapCenter,
   mapZoom,
   userLocation,
@@ -31,8 +33,10 @@ export function MapView({
   onClubSelect,
   locationManagement,
 }: MapViewProps) {
-  // Add local state for the details panel selected day
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
+  const [showAllClubs, setShowAllClubs] = useState(true);
+
+  const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
@@ -45,10 +49,21 @@ export function MapView({
         />
       </div>
       
+      <div className="absolute bottom-4 left-4 z-50">
+        <Toggle
+          pressed={showAllClubs}
+          onPressedChange={setShowAllClubs}
+          aria-label="Toggle all clubs visibility"
+          className="bg-white shadow-md hover:bg-gray-100 data-[state=on]:bg-primary"
+        >
+          <MapIcon className="h-4 w-4" />
+        </Toggle>
+      </div>
+      
       <div className="flex-grow h-full relative">
         <ClubMap
           isLoaded={isLoaded}
-          clubs={clubs}
+          clubs={visibleClubs}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}

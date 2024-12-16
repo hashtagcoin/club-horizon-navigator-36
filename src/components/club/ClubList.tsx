@@ -66,9 +66,6 @@ export const ClubList: FC<ClubListProps> = ({
         setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        onShowAllClubs={() => {
-          // Handle show all clubs
-        }}
         genres={genres}
       />
       <ScrollArea className="flex-grow">

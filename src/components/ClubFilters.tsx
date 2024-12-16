@@ -8,7 +8,6 @@ interface ClubFiltersProps {
   setFilterGenre: (value: string[]) => void;
   searchQuery: string;
   setSearchQuery: (value: string) => void;
-  onShowAllClubs?: () => void;
   genres: string[];
 }
 
@@ -24,7 +23,6 @@ export function ClubFilters({
   setFilterGenre,
   searchQuery,
   setSearchQuery,
-  onShowAllClubs,
   genres
 }: ClubFiltersProps) {
   return (
@@ -40,14 +38,6 @@ export function ClubFilters({
           className="w-full"
         />
       </div>
-
-      <Button 
-        variant="outline" 
-        className="w-full"
-        onClick={onShowAllClubs}
-      >
-        Show all clubs on map
-      </Button>
     </div>
   );
 }
