@@ -69,6 +69,7 @@ export const AnimatedClubList = ({
         >
           <ChevronLeft 
             className="h-6 w-6 transition-transform duration-300 text-gray-600"
+            strokeWidth={5}
           />
         </Button>
       </animated.div>
@@ -93,6 +94,7 @@ export const AnimatedClubList = ({
         >
           <ChevronLeft 
             className="h-6 w-6 text-gray-600 rotate-180"
+            strokeWidth={5}
           />
         </Button>
       </div>
