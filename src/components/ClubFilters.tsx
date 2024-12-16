@@ -29,11 +29,11 @@ export function ClubFilters({
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="usersAtClub">Sort by Users at Club</SelectItem>
-          <SelectItem value="traffic">Sort by Traffic</SelectItem>
-          <SelectItem value="alphabetical">Sort Alphabetically</SelectItem>
-          <SelectItem value="genre">Sort by Genre</SelectItem>
-          <SelectItem value="openingHours">Sort by Opening Hours</SelectItem>
+          <SelectItem value="usersAtClub">Users at Club</SelectItem>
+          <SelectItem value="traffic">Traffic</SelectItem>
+          <SelectItem value="alphabetical">Alphabetical</SelectItem>
+          <SelectItem value="genre">Genre</SelectItem>
+          <SelectItem value="openingHours">Opening Hours</SelectItem>
         </SelectContent>
       </Select>
       
