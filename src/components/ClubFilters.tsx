@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button"
-import { Toggle } from "@/components/ui/toggle"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { MultiSelect } from "@/components/ui/multi-select";
 
 interface ClubFiltersProps {
   sortBy: string;
@@ -26,50 +24,24 @@ export function ClubFilters({
       .join(' ');
   };
 
-  const handleGenreToggle = (genre: string) => {
-    if (filterGenre.includes(genre)) {
-      setFilterGenre(filterGenre.filter(g => g !== genre));
-    } else {
-      setFilterGenre([...filterGenre, genre]);
-    }
-  };
-
-  // Sort and format genres
-  const sortedTypes = [...genres]
+  const options = genres
     .filter(type => type)
-    .sort((a, b) => a.localeCompare(b));
+    .sort((a, b) => a.localeCompare(b))
+    .map(type => ({
+      label: formatType(type),
+      value: type,
+    }));
 
   return (
     <div className="mb-2 space-y-4">
-      <div className="flex justify-between items-center">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => setFilterGenre([])}
-          className={`text-xs h-7 ${filterGenre.length === 0 ? 'bg-black text-white hover:bg-black/90' : ''}`}
-        >
-          All Types
-        </Button>
-        <div className="text-xs text-muted-foreground">
-          {filterGenre.length} selected
-        </div>
-      </div>
-
-      <ScrollArea className="h-[120px] w-full rounded-md border p-2">
-        <div className="grid grid-cols-2 gap-2 pr-4 md:grid-cols-3">
-          {sortedTypes.map(type => (
-            <Toggle
-              key={type}
-              pressed={filterGenre.includes(type)}
-              onPressedChange={() => handleGenreToggle(type)}
-              size="sm"
-              className="text-xs h-8 w-full justify-start"
-            >
-              {formatType(type)}
-            </Toggle>
-          ))}
-        </div>
-      </ScrollArea>
+      <MultiSelect
+        options={options}
+        onValueChange={setFilterGenre}
+        defaultValue={filterGenre}
+        placeholder="Select venue types"
+        maxCount={3}
+        className="w-full"
+      />
     </div>
   );
 }
