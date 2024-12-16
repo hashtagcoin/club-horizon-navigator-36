@@ -99,7 +99,8 @@ const Offers = () => {
                   </Button>
                 </CardContent>
               </Card>
-            ))}
+            );
+          })}
         </div>
       </ScrollArea>
     </div>
