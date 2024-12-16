@@ -1,10 +1,7 @@
-import { ClubMap } from './ClubMap';
-import { LocationModals } from '../location/LocationModals';
-import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
+import { useState } from 'react';
 import { Club } from '@/types/club';
-import { useState, useEffect } from 'react';
-import { Switch } from "@/components/ui/switch";
-import { EyeOff } from "lucide-react";
+import { ClubMap } from './ClubMap';
+import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -24,8 +21,8 @@ export function MapView({
   isLoaded,
   clubs,
   selectedClub,
-  selectedDay,
-  setSelectedDay,
+  selectedDay: listSelectedDay,  // renamed to clarify it's from the list
+  setSelectedDay: setListSelectedDay,  // we won't use this anymore
   mapCenter,
   mapZoom,
   userLocation,
@@ -33,40 +30,8 @@ export function MapView({
   onClubSelect,
   locationManagement,
 }: MapViewProps) {
-  const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
-  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
-  const [calculatedBounds, setCalculatedBounds] = useState<google.maps.LatLngBounds | null>(null);
-
-  useEffect(() => {
-    if (isLoaded && userLocation && selectedClub) {
-      const bounds = new google.maps.LatLngBounds();
-      bounds.extend(userLocation);
-      bounds.extend(selectedClub.position);
-      setCalculatedBounds(bounds);
-
-      const directionsService = new google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: userLocation,
-          destination: selectedClub.position,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            setDirectionsResult(result);
-          } else {
-            console.error(`Error fetching directions: ${status}`);
-          }
-        }
-      );
-    } else {
-      setCalculatedBounds(null);
-    }
-  }, [isLoaded, userLocation, selectedClub]);
-
-  const displayedClubs = showSelectedOnly && selectedClub
-    ? [selectedClub]
-    : clubs;
+  // Add local state for the details panel selected day
+  const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
@@ -74,31 +39,22 @@ export function MapView({
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
-          selectedDay={selectedDay}
-          setSelectedDay={setSelectedDay}
+          selectedDay={detailsSelectedDay}
+          setSelectedDay={setDetailsSelectedDay}
         />
       </div>
       
       <div className="flex-grow h-full relative">
         <ClubMap
           isLoaded={isLoaded}
-          clubs={displayedClubs}
+          clubs={clubs}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}
-          directions={directionsResult}
+          directions={directions}
           onClubSelect={onClubSelect}
-          calculatedBounds={calculatedBounds}
+          calculatedBounds={null}
         />
-        <div className="absolute bottom-8 left-2 z-[999] bg-white/90 rounded-lg shadow-md flex items-center gap-1 p-1">
-          <EyeOff className="h-3 w-3" />
-          <Switch
-            id="show-selected"
-            checked={showSelectedOnly}
-            onCheckedChange={setShowSelectedOnly}
-            className="scale-75"
-          />
-        </div>
       </div>
     </div>
   );
