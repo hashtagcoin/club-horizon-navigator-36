@@ -64,6 +64,7 @@ export function FriendsList({
       .eq('status', 'accepted');
 
     if (sentError || receivedError) {
+      console.error('Error fetching friends:', { sentError, receivedError });
       toast({
         title: "Error fetching friends",
         description: sentError?.message || receivedError?.message,
@@ -77,6 +78,7 @@ export function FriendsList({
       ...(receivedFriends || [])
     ];
 
+    console.log('Fetched friends:', allFriends);
     setFriends(allFriends as Friend[]);
   };
 
@@ -154,6 +156,11 @@ export function FriendsList({
               onStartChat={() => onStartChat(friend.friend_id)}
             />
           ))}
+          {friends.length === 0 && (
+            <div className="text-center text-muted-foreground p-4">
+              No friends yet. Add some friends above!
+            </div>
+          )}
         </div>
       </ScrollArea>
 
