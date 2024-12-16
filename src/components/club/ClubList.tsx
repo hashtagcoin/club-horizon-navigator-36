@@ -35,6 +35,7 @@ export const ClubList: FC<ClubListProps> = ({
   newMessageCounts,
   isLoading
 }) => {
+  const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export const ClubList: FC<ClubListProps> = ({
         onShowAllClubs={() => {
           // Handle show all clubs
         }}
+        genres={genres}
       />
       <ScrollArea className="flex-grow">
         <div className="space-y-2 pr-2">
