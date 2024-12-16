@@ -48,6 +48,21 @@
   @apply animate-fade-in;
 }
 
+@keyframes rainbow-border {
+  0% { border-color: #ff0000; }
+  16.67% { border-color: #ff8000; }
+  33.33% { border-color: #ffff00; }
+  50% { border-color: #00ff00; }
+  66.67% { border-color: #0000ff; }
+  83.33% { border-color: #8000ff; }
+  100% { border-color: #ff0000; }
+}
+
+.selected-club-card {
+  @apply border-4;
+  animation: rainbow-border 6s linear infinite;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
