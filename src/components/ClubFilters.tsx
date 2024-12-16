@@ -11,10 +11,16 @@ interface ClubFiltersProps {
   genres: string[];
 }
 
-const options = (genres: string[]) => genres.map(genre => ({
-  label: genre,
-  value: genre
-}));
+const options = (genres: string[]) => genres
+  .map(genre => ({
+    label: genre
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' '),
+    value: genre
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label));
 
 export function ClubFilters({
   sortBy,
