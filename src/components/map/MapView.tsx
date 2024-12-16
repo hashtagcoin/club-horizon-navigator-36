@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
+import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 
 interface MapViewProps {
@@ -35,7 +36,7 @@ export function MapView({
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
-      <div className="absolute top-2 right-2 z-[999] flex flex-col items-end space-y-2">
+      <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
           selectedClub={selectedClub}
