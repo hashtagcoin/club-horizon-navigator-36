@@ -54,6 +54,7 @@ export const MapColumn: FC<MapColumnProps> = ({
           userLocation={userLocation}
           directions={directions}
           onClubSelect={onClubSelect}
+          calculatedBounds={null}
         />
       </div>
 
@@ -72,7 +73,7 @@ export const MapColumn: FC<MapColumnProps> = ({
         />
       )}
 
-      {clubs.map((club, index) => 
+      {clubs.map((club) => 
         chatManager.clubChats[club.id] && (
           <ChatWindow
             key={club.id}

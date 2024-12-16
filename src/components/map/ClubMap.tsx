@@ -39,6 +39,26 @@ export const ClubMap = ({
         stylers: [{ color: "#d59563" }],
       },
       {
+        featureType: "administrative.neighborhood",
+        elementType: "labels.text",
+        stylers: [
+          {
+            color: "#ffffff",
+            weight: 0.5,
+          },
+        ],
+      },
+      {
+        featureType: "administrative.neighborhood",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#333333",
+            weight: 1,
+          },
+        ],
+      },
+      {
         featureType: "poi",
         elementType: "labels",
         stylers: [{ visibility: "off" }],
@@ -114,9 +134,7 @@ export const ClubMap = ({
       options={mapOptions}
       onLoad={map => {
         if (calculatedBounds) {
-          map.fitBounds(calculatedBounds, {
-            padding: { top: 50, right: 50, bottom: 50, left: 50 }
-          });
+          map.fitBounds(calculatedBounds);
         }
       }}
     >
