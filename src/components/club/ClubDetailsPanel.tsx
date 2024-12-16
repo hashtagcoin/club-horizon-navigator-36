@@ -19,7 +19,6 @@ export const ClubDetailsPanel = ({
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${selectedClub.position.lat},${selectedClub.position.lng}`;
     const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${mapsUrl}`;
     
-    // Check if the Web Share API is supported
     if (navigator.share) {
       navigator.share({
         title: selectedClub.name,
@@ -27,14 +26,13 @@ export const ClubDetailsPanel = ({
         url: mapsUrl
       }).catch((error) => console.log('Error sharing:', error));
     } else {
-      // Fallback for SMS sharing
       const smsUrl = `sms:?body=${encodeURIComponent(shareText)}`;
       window.location.href = smsUrl;
     }
   };
 
   return (
-    <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full">
+    <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full relative z-[45]">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">

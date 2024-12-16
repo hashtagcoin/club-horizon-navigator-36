@@ -50,9 +50,10 @@ export const AnimatedClubList = ({
       </animated.div>
       <animated.div
         style={{
-          x: x.to(x => x + (isCollapsed ? 0 : window.innerWidth * 0.5 - 40)),
+          x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5 - 40)),
           position: 'fixed',
           top: '50vh',
+          left: 0,
           zIndex: 50,
           transform: x.to(x => `translateX(${x}px)`),
         }}
