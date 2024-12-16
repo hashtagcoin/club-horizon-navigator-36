@@ -22,6 +22,20 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
+  // Function to format type strings
+  const formatType = (type: string) => {
+    return type
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Sort and format genres
+  const sortedTypes = [...genres]
+    .map(type => formatType(type))
+    .sort((a, b) => a.localeCompare(b));
+
   return (
     <div className="mb-2 flex justify-between">
       <Select value={sortBy} onValueChange={setSortBy}>
@@ -32,7 +46,7 @@ export function ClubFilters({
           <SelectItem value="usersAtClub">Users at Club</SelectItem>
           <SelectItem value="traffic">Traffic</SelectItem>
           <SelectItem value="alphabetical">Alphabetical</SelectItem>
-          <SelectItem value="genre">Genre</SelectItem>
+          <SelectItem value="genre">Type</SelectItem>
           <SelectItem value="openingHours">Opening Hours</SelectItem>
         </SelectContent>
       </Select>
@@ -40,12 +54,12 @@ export function ClubFilters({
       <div className="flex space-x-2">
         <Select value={filterGenre} onValueChange={setFilterGenre}>
           <SelectTrigger className="w-[180px] h-7 text-xs">
-            <SelectValue placeholder="Filter by Genre" />
+            <SelectValue placeholder="Filter by Type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All Genres</SelectItem>
-            {genres.map(genre => (
-              <SelectItem key={genre} value={genre}>{genre}</SelectItem>
+            <SelectItem value="All">All Types</SelectItem>
+            {sortedTypes.map(type => (
+              <SelectItem key={type} value={type}>{type}</SelectItem>
             ))}
           </SelectContent>
         </Select>
