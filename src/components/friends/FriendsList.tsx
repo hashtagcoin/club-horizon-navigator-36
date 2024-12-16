@@ -29,10 +29,13 @@ export function FriendsList({
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: friendsData, error: friendsError } = await supabase
+    // First get friends where the user is the requester
+    const { data: sentFriends, error: sentError } = await supabase
       .from('friends')
       .select(`
-        *,
+        id,
+        friend_id,
+        status,
         profile:profiles!friend_id(
           username,
           avatar_url,
@@ -40,19 +43,39 @@ export function FriendsList({
           last_seen
         )
       `)
-      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-      .eq('status', 'accepted');
+      .eq('user_id', user.id);
 
-    if (friendsError) {
+    // Then get friends where the user is the recipient
+    const { data: receivedFriends, error: receivedError } = await supabase
+      .from('friends')
+      .select(`
+        id,
+        friend_id,
+        status,
+        profile:profiles!user_id(
+          username,
+          avatar_url,
+          favorite_club,
+          last_seen
+        )
+      `)
+      .eq('friend_id', user.id);
+
+    if (sentError || receivedError) {
       toast({
         title: "Error fetching friends",
-        description: friendsError.message,
+        description: sentError?.message || receivedError?.message,
         variant: "destructive"
       });
       return;
     }
 
-    setFriends(friendsData || []);
+    const allFriends = [
+      ...(sentFriends || []),
+      ...(receivedFriends || [])
+    ].filter(friend => friend.status === 'accepted');
+
+    setFriends(allFriends);
   };
 
   const subscribeToPresence = () => {
