@@ -72,6 +72,7 @@
 .selected-club-card {
   border-width: 4px;
   border-style: solid;
+  border-radius: 0.5rem;
   animation: gradient-border 6s linear infinite;
 }
 
