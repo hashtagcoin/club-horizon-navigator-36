@@ -20,6 +20,15 @@ export const ClubCard = ({
   onOpenChat,
   newMessageCount
 }: ClubCardProps) => {
+  // Function to format type string
+  const formatType = (type: string) => {
+    return type
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <Card
       className={`cursor-pointer relative bg-white ${isSelected ? 'border-primary' : ''}`}
@@ -42,7 +51,7 @@ export const ClubCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
-            <span className="text-xs text-black">{club.genre}</span>
+            <span className="text-xs text-black">{formatType(club.genre)}</span>
           </div>
         </div>
         <div className="flex items-center space-x-1 mt-1">
