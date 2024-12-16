@@ -42,6 +42,7 @@ export function ClubFilters({
           maxCount={3}
           className="w-full"
           showSelectAll={true}
+          variant="default"
         />
       </div>
     </div>

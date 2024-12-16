@@ -9,7 +9,7 @@ export const MultiSelectDisplay: React.FC<MultiSelectDisplayProps> = ({
   options,
   placeholder,
   maxCount = 3,
-  variant,
+  variant = "default",
   animation = 0,
   onClear,
 }) => {

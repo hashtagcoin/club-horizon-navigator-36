@@ -3,7 +3,6 @@ import { VariantProps } from "class-variance-authority";
 export interface MultiSelectOption {
   label: string;
   value: string;
-  icon?: React.ComponentType<{ className?: string }>;
 }
 
 export interface MultiSelectProps {
@@ -11,11 +10,13 @@ export interface MultiSelectProps {
   onValueChange: (value: string[]) => void;
   defaultValue?: string[];
   placeholder?: string;
-  modalPopover?: boolean;
+  maxCount?: number;
   className?: string;
   showSelectAll?: boolean;
-  maxCount?: number;
-  variant?: "default" | "secondary" | "destructive" | "inverted";
+  variant?: "default" | "secondary" | "destructive" | "outline";
+  animation?: number;
+  modalPopover?: boolean;
+  asChild?: boolean;
 }
 
 export interface MultiSelectDisplayProps {
@@ -23,7 +24,7 @@ export interface MultiSelectDisplayProps {
   options: MultiSelectOption[];
   placeholder: string;
   maxCount?: number;
-  variant?: "default" | "secondary" | "destructive" | "inverted";
+  variant?: "default" | "secondary" | "destructive" | "outline";
   animation?: number;
   onClear: () => void;
 }
