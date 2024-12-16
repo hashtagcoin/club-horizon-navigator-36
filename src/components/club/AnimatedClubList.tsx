@@ -68,7 +68,7 @@ export const AnimatedClubList = ({
           onClick={onToggle}
         >
           <ChevronLeft 
-            className="h-6 w-6 transition-transform duration-300 text-gray-600 rotate-180"
+            className="h-6 w-6 transition-transform duration-300 text-gray-600"
           />
         </Button>
       </animated.div>
@@ -92,7 +92,7 @@ export const AnimatedClubList = ({
           onClick={onToggle}
         >
           <ChevronLeft 
-            className="h-6 w-6 text-gray-600"
+            className="h-6 w-6 text-gray-600 rotate-180"
           />
         </Button>
       </div>
