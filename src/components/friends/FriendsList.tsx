@@ -27,7 +27,12 @@ export function FriendsList({
 
   const fetchFriends = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    console.log('Current user:', user); // Debug log
+
+    if (!user) {
+      console.log('No authenticated user found'); // Debug log
+      return;
+    }
 
     // First get friends where the user is the requester
     const { data: sentFriends, error: sentError } = await supabase
@@ -46,6 +51,8 @@ export function FriendsList({
       .eq('user_id', user.id)
       .eq('status', 'accepted');
 
+    console.log('Sent friends query result:', { sentFriends, sentError }); // Debug log
+
     // Then get friends where the user is the recipient
     const { data: receivedFriends, error: receivedError } = await supabase
       .from('friends')
@@ -63,6 +70,8 @@ export function FriendsList({
       .eq('friend_id', user.id)
       .eq('status', 'accepted');
 
+    console.log('Received friends query result:', { receivedFriends, receivedError }); // Debug log
+
     if (sentError || receivedError) {
       console.error('Error fetching friends:', { sentError, receivedError });
       toast({
@@ -78,7 +87,7 @@ export function FriendsList({
       ...(receivedFriends || [])
     ];
 
-    console.log('Fetched friends:', allFriends);
+    console.log('All friends combined:', allFriends); // Debug log
     setFriends(allFriends as Friend[]);
   };
 
