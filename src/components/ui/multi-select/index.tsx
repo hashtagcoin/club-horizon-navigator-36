@@ -37,17 +37,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
-    const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        setIsPopoverOpen(true);
-      } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        const newSelectedValues = [...selectedValues];
-        newSelectedValues.pop();
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
-      }
-    };
-
     const toggleOption = (option: string) => {
       const newSelectedValues = selectedValues.includes(option)
         ? selectedValues.filter((value) => value !== option)
@@ -94,18 +83,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-[200px] p-0"
-          align="start"
-          onEscapeKeyDown={() => setIsPopoverOpen(false)}
-        >
+        <PopoverContent className="w-[200px] p-0" align="start">
           <Command>
-            <CommandInput
-              placeholder="Search venues..."
-              onKeyDown={handleInputKeyDown}
-            />
+            <CommandInput placeholder="Search..." />
             <CommandList>
-              <CommandEmpty>No venues found.</CommandEmpty>
+              <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 {showSelectAll && (
                   <CommandItem

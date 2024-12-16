@@ -14,10 +14,7 @@ export interface MultiSelectProps
   onValueChange: (value: string[]) => void;
   defaultValue?: string[];
   placeholder?: string;
-  animation?: number;
-  maxCount?: number;
   modalPopover?: boolean;
-  asChild?: boolean;
   className?: string;
   showSelectAll?: boolean;
 }
