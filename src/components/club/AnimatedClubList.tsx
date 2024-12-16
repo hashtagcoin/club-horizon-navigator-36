@@ -64,7 +64,7 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className="bg-white shadow-lg h-20 w-10 rounded-l-xl border-l border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
+          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
           onClick={onToggle}
         >
           <ChevronLeft 
@@ -88,7 +88,7 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
+          className="bg-white shadow-lg h-20 w-10 rounded-l-xl border-l border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
           onClick={onToggle}
         >
           <ChevronLeft 
