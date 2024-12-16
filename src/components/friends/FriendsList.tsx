@@ -37,7 +37,8 @@ export function FriendsList({
         id,
         friend_id,
         status,
-        profile:profiles!friends_friend_id_fkey(
+        profile:profiles(
+          user_id,
           username,
           avatar_url,
           favorite_club,
@@ -47,20 +48,17 @@ export function FriendsList({
       .eq('user_id', testUserId)
       .eq('status', 'accepted');
 
-    console.log('Sent friends query parameters:', {
-      user_id: testUserId,
-      status: 'accepted'
-    });
-    console.log('Sent friends query result:', { sentFriends, sentError });
+    console.log('Sent friends query:', { sentFriends, sentError });
 
     // Then get friends where the user is the recipient
     const { data: receivedFriends, error: receivedError } = await supabase
       .from('friends')
       .select(`
         id,
-        friend_id,
+        user_id as friend_id,
         status,
-        profile:profiles!friends_friend_id_fkey(
+        profile:profiles(
+          user_id,
           username,
           avatar_url,
           favorite_club,
@@ -70,11 +68,7 @@ export function FriendsList({
       .eq('friend_id', testUserId)
       .eq('status', 'accepted');
 
-    console.log('Received friends query parameters:', {
-      friend_id: testUserId,
-      status: 'accepted'
-    });
-    console.log('Received friends query result:', { receivedFriends, receivedError });
+    console.log('Received friends query:', { receivedFriends, receivedError });
 
     if (sentError || receivedError) {
       console.error('Error fetching friends:', { sentError, receivedError });
@@ -178,7 +172,18 @@ export function FriendsList({
 
       {selectedFriends.length > 0 && (
         <div className="mt-4">
-          <Button onClick={createGroupChat} className="w-full">
+          <Button onClick={() => {
+            if (selectedFriends.length < 2) {
+              toast({
+                title: "Select at least 2 friends",
+                description: "Group chats need at least 3 participants including you",
+                variant: "destructive"
+              });
+              return;
+            }
+            onStartGroupChat(selectedFriends, `Group Chat (${selectedFriends.length + 1})`);
+            setSelectedFriends([]);
+          }} className="w-full">
             Create Group Chat ({selectedFriends.length + 1} people)
           </Button>
         </div>
