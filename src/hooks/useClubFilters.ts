@@ -4,7 +4,7 @@ import { sortClubs } from '@/utils/sortClubs';
 
 export function useClubFilters() {
   const [sortBy, setSortBy] = useState("closest");
-  const [filterGenre, setFilterGenre] = useState("All");
+  const [filterGenre, setFilterGenre] = useState<string[]>([]);  // Changed to array
   const [searchQuery, setSearchQuery] = useState("");
   const [showHighTraffic, setShowHighTraffic] = useState(false);
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
@@ -20,8 +20,8 @@ export function useClubFilters() {
     let filtered = [...clubs];
 
     // Apply filters
-    if (filterGenre !== "All") {
-      filtered = filtered.filter(club => club.genre === filterGenre);
+    if (filterGenre.length > 0) {
+      filtered = filtered.filter(club => filterGenre.includes(club.genre));
     }
     
     if (searchQuery) {

@@ -10,8 +10,8 @@ interface ClubListProps {
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
-  filterGenre: string;
-  setFilterGenre: (value: string) => void;
+  filterGenre: string[];  // Changed to array
+  setFilterGenre: (value: string[]) => void;  // Changed to array
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   onSelectClub: (club: Club) => void;
