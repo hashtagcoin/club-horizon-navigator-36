@@ -85,16 +85,16 @@ export function ChatWindow({
         position: 'fixed',
         touchAction: 'none'
       }}
-      className="bg-background rounded-lg overflow-hidden shadow-lg border border-border w-64 h-72 z-50"
+      className="backdrop-blur-xl bg-black/40 rounded-lg overflow-hidden shadow-lg border border-white/10 w-64 h-72 z-50"
     >
-      <div className="flex justify-between items-center p-2 bg-primary/5 border-b border-border">
+      <div className="flex justify-between items-center p-2 bg-black text-white border-b border-white/10">
         <span className="text-sm font-medium">
           {chatClub ? chatClub.name : 'General Chat'}
         </span>
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 w-6 p-0"
+          className="h-6 w-6 p-0 text-white hover:text-white/80"
           onClick={onClose}
         >
           <X className="h-3 w-3" />
@@ -122,10 +122,10 @@ export function ChatWindow({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground mb-1">
+                  <span className="text-xs text-white/70 mb-1">
                     {message.sender}
                   </span>
-                  <div className="bg-primary/90 text-primary-foreground px-3 py-2 rounded-lg max-w-[80%] break-words">
+                  <div className="bg-white/10 text-white px-3 py-2 rounded-lg max-w-[80%] break-words">
                     <p className="text-xs">{message.text}</p>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export function ChatWindow({
           })}
         </div>
       </ScrollArea>
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-background/5 border-t border-border">
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/20 border-t border-white/10">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
@@ -146,13 +146,13 @@ export function ChatWindow({
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 bg-transparent border-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-xs h-7"
+            className="flex-1 bg-white/5 border-none focus-visible:ring-0 text-white placeholder:text-white/50 text-xs h-7"
           />
           <Button 
             type="submit" 
             size="icon"
             variant="ghost"
-            className="h-6 w-6 shrink-0"
+            className="h-6 w-6 shrink-0 text-white hover:text-white/80"
           >
             <Send className="h-3 w-3" />
           </Button>

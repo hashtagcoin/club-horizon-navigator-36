@@ -25,15 +25,15 @@ export function PrivateChat({
 }: PrivateChatProps) {
   return (
     <>
-      <div className="p-2 bg-primary/5 border-y flex items-center justify-between">
+      <div className="p-2 bg-black text-white border-y border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-x-auto">
           {selectedFriends.map((friend) => (
-            <div key={friend.id} className="flex items-center gap-1 bg-background rounded-full px-2 py-1">
+            <div key={friend.id} className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
               <span className="text-xs">{friend.name}</span>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-4 w-4"
+                className="h-4 w-4 text-white hover:text-white/80"
                 onClick={() => onRemoveFriend(friend.id)}
               >
                 <UserMinus className="h-3 w-3" />
@@ -44,13 +44,13 @@ export function PrivateChat({
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 shrink-0"
+          className="h-6 w-6 shrink-0 text-white hover:text-white/80"
           onClick={onClose}
         >
           <X className="h-3 w-3" />
         </Button>
       </div>
-      <ScrollArea className="flex-1 p-2">
+      <ScrollArea className="flex-1 p-2 bg-black/40">
         <div className="space-y-2">
           {messages.map((message, index) => (
             <div
@@ -59,14 +59,14 @@ export function PrivateChat({
                 message.sender === 'You' ? 'items-end' : 'items-start'
               }`}
             >
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[10px] text-white/70">
                 {message.sender}
               </span>
               <div
                 className={`rounded-lg px-2 py-1 text-xs max-w-[80%] ${
                   message.sender === 'You'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-white/10 text-white'
                 }`}
               >
                 {message.text}
@@ -75,7 +75,7 @@ export function PrivateChat({
           ))}
         </div>
       </ScrollArea>
-      <div className="p-2 border-t flex gap-2">
+      <div className="p-2 border-t border-white/10 flex gap-2 bg-black/20">
         <input
           type="text"
           value={chatMessage}
@@ -87,12 +87,12 @@ export function PrivateChat({
             }
           }}
           placeholder="Type a message..."
-          className="flex-1 text-xs bg-transparent border-none focus:outline-none"
+          className="flex-1 text-xs bg-white/5 rounded px-2 py-1 text-white placeholder:text-white/50 border-none focus:outline-none"
         />
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6"
+          className="h-6 w-6 text-white hover:text-white/80"
           onClick={onSendMessage}
         >
           <Send className="h-3 w-3" />
