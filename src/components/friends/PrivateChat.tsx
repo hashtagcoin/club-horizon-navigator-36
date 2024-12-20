@@ -24,7 +24,7 @@ export function PrivateChat({
   onClose
 }: PrivateChatProps) {
   return (
-    <>
+    <div className="h-full flex flex-col">
       <div className="p-2 bg-black text-white border-y border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-x-auto">
           {selectedFriends.map((friend) => (
@@ -98,6 +98,6 @@ export function PrivateChat({
           <Send className="h-3 w-3" />
         </Button>
       </div>
-    </>
+    </div>
   );
 }

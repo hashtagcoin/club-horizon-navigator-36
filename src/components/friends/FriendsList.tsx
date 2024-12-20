@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from 'sonner';
 import { FriendSelection } from './FriendSelection';
 import { PrivateChat } from './PrivateChat';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 export interface Friend {
   id: string;
@@ -89,7 +90,6 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
       setMessages([...messages, { sender: 'You', text: chatMessage }]);
       setChatMessage('');
       
-      // Simulate responses from selected friends
       selectedFriends.forEach((friendId, index) => {
         const friend = friends.find(f => f.id === friendId);
         if (friend) {
@@ -135,29 +135,31 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col h-[calc(100vh-2.5rem)]">
-        <ScrollArea className="flex-1">
-          <div className="p-2">
-            {showAddFriend ? (
-              <AddFriendForm
-                onAdd={handleAddFriend}
-                onCancel={() => setShowAddFriend(false)}
-              />
-            ) : (
-              <FriendSelection
-                friends={friends}
-                selectedFriends={selectedFriends}
-                onToggleFriend={handleToggleFriend}
-                onRemoveFriend={handleRemoveFriend}
-              />
-            )}
-          </div>
-        </ScrollArea>
+      <ResizablePanelGroup direction="vertical" className="flex-1">
+        <ResizablePanel defaultSize={60} minSize={30}>
+          <ScrollArea className="h-full">
+            <div className="p-2">
+              {showAddFriend ? (
+                <AddFriendForm
+                  onAdd={handleAddFriend}
+                  onCancel={() => setShowAddFriend(false)}
+                />
+              ) : (
+                <FriendSelection
+                  friends={friends}
+                  selectedFriends={selectedFriends}
+                  onToggleFriend={handleToggleFriend}
+                  onRemoveFriend={handleRemoveFriend}
+                />
+              )}
+            </div>
+          </ScrollArea>
+        </ResizablePanel>
 
         {selectedFriends.length > 0 && (
           <>
-            <Separator />
-            <div className="h-1/2 flex flex-col">
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={40} minSize={20}>
               <PrivateChat
                 selectedFriends={friends.filter(f => selectedFriends.includes(f.id))}
                 messages={messages}
@@ -167,10 +169,10 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
                 onRemoveFriend={handleToggleFriend}
                 onClose={() => setSelectedFriends([])}
               />
-            </div>
+            </ResizablePanel>
           </>
         )}
-      </div>
+      </ResizablePanelGroup>
     </animated.div>
   );
 }
