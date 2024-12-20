@@ -1,30 +1,20 @@
 import { VariantProps } from "class-variance-authority";
+import { multiSelectVariants } from "./styles";
 
 export interface MultiSelectOption {
   label: string;
   value: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
-export interface MultiSelectProps {
+export interface MultiSelectProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof multiSelectVariants> {
   options: MultiSelectOption[];
   onValueChange: (value: string[]) => void;
   defaultValue?: string[];
   placeholder?: string;
-  maxCount?: number;
+  modalPopover?: boolean;
   className?: string;
   showSelectAll?: boolean;
-  variant?: "default" | "secondary" | "destructive" | "outline";
-  animation?: number;
-  modalPopover?: boolean;
-  asChild?: boolean;
-}
-
-export interface MultiSelectDisplayProps {
-  selectedValues: string[];
-  options: MultiSelectOption[];
-  placeholder: string;
-  maxCount?: number;
-  variant?: "default" | "secondary" | "destructive" | "outline";
-  animation?: number;
-  onClear: () => void;
 }

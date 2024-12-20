@@ -37,12 +37,11 @@ export function ClubFilters({
         <MultiSelect
           options={options(genres)}
           onValueChange={setFilterGenre}
-          defaultValue={filterGenre}
+          defaultValue={genres}
           placeholder="Select venue types"
           maxCount={3}
           className="w-full"
           showSelectAll={true}
-          variant="default"
         />
       </div>
     </div>
