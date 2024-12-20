@@ -13,6 +13,8 @@ interface BottomBarProps {
   chatOpen: boolean;
   isGeneralChat: boolean;
   toggleGeneralChat: () => void;
+  showFriendsList: boolean;
+  toggleFriendsList: () => void;
 }
 
 export const BottomBar: FC<BottomBarProps> = ({
@@ -22,7 +24,9 @@ export const BottomBar: FC<BottomBarProps> = ({
   setSortByOpenLate,
   chatOpen,
   isGeneralChat,
-  toggleGeneralChat
+  toggleGeneralChat,
+  showFriendsList,
+  toggleFriendsList
 }) => {
   const navigate = useNavigate();
 
@@ -62,8 +66,9 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Offers</span>
         </Button>
         <Button
-          variant="ghost"
+          variant={showFriendsList ? "default" : "ghost"}
           className="flex flex-col items-center h-12 w-16"
+          onClick={toggleFriendsList}
         >
           <Users className="h-5 w-5" />
           <span className="text-[0.6rem] mt-0.5">Friends</span>

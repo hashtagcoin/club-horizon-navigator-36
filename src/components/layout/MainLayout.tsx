@@ -4,6 +4,8 @@ import { MapView } from '../map/MapView';
 import { AnimatedClubList } from '../club/AnimatedClubList';
 import { useSpring } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
+import { FriendsList } from '../friends/FriendsList';
+import { useState } from 'react';
 
 interface MainLayoutProps {
   searchQuery: string;
@@ -34,6 +36,12 @@ export function MainLayout({
   toggleGeneralChat,
   children
 }: MainLayoutProps) {
+  const [showFriendsList, setShowFriendsList] = useState(false);
+
+  const toggleFriendsList = () => {
+    setShowFriendsList(!showFriendsList);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 text-sm">
       <TopBar 
@@ -43,6 +51,7 @@ export function MainLayout({
       
       <div className="flex-1 relative overflow-hidden">
         {children}
+        <FriendsList isOpen={showFriendsList} />
       </div>
 
       <BottomBar
@@ -55,6 +64,8 @@ export function MainLayout({
         chatOpen={chatOpen}
         isGeneralChat={isGeneralChat}
         toggleGeneralChat={toggleGeneralChat}
+        showFriendsList={showFriendsList}
+        toggleFriendsList={toggleFriendsList}
       />
     </div>
   );
