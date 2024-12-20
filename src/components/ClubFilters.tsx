@@ -1,4 +1,10 @@
-import { MultiSelect } from "@/components/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ClubFiltersProps {
   sortBy: string;
@@ -10,16 +16,13 @@ interface ClubFiltersProps {
   genres: string[];
 }
 
-const options = (genres: string[]) => genres
-  .map(genre => ({
-    label: genre
-      .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' '),
-    value: genre
-  }))
-  .sort((a, b) => a.label.localeCompare(b.label));
+const formatGenre = (genre: string) => {
+  return genre
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
 
 export function ClubFilters({
   sortBy,
@@ -34,15 +37,21 @@ export function ClubFilters({
     <div className="p-4 space-y-4">
       <div className="flex flex-col space-y-2">
         <label className="text-sm font-medium">Venue Type</label>
-        <MultiSelect
-          options={options(genres)}
-          onValueChange={setFilterGenre}
-          defaultValue={genres}
-          placeholder="Select venue types"
-          maxCount={3}
-          className="w-full"
-          showSelectAll={true}
-        />
+        <Select 
+          onValueChange={(value) => setFilterGenre([value])} 
+          defaultValue={filterGenre[0] || ""}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select venue type" />
+          </SelectTrigger>
+          <SelectContent>
+            {genres.map((genre) => (
+              <SelectItem key={genre} value={genre}>
+                {formatGenre(genre)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
