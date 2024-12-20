@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/command";
 import { MultiSelectProps } from "./types";
 import { MultiSelectDisplay } from "./display";
+import { SelectAll } from "./select-all";
 
 export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
   (
@@ -30,6 +31,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       modalPopover = false,
       className,
       showSelectAll = false,
+      maxCount = 3,
       ...props
     },
     ref
@@ -80,6 +82,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               selectedValues={selectedValues}
               options={options}
               placeholder={placeholder}
+              variant={variant}
+              maxCount={maxCount}
+              onClear={handleClear}
+              onRemoveOption={toggleOption}
             />
           </Button>
         </PopoverTrigger>
@@ -90,23 +96,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 {showSelectAll && (
-                  <CommandItem
-                    key="select-all"
-                    onSelect={toggleAll}
-                    className="cursor-pointer"
-                  >
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        selectedValues.length === options.length
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible"
-                      )}
-                    >
-                      <CheckIcon className="h-4 w-4" />
-                    </div>
-                    <span>Select All</span>
-                  </CommandItem>
+                  <SelectAll
+                    isAllSelected={selectedValues.length === options.length}
+                    onToggleAll={toggleAll}
+                  />
                 )}
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);

@@ -1,23 +1,16 @@
-import React from 'react';
+import * as React from "react";
+import { CheckIcon } from "lucide-react";
 import { CommandItem } from "@/components/ui/command";
-import { CheckIcon } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-interface SelectAllOptionProps {
+interface SelectAllProps {
   isAllSelected: boolean;
   onToggleAll: () => void;
 }
 
-export const SelectAllOption = ({
-  isAllSelected,
-  onToggleAll
-}: SelectAllOptionProps) => {
+export function SelectAll({ isAllSelected, onToggleAll }: SelectAllProps) {
   return (
-    <CommandItem
-      key="select-all"
-      onSelect={onToggleAll}
-      className="cursor-pointer"
-    >
+    <CommandItem key="select-all" onSelect={onToggleAll} className="cursor-pointer">
       <div
         className={cn(
           "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
@@ -31,4 +24,4 @@ export const SelectAllOption = ({
       <span>Select All</span>
     </CommandItem>
   );
-};
+}
