@@ -45,14 +45,13 @@ export function ClubFilters({
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium">Sort By</label>
+    <div className="p-2">
+      <div className="flex gap-2 items-center">
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-[130px] h-8 text-sm">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -63,15 +62,12 @@ export function ClubFilters({
             ))}
           </SelectContent>
         </Select>
-      </div>
 
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium">Venue Type</label>
         <Select 
           onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
           defaultValue="all"
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-[130px] h-8 text-sm">
             <SelectValue placeholder="Select venue type" />
           </SelectTrigger>
           <SelectContent>
