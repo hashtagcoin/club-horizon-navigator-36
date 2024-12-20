@@ -1,9 +1,5 @@
 import { TopBar } from './TopBar';
 import { BottomBar } from './BottomBar';
-import { MapView } from '../map/MapView';
-import { AnimatedClubList } from '../club/AnimatedClubList';
-import { useSpring } from '@react-spring/web';
-import { useDrag } from '@use-gesture/react';
 import { FriendsList } from '../friends/FriendsList';
 import { useState } from 'react';
 
@@ -51,7 +47,10 @@ export function MainLayout({
       
       <div className="flex-1 relative overflow-hidden">
         {children}
-        <FriendsList isOpen={showFriendsList} />
+        <FriendsList 
+          isOpen={showFriendsList} 
+          onClose={() => setShowFriendsList(false)} 
+        />
       </div>
 
       <BottomBar
