@@ -41,7 +41,7 @@ export const AnimatedClubList = ({
           position: 'absolute',
           height: '100%',
           touchAction: isCollapsed ? 'none' : 'pan-x',
-          zIndex: 40,
+          zIndex: 20,
           transform: x.to(x => `translateX(${x}px)`)
         }}
         className="bg-white shadow-xl flex"
@@ -70,7 +70,7 @@ export const AnimatedClubList = ({
           position: 'fixed',
           top: '50vh',
           left: 0,
-          zIndex: 50,
+          zIndex: 21,
           opacity: isCollapsed ? 1 : 0,
           pointerEvents: isCollapsed ? 'auto' : 'none',
           transition: 'opacity 0.3s ease-in-out',

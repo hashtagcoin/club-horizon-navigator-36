@@ -64,7 +64,7 @@ export const ClubDetailsPanel = ({
   };
 
   return (
-    <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full relative z-[9999]">
+    <div className="fixed top-2 right-2 w-[calc(50%-1rem)] bg-white p-2 rounded-lg shadow-md z-50">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">
