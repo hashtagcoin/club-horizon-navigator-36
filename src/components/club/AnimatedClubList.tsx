@@ -14,8 +14,8 @@ interface AnimatedClubListProps {
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
-  filterGenre: string[];  // Changed to array
-  setFilterGenre: (value: string[]) => void;  // Changed to array
+  filterGenre: string[];
+  setFilterGenre: (value: string[]) => void;
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   onSelectClub: (club: Club) => void;
@@ -44,38 +44,29 @@ export const AnimatedClubList = ({
           zIndex: 40,
           transform: x.to(x => `translateX(${x}px)`)
         }}
-        className="bg-white shadow-xl"
+        className="bg-white shadow-xl flex"
       >
-        <ClubList {...clubListProps} />
+        <div className="flex-grow">
+          <ClubList {...clubListProps} />
+        </div>
+        
+        {/* Minimize button - now part of the club list panel */}
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`absolute top-1/2 right-0 -translate-y-1/2 translate-x-full bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300 ${isCollapsed ? 'hidden' : ''}`}
+            onClick={onToggle}
+          >
+            <ChevronLeft 
+              className="h-6 w-6 transition-transform duration-300 text-gray-600"
+              strokeWidth={5}
+            />
+          </Button>
+        </div>
       </animated.div>
 
-      {/* Minimize button */}
-      <animated.div
-        style={{
-          x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5)),
-          position: 'fixed',
-          top: '50vh',
-          left: 0,
-          zIndex: 50,
-          transform: x.to(x => `translateX(${x}px)`),
-          opacity: isCollapsed ? 0 : 1,
-          pointerEvents: isCollapsed ? 'none' : 'auto',
-        }}
-      >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
-          onClick={onToggle}
-        >
-          <ChevronLeft 
-            className="h-6 w-6 transition-transform duration-300 text-gray-600"
-            strokeWidth={5}
-          />
-        </Button>
-      </animated.div>
-
-      {/* Maximize button */}
+      {/* Maximize button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',
