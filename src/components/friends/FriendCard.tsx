@@ -1,6 +1,6 @@
 import { Friend } from './FriendsList';
 import { Button } from "@/components/ui/button";
-import { MessageCircle, UserMinus } from 'lucide-react';
+import { MessageSquare, UserMinus } from 'lucide-react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from 'sonner';
 
@@ -40,7 +40,7 @@ export function FriendCard({ friend, onRemove }: FriendCardProps) {
           size="icon"
           onClick={handleStartChat}
         >
-          <MessageCircle className="h-4 w-4" />
+          <MessageSquare className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
