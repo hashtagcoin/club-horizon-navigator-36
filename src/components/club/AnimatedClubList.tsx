@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
+import { useDrag } from '@use-gesture/react';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
@@ -14,8 +15,8 @@ interface AnimatedClubListProps {
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
-  filterGenre: string[];  // Changed to array
-  setFilterGenre: (value: string[]) => void;  // Changed to array
+  filterGenre: string[];
+  setFilterGenre: (value: string[]) => void;
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   onSelectClub: (club: Club) => void;
@@ -40,7 +41,7 @@ export const AnimatedClubList = ({
           width: '50%',
           position: 'absolute',
           height: '100%',
-          touchAction: isCollapsed ? 'none' : 'pan-x',
+          touchAction: 'none',
           zIndex: 40,
           transform: x.to(x => `translateX(${x}px)`)
         }}
