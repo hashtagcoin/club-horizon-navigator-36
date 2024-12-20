@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSpring, animated, to } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { FriendCard } from './FriendCard';
@@ -30,7 +30,7 @@ const dummyFriends: Friend[] = [
 
 interface FriendsListProps {
   isOpen: boolean;
-  onClose: () => void;  // Add onClose prop
+  onClose: () => void;
 }
 
 export function FriendsList({ isOpen, onClose }: FriendsListProps) {
@@ -66,7 +66,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
   });
 
   // Update spring when isOpen changes
-  React.useEffect(() => {
+  useEffect(() => {
     api.start({ x: isOpen ? 0 : 400, immediate: false });
   }, [isOpen, api]);
 
