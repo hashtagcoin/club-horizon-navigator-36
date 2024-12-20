@@ -3,12 +3,10 @@ import { useSpring, animated, to } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { AddFriendForm } from './AddFriendForm';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { UserPlus, X } from 'lucide-react';
-import { Separator } from "@/components/ui/separator";
 import { toast } from 'sonner';
 import { FriendSelection } from './FriendSelection';
 import { PrivateChat } from './PrivateChat';
+import { FriendsHeader } from './FriendsHeader';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 export interface Friend {
@@ -113,27 +111,10 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
       }}
       className="fixed right-0 top-0 h-screen w-64 bg-background border-l border-border shadow-xl flex flex-col z-50"
     >
-      <div className="flex justify-between items-center p-2 border-b">
-        <h2 className="text-sm font-semibold">Friends</h2>
-        <div className="flex gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowAddFriend(true)}
-            className="h-6 w-6"
-          >
-            <UserPlus className="h-3 w-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-6 w-6"
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        </div>
-      </div>
+      <FriendsHeader
+        onAddFriend={() => setShowAddFriend(true)}
+        onClose={onClose}
+      />
 
       <ResizablePanelGroup direction="vertical" className="flex-1">
         <ResizablePanel defaultSize={60} minSize={30}>
