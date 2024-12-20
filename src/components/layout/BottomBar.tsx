@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Button } from "@/components/ui/button";
-import { Zap, Moon, MessageCircle, Smile, Users } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Zap, Moon, MessageCircle, Tag, Users } from 'lucide-react';
 
 interface BottomBarProps {
   showHighTraffic: boolean;
@@ -15,6 +14,8 @@ interface BottomBarProps {
   toggleGeneralChat: () => void;
   showFriendsList: boolean;
   toggleFriendsList: () => void;
+  showOffers: boolean;
+  toggleOffers: () => void;
 }
 
 export const BottomBar: FC<BottomBarProps> = ({
@@ -26,10 +27,10 @@ export const BottomBar: FC<BottomBarProps> = ({
   isGeneralChat,
   toggleGeneralChat,
   showFriendsList,
-  toggleFriendsList
+  toggleFriendsList,
+  showOffers,
+  toggleOffers
 }) => {
-  const navigate = useNavigate();
-
   return (
     <div className="bg-primary text-primary-foreground p-2">
       <div className="flex justify-around">
@@ -58,11 +59,11 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Chat</span>
         </Button>
         <Button
-          variant="ghost"
+          variant={showOffers ? "default" : "ghost"}
           className="flex flex-col items-center h-12 w-16"
-          onClick={() => navigate('/offers')}
+          onClick={toggleOffers}
         >
-          <Smile className="h-5 w-5" />
+          <Tag className="h-5 w-5" />
           <span className="text-[0.6rem] mt-0.5">Offers</span>
         </Button>
         <Button

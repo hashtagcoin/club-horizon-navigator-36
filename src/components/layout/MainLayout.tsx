@@ -1,6 +1,7 @@
 import { TopBar } from './TopBar';
 import { BottomBar } from './BottomBar';
 import { FriendsList } from '../friends/FriendsList';
+import { OffersPanel } from '../offers/OffersPanel';
 import { useState } from 'react';
 
 interface MainLayoutProps {
@@ -33,9 +34,14 @@ export function MainLayout({
   children
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
+  const [showOffers, setShowOffers] = useState(false);
 
   const toggleFriendsList = () => {
     setShowFriendsList(!showFriendsList);
+  };
+
+  const toggleOffers = () => {
+    setShowOffers(!showOffers);
   };
 
   return (
@@ -51,6 +57,10 @@ export function MainLayout({
           isOpen={showFriendsList} 
           onClose={() => setShowFriendsList(false)} 
         />
+        <OffersPanel
+          isOpen={showOffers}
+          onClose={() => setShowOffers(false)}
+        />
       </div>
 
       <BottomBar
@@ -65,6 +75,8 @@ export function MainLayout({
         toggleGeneralChat={toggleGeneralChat}
         showFriendsList={showFriendsList}
         toggleFriendsList={toggleFriendsList}
+        showOffers={showOffers}
+        toggleOffers={toggleOffers}
       />
     </div>
   );
