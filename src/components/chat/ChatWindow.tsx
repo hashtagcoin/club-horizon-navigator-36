@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Send, X } from 'lucide-react'
 import { ChatMessage, ChatMessages, Club } from '@/types/club'
+import { useSpring, animated } from '@react-spring/web'
+import { useDrag } from '@use-gesture/react'
+import { useEffect } from "react"
 
 interface ChatWindowProps {
   isGeneralChat: boolean;
@@ -30,24 +33,59 @@ export function ChatWindow({
   chatClub,
   isGeneralChat,
 }: ChatWindowProps) {
+  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+
+  const bind = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
+    // Determine swipe direction based on chat type
+    const shouldClose = isGeneralChat 
+      ? (dx < 0 && mx < -50) // Swipe left for general chat
+      : (dx > 0 && mx > 50); // Swipe right for club chat
+
+    if (shouldClose && Math.abs(vx) > 0.2) {
+      cancel();
+      api.start({ 
+        x: isGeneralChat ? -400 : 400,
+        immediate: false,
+        config: { tension: 200, friction: 25 },
+        onRest: onClose
+      });
+    } else {
+      api.start({ 
+        x: active ? mx : 0,
+        immediate: active,
+        config: { tension: 200, friction: 25 }
+      });
+    }
+  }, {
+    axis: 'x',
+    bounds: { left: isGeneralChat ? -400 : 0, right: isGeneralChat ? 0 : 400 },
+    rubberband: true
+  });
+
   const getPosition = () => {
     if (isGeneralChat) {
       return {
         left: '16px',
-        bottom: '72px', // Adjusted to account for bottom nav bar height
+        bottom: '72px',
       };
     } else {
       return {
         right: '16px',
-        bottom: '72px', // Adjusted to account for bottom nav bar height
+        bottom: '72px',
       };
     }
   };
 
   return (
-    <div 
-      className="fixed bg-background rounded-lg overflow-hidden shadow-lg border border-border w-64 h-72 z-50"
-      style={getPosition()}
+    <animated.div 
+      {...bind()}
+      style={{ 
+        ...getPosition(),
+        x,
+        position: 'fixed',
+        touchAction: 'none'
+      }}
+      className="bg-background rounded-lg overflow-hidden shadow-lg border border-border w-64 h-72 z-50"
     >
       <div className="flex justify-between items-center p-2 bg-primary/5 border-b border-border">
         <span className="text-sm font-medium">
@@ -120,6 +158,6 @@ export function ChatWindow({
           </Button>
         </form>
       </div>
-    </div>
+    </animated.div>
   );
 }

@@ -5,6 +5,9 @@ import { ArrowLeft, Tag, Ticket, Gift } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useSpring, animated } from '@react-spring/web';
+import { useDrag } from '@use-gesture/react';
+import { useEffect } from "react";
 
 // Function to generate daily offers based on the current date
 const generateDailyOffers = () => {
@@ -55,6 +58,30 @@ const Offers = () => {
     staleTime: 24 * 60 * 60 * 1000, // 24 hours
   });
 
+  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+
+  const bind = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
+    if (dx > 0 && mx > 100 && Math.abs(vx) > 0.2) {
+      cancel();
+      api.start({ 
+        x: 400,
+        immediate: false,
+        config: { tension: 200, friction: 25 },
+        onRest: () => navigate(-1)
+      });
+    } else {
+      api.start({ 
+        x: active ? mx : 0,
+        immediate: active,
+        config: { tension: 200, friction: 25 }
+      });
+    }
+  }, {
+    axis: 'x',
+    bounds: { left: 0, right: 400 },
+    rubberband: true
+  });
+
   const handleClaim = (offerId: string) => {
     toast({
       title: "Offer Claimed!",
@@ -63,7 +90,11 @@ const Offers = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <animated.div 
+      {...bind()}
+      style={{ x }}
+      className="flex flex-col h-screen bg-gray-100 touch-none"
+    >
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button 
           variant="ghost" 
@@ -103,7 +134,7 @@ const Offers = () => {
           })}
         </div>
       </ScrollArea>
-    </div>
+    </animated.div>
   );
 };
 
