@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from 'lucide-react';
 import { ClubList } from './ClubList';
 import { Club } from '@/types/club';
-import { useDrag } from '@use-gesture/react';
 
 interface AnimatedClubListProps {
   x: SpringValue<number>;
@@ -50,33 +49,7 @@ export const AnimatedClubList = ({
         <ClubList {...clubListProps} />
       </animated.div>
 
-      {/* Minimize button */}
-      <animated.div
-        style={{
-          x: x.to(x => x + (isCollapsed ? -40 : window.innerWidth * 0.5)),
-          position: 'fixed',
-          top: '50vh',
-          left: 0,
-          zIndex: 50,
-          transform: x.to(x => `translateX(${x}px)`),
-          opacity: isCollapsed ? 0 : 1,
-          pointerEvents: isCollapsed ? 'none' : 'auto',
-        }}
-      >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
-          onClick={onToggle}
-        >
-          <ChevronLeft 
-            className="h-6 w-6 transition-transform duration-300 text-gray-600"
-            strokeWidth={5}
-          />
-        </Button>
-      </animated.div>
-
-      {/* Maximize button */}
+      {/* Maximize button - only shown when collapsed */}
       <div
         style={{
           position: 'fixed',
