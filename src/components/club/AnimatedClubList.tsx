@@ -50,7 +50,6 @@ export const AnimatedClubList = ({
           <ClubList {...clubListProps} />
         </div>
         
-        {/* Minimize button - now part of the club list panel */}
         <div className="relative">
           <Button
             variant="ghost"
@@ -66,7 +65,6 @@ export const AnimatedClubList = ({
         </div>
       </animated.div>
 
-      {/* Maximize button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',
