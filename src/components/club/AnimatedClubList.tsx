@@ -49,16 +49,15 @@ export const AnimatedClubList = ({
         <ClubList {...clubListProps} />
       </animated.div>
 
-      {/* Maximize button - only shown when collapsed */}
+      {/* Toggle button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',
           top: '50vh',
-          left: 0,
+          left: isCollapsed ? 0 : '50%',
+          transform: 'translateY(-50%)',
           zIndex: 25,
-          opacity: isCollapsed ? 1 : 0,
-          pointerEvents: isCollapsed ? 'auto' : 'none',
-          transition: 'opacity 0.3s ease-in-out',
+          transition: 'left 0.3s ease-in-out',
         }}
       >
         <Button
@@ -68,8 +67,8 @@ export const AnimatedClubList = ({
           onClick={onToggle}
         >
           <ChevronLeft 
-            className="h-6 w-6 text-gray-600 rotate-180"
-            strokeWidth={5}
+            className={`h-6 w-6 text-gray-600 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
+            strokeWidth={2}
           />
         </Button>
       </div>
