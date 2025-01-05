@@ -8,6 +8,7 @@ import { FriendSelection } from './FriendSelection';
 import { PrivateChat } from './PrivateChat';
 import { FriendsHeader } from './FriendsHeader';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { UserProfile } from './user-profile';
 
 export interface Friend {
   id: string;
@@ -36,6 +37,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [chatMessage, setChatMessage] = useState("");
   const [messages, setMessages] = useState<Array<{ sender: string; text: string }>>([]);
+  const [viewingFriend, setViewingFriend] = useState<Friend | null>(null);
 
   const [{ x }, api] = useSpring(() => ({
     x: 0,
@@ -77,6 +79,18 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
     );
   };
 
+  const handleRemoveFriend = () => {
+    if (viewingFriend) {
+      setFriends(prev => prev.filter(f => f.id !== viewingFriend.id));
+      setSelectedFriends(prev => prev.filter(id => id !== viewingFriend.id));
+      setViewingFriend(null);
+    }
+  };
+
+  const handleShowProfile = (friend: Friend) => {
+    setViewingFriend(friend);
+  };
+
   const handleSendMessage = () => {
     if (chatMessage.trim() && selectedFriends.length > 0) {
       setMessages([...messages, { sender: 'You', text: chatMessage }]);
@@ -105,6 +119,17 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
       }}
       className="fixed right-0 top-0 h-screen w-64 bg-background border-l border-border shadow-xl flex flex-col z-50"
     >
+      {viewingFriend && (
+        <UserProfile
+          onClose={() => setViewingFriend(null)}
+          isFriend={true}
+          onRemoveFriend={handleRemoveFriend}
+          name={viewingFriend.name}
+          location="Unknown"
+          memberSince="2024"
+        />
+      )}
+
       <FriendsHeader
         onAddFriend={() => setShowAddFriend(true)}
         onClose={onClose}
@@ -142,6 +167,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
                 onSendMessage={handleSendMessage}
                 onClose={() => setSelectedFriends([])}
                 onToggleFriend={handleToggleFriend}
+                onShowProfile={handleShowProfile}
               />
             </ResizablePanel>
           </>

@@ -11,6 +11,8 @@ interface PrivateChatProps {
   setChatMessage: (message: string) => void;
   onSendMessage: () => void;
   onClose: () => void;
+  onToggleFriend: (friendId: string) => void;
+  onShowProfile: (friend: Friend) => void;
 }
 
 export function PrivateChat({
@@ -19,7 +21,9 @@ export function PrivateChat({
   chatMessage,
   setChatMessage,
   onSendMessage,
-  onClose
+  onClose,
+  onToggleFriend,
+  onShowProfile
 }: PrivateChatProps) {
   return (
     <div className="h-full flex flex-col">
@@ -27,7 +31,12 @@ export function PrivateChat({
         <div className="flex items-center gap-2 overflow-x-auto">
           {selectedFriends.map((friend) => (
             <div key={friend.id} className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
-              <span className="text-xs">{friend.name}</span>
+              <span 
+                className="text-xs cursor-pointer"
+                onDoubleClick={() => onShowProfile(friend)}
+              >
+                {friend.name}
+              </span>
               <Button
                 variant="ghost"
                 size="icon"
