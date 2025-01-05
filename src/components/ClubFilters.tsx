@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -41,12 +42,19 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
-  // Sort genres alphabetically and add "all" option at the beginning
-  const sortedGenres = ["all", ...genres.sort()];
+  const sortedGenres = genres.sort();
+
+  const handleGenreToggle = (genre: string) => {
+    setFilterGenre(prev => 
+      prev.includes(genre) 
+        ? prev.filter(g => g !== genre)
+        : [...prev, genre]
+    );
+  };
 
   return (
     <div className="p-2">
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-col gap-2">
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}
@@ -63,21 +71,19 @@ export function ClubFilters({
           </SelectContent>
         </Select>
 
-        <Select 
-          onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
-          defaultValue="all"
-        >
-          <SelectTrigger className="w-[130px] h-8 text-sm">
-            <SelectValue placeholder="Select venue type" />
-          </SelectTrigger>
-          <SelectContent>
-            {sortedGenres.map((genre) => (
-              <SelectItem key={genre} value={genre}>
-                {genre === "all" ? "All Venues" : formatGenre(genre)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap gap-2">
+          {sortedGenres.map((genre) => (
+            <Button
+              key={genre}
+              size="sm"
+              variant={filterGenre.includes(genre) ? "default" : "outline"}
+              onClick={() => handleGenreToggle(genre)}
+              className="text-xs"
+            >
+              {formatGenre(genre)}
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   );
