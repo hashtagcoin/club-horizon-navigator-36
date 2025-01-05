@@ -1,6 +1,6 @@
 import { Friend } from './FriendsList';
 import { Button } from "@/components/ui/button";
-import { X } from 'lucide-react';
+import { X, XCircle } from 'lucide-react';
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
 
@@ -28,6 +28,14 @@ export function PrivateChat({
           {selectedFriends.map((friend) => (
             <div key={friend.id} className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
               <span className="text-xs">{friend.name}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-4 w-4 p-0 text-white/80 hover:text-white"
+                onClick={() => onToggleFriend(friend.id)}
+              >
+                <XCircle className="h-3 w-3" />
+              </Button>
             </div>
           ))}
         </div>

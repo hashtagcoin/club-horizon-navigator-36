@@ -141,6 +141,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
                 setChatMessage={setChatMessage}
                 onSendMessage={handleSendMessage}
                 onClose={() => setSelectedFriends([])}
+                onToggleFriend={handleToggleFriend}
               />
             </ResizablePanel>
           </>
