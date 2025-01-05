@@ -10,7 +10,7 @@ interface AnimatedClubListProps {
   isCollapsed: boolean;
   onToggle: () => void;
   clubs: Club[];
-  selectedClubs: Club[];
+  selectedClub: Club | null;
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
@@ -49,6 +49,7 @@ export const AnimatedClubList = ({
         <ClubList {...clubListProps} />
       </animated.div>
 
+      {/* Toggle button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',

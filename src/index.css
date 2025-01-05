@@ -25,13 +25,14 @@
     --ring: 0 0% 80%;
     --radius: 0.5rem;
   }
+}
 
+@layer base {
   * {
-    @apply border-border font-sans;
+    @apply border-border;
   }
-  
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
   }
 }
 

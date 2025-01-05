@@ -3,11 +3,11 @@ import { Club, ChatMessage, ChatMessages } from '@/types/club';
 
 export function useChatManager(selectedClub: Club | null) {
   const [chatOpen, setChatOpen] = useState(false);
-  const [isGeneralChat, setIsGeneralChat] = useState(true);
-  const [chatMessage, setChatMessage] = useState("");
   const [clubChats, setClubChats] = useState<Record<number, boolean>>({});
+  const [chatMessage, setChatMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessages>({ general: [] });
   const [newMessageCounts, setNewMessageCounts] = useState<Record<number, number>>({});
+  const [isGeneralChat, setIsGeneralChat] = useState(true);
   const [activeClubChat, setActiveClubChat] = useState<Club | null>(null);
 
   const toggleGeneralChat = () => {

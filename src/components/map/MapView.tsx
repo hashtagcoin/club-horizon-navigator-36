@@ -9,7 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 interface MapViewProps {
   isLoaded: boolean;
   clubs: Club[];
-  selectedClubs: Club[];
+  selectedClub: Club | null;
   selectedDay: string;
   setSelectedDay: (day: string) => void;
   mapCenter: google.maps.LatLngLiteral;
@@ -22,10 +22,10 @@ interface MapViewProps {
 
 export function MapView({
   isLoaded,
-  clubs = [], // Add default empty array
-  selectedClubs = [], // Add default empty array
-  selectedDay,
-  setSelectedDay,
+  clubs,
+  selectedClub,
+  selectedDay: listSelectedDay,
+  setSelectedDay: setListSelectedDay,
   mapCenter,
   mapZoom,
   userLocation,
@@ -33,26 +33,25 @@ export function MapView({
   onClubSelect,
   locationManagement,
 }: MapViewProps) {
+  const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
   const [showAllClubs, setShowAllClubs] = useState(true);
 
+  // Reset showAllClubs to true when mapCenter changes (suburb change)
   useEffect(() => {
     setShowAllClubs(true);
   }, [mapCenter]);
 
-  const visibleClubs = showAllClubs ? clubs : selectedClubs;
+  const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
-        {selectedClubs?.map(club => (
-          <ClubDetailsPanel
-            key={club.id}
-            selectedClub={club}
-            selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
-          />
-        ))}
+        <ClubDetailsPanel
+          selectedClub={selectedClub}
+          selectedDay={detailsSelectedDay}
+          setSelectedDay={setDetailsSelectedDay}
+        />
       </div>
       
       <div className="absolute bottom-4 left-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -42,18 +41,12 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
-  const sortedGenres = genres.sort();
-
-  const handleGenreToggle = (genre: string) => {
-    const newGenres = filterGenre.includes(genre)
-      ? filterGenre.filter(g => g !== genre)
-      : [...filterGenre, genre];
-    setFilterGenre(newGenres);
-  };
+  // Sort genres alphabetically and add "all" option at the beginning
+  const sortedGenres = ["all", ...genres.sort()];
 
   return (
     <div className="p-2">
-      <div className="flex flex-col gap-2">
+      <div className="flex gap-2 items-center">
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}
@@ -70,19 +63,21 @@ export function ClubFilters({
           </SelectContent>
         </Select>
 
-        <div className="flex flex-wrap gap-2">
-          {sortedGenres.map((genre) => (
-            <Button
-              key={genre}
-              size="sm"
-              variant={filterGenre.includes(genre) ? "default" : "outline"}
-              onClick={() => handleGenreToggle(genre)}
-              className={`text-xs transition-colors ${filterGenre.includes(genre) ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground opacity-70 hover:opacity-100'}`}
-            >
-              {formatGenre(genre)}
-            </Button>
-          ))}
-        </div>
+        <Select 
+          onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
+          defaultValue="all"
+        >
+          <SelectTrigger className="w-[130px] h-8 text-sm">
+            <SelectValue placeholder="Select venue type" />
+          </SelectTrigger>
+          <SelectContent>
+            {sortedGenres.map((genre) => (
+              <SelectItem key={genre} value={genre}>
+                {genre === "all" ? "All Venues" : formatGenre(genre)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
