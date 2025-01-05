@@ -45,11 +45,10 @@ export function ClubFilters({
   const sortedGenres = genres.sort();
 
   const handleGenreToggle = (genre: string) => {
-    setFilterGenre((currentGenres: string[]) => 
-      currentGenres.includes(genre) 
-        ? currentGenres.filter(g => g !== genre)
-        : [...currentGenres, genre]
-    );
+    const newGenres = filterGenre.includes(genre)
+      ? filterGenre.filter(g => g !== genre)
+      : [...filterGenre, genre];
+    setFilterGenre(newGenres);
   };
 
   return (
