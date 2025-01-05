@@ -6,19 +6,17 @@ import { useClubData } from '@/hooks/useClubData';
 import { useChatManager } from './chat/ChatManager';
 import { useMapControls } from '@/hooks/useMapControls';
 import { useClubFilters } from '@/hooks/useClubFilters';
-import { useListState } from '@/hooks/useListState';
-import { AnimatedClubList } from './club/AnimatedClubList';
 import { MainLayout } from './layout/MainLayout';
 import { MapSection } from './map/MapSection';
-import { ChatWindow } from './chat/ChatWindow';
-import { Club } from '@/types/club';
+import { ClubListContainer } from './club/ClubListContainer';
+import { ChatContainer } from './chat/ChatContainer';
+import { useClubSelectionManager } from './club/ClubSelectionManager';
 
 const libraries: Libraries = ['places'];
 
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
-  const [selectedClubs, setSelectedClubs] = useState<Club[]>([]);
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
@@ -29,7 +27,12 @@ export default function ClubPilot() {
   });
 
   const mapControls = useMapControls(isLoaded, userLocation);
-  const listState = useListState();
+  const chatManager = useChatManager(mapControls.selectedClub);
+  
+  const clubSelection = useClubSelectionManager({
+    onClubSelect: mapControls.handleClubSelect,
+    locationManagement
+  });
 
   const {
     sortBy,
@@ -48,22 +51,6 @@ export default function ClubPilot() {
     setSelectedDay,
     filterAndSortClubs
   } = useClubFilters();
-
-  const chatManager = useChatManager(mapControls.selectedClub);
-
-  const handleClubSelect = (club: Club) => {
-    setSelectedClubs(prevSelected => {
-      const isAlreadySelected = prevSelected.some(c => c.id === club.id);
-      if (isAlreadySelected) {
-        return prevSelected.filter(c => c.id !== club.id);
-      } else {
-        return [...prevSelected, club];
-      }
-    });
-    mapControls.handleClubSelect(club);
-    locationManagement.setMapCenter(club.position);
-    locationManagement.setMapZoom(16);
-  };
 
   if (showUserProfile) {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
@@ -85,13 +72,9 @@ export default function ClubPilot() {
       isGeneralChat={chatManager.isGeneralChat}
       toggleGeneralChat={chatManager.toggleGeneralChat}
     >
-      <AnimatedClubList
-        x={listState.x}
-        bind={listState.bind}
-        isCollapsed={listState.isListCollapsed}
-        onToggle={listState.toggleList}
+      <ClubListContainer
         clubs={filteredClubs}
-        selectedClubs={selectedClubs}
+        selectedClubs={clubSelection.selectedClubs}
         selectedDay={selectedDay}
         sortBy={sortBy}
         setSortBy={setSortBy}
@@ -99,59 +82,33 @@ export default function ClubPilot() {
         setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        onSelectClub={handleClubSelect}
+        onSelectClub={clubSelection.handleClubSelect}
         onOpenChat={chatManager.openChat}
         newMessageCounts={chatManager.newMessageCounts}
         isLoading={isLoadingClubs}
       />
 
       <MapSection
-        isListCollapsed={listState.isListCollapsed}
+        isListCollapsed={false}
         isLoaded={isLoaded}
         filteredClubs={filteredClubs}
-        selectedClubs={selectedClubs}
+        selectedClubs={clubSelection.selectedClubs}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
         mapCenter={locationManagement.mapCenter}
         mapZoom={locationManagement.mapZoom}
         userLocation={userLocation}
         directions={mapControls.directions}
-        onClubSelect={handleClubSelect}
+        onClubSelect={clubSelection.handleClubSelect}
         locationManagement={locationManagement}
       />
 
-      {chatManager.chatOpen && (
-        <ChatWindow
-          isGeneralChat={chatManager.isGeneralChat}
-          chatClub={chatManager.activeClubChat}
-          chatMessage={chatManager.chatMessage}
-          setChatMessage={chatManager.setChatMessage}
-          allMessages={chatManager.allMessages}
-          onClose={() => chatManager.setChatOpen(false)}
-          onSend={chatManager.sendMessage}
-          clubs={clubs}
-          messageOpacities={{}}
-          chatScrollRef={null}
-        />
-      )}
-
-      {clubs.map((club) => 
-        chatManager.clubChats[club.id] && (
-          <ChatWindow
-            key={club.id}
-            isGeneralChat={false}
-            chatClub={club}
-            chatMessage={chatManager.chatMessage}
-            setChatMessage={chatManager.setChatMessage}
-            allMessages={chatManager.getClubMessages(club.id)}
-            onClose={() => chatManager.closeChat(club)}
-            onSend={() => chatManager.sendMessage(club.id)}
-            clubs={clubs}
-            messageOpacities={{}}
-            chatScrollRef={null}
-          />
-        )
-      )}
+      <ChatContainer
+        chatOpen={chatManager.chatOpen}
+        isGeneralChat={chatManager.isGeneralChat}
+        chatManager={chatManager}
+        clubs={clubs}
+      />
     </MainLayout>
   );
 }
