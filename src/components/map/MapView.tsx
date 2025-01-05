@@ -22,8 +22,8 @@ interface MapViewProps {
 
 export function MapView({
   isLoaded,
-  clubs,
-  selectedClubs,
+  clubs = [], // Add default empty array
+  selectedClubs = [], // Add default empty array
   selectedDay,
   setSelectedDay,
   mapCenter,
@@ -45,7 +45,7 @@ export function MapView({
     <div className="h-full flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
-        {selectedClubs.map(club => (
+        {selectedClubs?.map(club => (
           <ClubDetailsPanel
             key={club.id}
             selectedClub={club}

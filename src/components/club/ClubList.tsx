@@ -22,7 +22,7 @@ interface ClubListProps {
 
 export const ClubList: FC<ClubListProps> = ({
   clubs,
-  selectedClubs,
+  selectedClubs = [], // Add default empty array
   selectedDay,
   sortBy,
   setSortBy,
@@ -76,12 +76,12 @@ export const ClubList: FC<ClubListProps> = ({
             clubs.map(club => (
               <div 
                 key={club.id} 
-                ref={selectedClubs.some(c => c.id === club.id) ? selectedClubRef : null}
+                ref={selectedClubs?.some(c => c.id === club.id) ? selectedClubRef : null}
               >
                 <ClubCard
                   club={club}
                   selectedDay={selectedDay}
-                  isSelected={selectedClubs.some(c => c.id === club.id)}
+                  isSelected={selectedClubs?.some(c => c.id === club.id) ?? false}
                   onSelect={onSelectClub}
                   onOpenChat={onOpenChat}
                   newMessageCount={newMessageCounts[club.id] || 0}
