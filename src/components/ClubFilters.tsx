@@ -45,10 +45,10 @@ export function ClubFilters({
   const sortedGenres = genres.sort();
 
   const handleGenreToggle = (genre: string) => {
-    setFilterGenre(prev => 
-      prev.includes(genre) 
-        ? prev.filter(g => g !== genre)
-        : [...prev, genre]
+    setFilterGenre((currentGenres: string[]) => 
+      currentGenres.includes(genre) 
+        ? currentGenres.filter(g => g !== genre)
+        : [...currentGenres, genre]
     );
   };
 
@@ -78,7 +78,7 @@ export function ClubFilters({
               size="sm"
               variant={filterGenre.includes(genre) ? "default" : "outline"}
               onClick={() => handleGenreToggle(genre)}
-              className="text-xs"
+              className={`text-xs transition-colors ${filterGenre.includes(genre) ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground opacity-70 hover:opacity-100'}`}
             >
               {formatGenre(genre)}
             </Button>

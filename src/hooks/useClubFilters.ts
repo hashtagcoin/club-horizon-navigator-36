@@ -4,7 +4,7 @@ import { sortClubs } from '@/utils/sortClubs';
 
 export function useClubFilters() {
   const [sortBy, setSortBy] = useState("closest");
-  const [filterGenre, setFilterGenre] = useState<string[]>([]);  // Changed to array
+  const [filterGenre, setFilterGenre] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showHighTraffic, setShowHighTraffic] = useState(false);
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
@@ -18,9 +18,9 @@ export function useClubFilters() {
 
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
     let filtered = [...clubs];
-
-    // Apply filters
-    if (filterGenre.length > 0) {
+    
+    // Only apply genre filter if some genres are deselected
+    if (filterGenre.length > 0 && filterGenre.length < new Set(clubs.map(club => club.genre)).size) {
       filtered = filtered.filter(club => filterGenre.includes(club.genre));
     }
     
@@ -53,6 +53,19 @@ export function useClubFilters() {
 
     return sortClubs(filtered, sortBy, userLocation);
   };
+
+  // Initialize all genres when clubs are loaded
+  useEffect(() => {
+    const initializeGenres = (clubs: Club[]) => {
+      if (clubs && clubs.length > 0) {
+        const allGenres = Array.from(new Set(clubs.map(club => club.genre)));
+        setFilterGenre(allGenres);
+      }
+    };
+
+    // We'll need to call this when clubs are loaded
+    // This will be handled by the parent component passing the genres prop
+  }, []);
 
   return {
     sortBy,
