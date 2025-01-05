@@ -1,5 +1,5 @@
 import { Club } from '@/types/club';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Music, Clock, MessageCircle, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
@@ -20,7 +20,6 @@ export const ClubCard = ({
   onOpenChat,
   newMessageCount
 }: ClubCardProps) => {
-  // Function to format type string
   const formatType = (type: string) => {
     return type
       .toLowerCase()
@@ -31,39 +30,43 @@ export const ClubCard = ({
 
   return (
     <Card
-      className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
+      className={`cursor-pointer relative bg-white hover:bg-gray-50 transition-all duration-200 ${
+        isSelected ? 'border-2 border-black' : 'border border-gray-200'
+      }`}
       onClick={() => onSelect(club)}
     >
-      <CardHeader className="flex justify-between items-start p-2">
-        <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
-        {club.hasSpecial && (
-          <span className="text-yellow-500 absolute top-2 right-2">😊</span>
-        )}
-        <div className="flex flex-col items-end space-y-1">
+      <CardContent className="p-3 flex justify-between items-start">
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-medium text-sm text-gray-900 truncate mr-2">{club.name}</h3>
+            {club.hasSpecial && (
+              <span className="text-yellow-500 text-sm">😊</span>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2 text-xs text-gray-600">
+            <div className="flex items-center gap-1">
+              <Music className="h-3 w-3" />
+              <span className="truncate">{formatType(club.genre)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              <span className="truncate">{club.openingHours[selectedDay]}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-1">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+            <User className={`h-3 w-3 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-gray-300'}`} />
+            <User className={`h-3 w-3 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-gray-300'}`} />
+            <User className={`h-3 w-3 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-gray-300'}`} />
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="pt-0 px-2 pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-1">
-            <Music className="h-3 w-3 text-black" />
-            <span className="text-xs text-black">{formatType(club.genre)}</span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-1 mt-1">
-          <Clock className="h-3 w-3 text-black" />
-          <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
-        </div>
-        <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
-          <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
+          
           <Button
             size="sm"
             variant="outline"
-            className="relative h-6 w-6 p-0"
+            className="h-6 w-6 p-0 relative"
             onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
           >
             <MessageCircle className="h-3 w-3" />
