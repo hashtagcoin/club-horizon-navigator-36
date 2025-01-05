@@ -89,26 +89,26 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
         transform: to([x], (x) => `translateX(${x}px)`),
         touchAction: 'pan-y'
       }}
-      className="fixed right-0 top-0 h-screen w-64 bg-background/80 backdrop-blur-sm border-l border-border shadow-xl flex flex-col z-50"
+      className="fixed right-0 top-0 h-screen w-64 bg-black border-l border-white/10 shadow-xl flex flex-col z-50"
     >
-      <div className="bg-black text-white p-4 flex items-center justify-between">
+      <div className="bg-black/90 text-white p-4 flex items-center justify-between border-b border-white/10">
         <h2 className="font-semibold">Special Offers</h2>
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 text-white hover:bg-white/20"
+          className="h-6 w-6 text-white hover:bg-white/10"
           onClick={onClose}
         >
           <X className="h-4 w-4" />
         </Button>
       </div>
 
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 bg-black">
         <div className="space-y-4">
           {offers.map((offer) => {
             const Icon = offer.icon;
             return (
-              <Card key={offer.id} className="bg-white/10 border-white/20 text-white">
+              <Card key={offer.id} className="bg-black/50 border border-white/20 text-white hover:bg-black/70 transition-colors">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-bold">
                     {offer.club}
@@ -117,10 +117,10 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
                 </CardHeader>
                 <CardContent>
                   <h3 className="font-semibold text-sm mb-1">{offer.title}</h3>
-                  <p className="text-xs text-gray-300 mb-3">{offer.description}</p>
+                  <p className="text-xs text-gray-400 mb-3">{offer.description}</p>
                   <Button 
                     size="sm"
-                    className="w-full text-xs"
+                    className="w-full text-xs bg-white/10 hover:bg-white/20 text-white"
                     onClick={() => handleClaim(offer.id)}
                   >
                     Claim Offer
