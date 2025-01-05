@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Club } from '@/types/club';
 import { sortClubs } from '@/utils/sortClubs';
 
@@ -38,15 +38,15 @@ export function useClubFilters() {
     }
 
     if (showSpecials) {
-      filtered = filtered.filter(club => club.hasSpecials);
+      filtered = filtered.filter(club => club.hasSpecial);
     }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(club => 
         club.name.toLowerCase().includes(query) ||
-        club.area?.toLowerCase().includes(query) ||
-        club.genre?.toLowerCase().includes(query)
+        club.address.toLowerCase().includes(query) ||
+        club.genre.toLowerCase().includes(query)
       );
     }
 
