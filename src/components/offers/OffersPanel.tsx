@@ -1,91 +1,96 @@
-import React from 'react';
-import { useSpring, animated, to } from '@react-spring/web';
-import { useDrag } from '@use-gesture/react';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { X, Tag, Gift } from 'lucide-react';
-import { useQuery } from "@tanstack/react-query";
-import { toast } from 'sonner';
+import { useState } from "react";
+import { animated, useSpring } from "@react-spring/web";
+import { useGesture } from "@use-gesture/react";
+import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Beer, Gift, Music, PartyPopper, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const offers = [
+  {
+    id: 1,
+    club: "Club Horizon",
+    title: "2 for 1 Drinks",
+    description: "Buy one get one free on all drinks before 11 PM",
+    icon: Beer,
+  },
+  {
+    id: 2,
+    club: "Skyline Lounge",
+    title: "Free Entry",
+    description: "Free entry before 10 PM with online registration",
+    icon: PartyPopper,
+  },
+  {
+    id: 3,
+    club: "Beat Box",
+    title: "VIP Access",
+    description: "Upgrade to VIP for free with group booking",
+    icon: Gift,
+  },
+  {
+    id: 4,
+    club: "Rhythm Room",
+    title: "Live Band Night",
+    description: "Special discount on live band performances",
+    icon: Music,
+  },
+];
 
 interface OffersPanelProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-const generateDailyOffers = () => {
-  const today = new Date();
-  const seed = today.toISOString().split('T')[0];
-  
-  return [
-    {
-      id: `${seed}-1`,
-      title: "2 for 1 Cocktails",
-      description: "Buy one cocktail, get one free!",
-      club: "Skybar Lounge",
-      icon: Tag,
-      color: "text-pink-500"
-    },
-    {
-      id: `${seed}-2`,
-      title: "Free Entry Before 11PM",
-      description: "Skip the cover charge with early arrival",
-      club: "Club Nova",
-      icon: Gift,
-      color: "text-purple-500"
-    },
-    {
-      id: `${seed}-3`,
-      title: "VIP Table Discount",
-      description: "20% off VIP table bookings",
-      club: "Luxe Nightclub",
-      icon: Gift,
-      color: "text-blue-500"
-    }
-  ];
-};
+export function OffersPanel({ onClose }: OffersPanelProps) {
+  const { toast } = useToast();
+  const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
-export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
-  const [{ x }, api] = useSpring(() => ({
-    x: 0,
-    config: { tension: 200, friction: 20 }
-  }));
+  const bind = useGesture({
+    onDrag: ({ down, movement: [mx] }) => {
+      if (mx > 0) {
+        api.start({ x: down ? mx : 0, immediate: down });
+      }
+    },
+    onDragEnd: ({ movement: [mx] }) => {
+      if (mx > 100) {
+        onClose();
+      } else {
+        api.start({ x: 0 });
+      }
+    },
+  });
 
-  const bind = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
-    if ((active && mx > 100) || (vx > 0.5 && dx > 0)) {
-      cancel();
-      api.start({ x: 400, immediate: false });
-      setTimeout(onClose, 200);
-    } else {
-      api.start({ 
-        x: active ? mx : 0,
-        immediate: active
+  const handleClaim = async (offerId: number) => {
+    try {
+      const response = await fetch(`/api/offers/${offerId}/claim`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to claim offer');
+      }
+
+      toast({
+        title: "Offer Claimed!",
+        description: "Check your email for the offer details.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to claim offer. Please try again.",
+        variant: "destructive",
       });
     }
-  }, {
-    axis: 'x',
-    bounds: { left: 0 },
-    rubberband: true
-  });
-
-  React.useEffect(() => {
-    api.start({ x: isOpen ? 0 : 400, immediate: false });
-  }, [isOpen, api]);
-
-  const { data: offers = [] } = useQuery({
-    queryKey: ['offers', new Date().toDateString()],
-    queryFn: generateDailyOffers,
-    staleTime: 24 * 60 * 60 * 1000,
-  });
-
-  const handleClaim = (offerId: string) => {
-    toast.success("Offer claimed! Check your email for the voucher.");
   };
 
   return (
-    <animated.div 
+    <animated.div
       {...bind()}
-      style={{ 
+      style={{
         transform: to([x], (x) => `translateX(${x}px)`),
         touchAction: 'pan-y'
       }}
@@ -113,7 +118,7 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
                   <CardTitle className="text-sm font-bold">
                     {offer.club}
                   </CardTitle>
-                  <Icon className={`h-4 w-4 ${offer.color}`} />
+                  <Icon className="h-4 w-4 text-white/70" />
                 </CardHeader>
                 <CardContent>
                   <h3 className="font-semibold text-sm mb-1">{offer.title}</h3>
