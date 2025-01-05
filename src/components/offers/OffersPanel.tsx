@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { animated, useSpring } from "@react-spring/web";
+import { animated, useSpring, to as interpolate } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -39,24 +39,29 @@ const offers = [
 ];
 
 interface OffersPanelProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
-export function OffersPanel({ onClose }: OffersPanelProps) {
+export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
   const { toast } = useToast();
-  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+  
+  const { x } = useSpring({
+    x: isOpen ? 0 : 100,
+    config: { tension: 300, friction: 30 }
+  });
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx] }) => {
       if (mx > 0) {
-        api.start({ x: down ? mx : 0, immediate: down });
+        x.set(down ? mx : 0);
       }
     },
     onDragEnd: ({ movement: [mx] }) => {
       if (mx > 100) {
         onClose();
       } else {
-        api.start({ x: 0 });
+        x.set(0);
       }
     },
   });
@@ -87,11 +92,13 @@ export function OffersPanel({ onClose }: OffersPanelProps) {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <animated.div
       {...bind()}
       style={{
-        transform: to([x], (x) => `translateX(${x}px)`),
+        transform: x.to(x => `translateX(${x}%)`),
         touchAction: 'pan-y'
       }}
       className="fixed right-0 top-0 h-screen w-64 bg-black border-l border-white/10 shadow-xl flex flex-col z-50"
