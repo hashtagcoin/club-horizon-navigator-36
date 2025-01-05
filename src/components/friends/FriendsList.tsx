@@ -69,12 +69,6 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
     toast.success('Friend added successfully!');
   };
 
-  const handleRemoveFriend = (friendId: string) => {
-    setFriends(friends.filter(friend => friend.id !== friendId));
-    setSelectedFriends(selectedFriends.filter(id => id !== friendId));
-    toast.success('Friend removed');
-  };
-
   const handleToggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
       prev.includes(friendId)
@@ -130,7 +124,6 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
                   friends={friends}
                   selectedFriends={selectedFriends}
                   onToggleFriend={handleToggleFriend}
-                  onRemoveFriend={handleRemoveFriend}
                 />
               )}
             </div>
@@ -147,7 +140,6 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
                 chatMessage={chatMessage}
                 setChatMessage={setChatMessage}
                 onSendMessage={handleSendMessage}
-                onRemoveFriend={handleToggleFriend}
                 onClose={() => setSelectedFriends([])}
               />
             </ResizablePanel>
