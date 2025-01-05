@@ -1,6 +1,6 @@
 import { Friend } from './FriendsList';
 import { Button } from "@/components/ui/button";
-import { X, UserMinus } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
 
@@ -10,7 +10,6 @@ interface PrivateChatProps {
   chatMessage: string;
   setChatMessage: (message: string) => void;
   onSendMessage: () => void;
-  onRemoveFriend: (friendId: string) => void;
   onClose: () => void;
 }
 
@@ -20,7 +19,6 @@ export function PrivateChat({
   chatMessage,
   setChatMessage,
   onSendMessage,
-  onRemoveFriend,
   onClose
 }: PrivateChatProps) {
   return (
@@ -30,14 +28,6 @@ export function PrivateChat({
           {selectedFriends.map((friend) => (
             <div key={friend.id} className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
               <span className="text-xs">{friend.name}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 text-white hover:text-white/80"
-                onClick={() => onRemoveFriend(friend.id)}
-              >
-                <UserMinus className="h-3 w-3" />
-              </Button>
             </div>
           ))}
         </div>
