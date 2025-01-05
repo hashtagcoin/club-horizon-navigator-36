@@ -2,7 +2,8 @@ import { TopBar } from './TopBar';
 import { BottomBar } from './BottomBar';
 import { FriendsList } from '../friends/FriendsList';
 import { OffersPanel } from '../offers/OffersPanel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MainLayoutProps {
   searchQuery: string;
@@ -35,6 +36,21 @@ export function MainLayout({
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
   const [showOffers, setShowOffers] = useState(false);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const enableFullscreen = async () => {
+      if (isMobile && document.documentElement.requestFullscreen) {
+        try {
+          await document.documentElement.requestFullscreen();
+        } catch (err) {
+          console.log('Fullscreen request failed:', err);
+        }
+      }
+    };
+
+    enableFullscreen();
+  }, [isMobile]);
 
   const toggleFriendsList = () => {
     setShowFriendsList(!showFriendsList);
