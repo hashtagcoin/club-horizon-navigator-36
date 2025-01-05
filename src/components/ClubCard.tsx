@@ -1,7 +1,13 @@
 import { Club } from '@/types/club';
 import { Card, CardContent } from "@/components/ui/card";
-import { Music, Clock, MessageCircle, User } from 'lucide-react';
+import { Music, Clock, MessageCircle, User, MoreVertical } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ClubCardProps {
   club: Club;
@@ -30,10 +36,9 @@ export const ClubCard = ({
 
   return (
     <Card
-      className={`cursor-pointer relative bg-white hover:bg-gray-50 transition-all duration-200 ${
+      className={`relative bg-white hover:bg-gray-50 transition-all duration-200 ${
         isSelected ? 'border-2 border-black' : 'border border-gray-200'
       }`}
-      onClick={() => onSelect(club)}
     >
       <CardContent className="p-6">
         <div className="flex justify-between items-start space-y-4">
@@ -64,19 +69,30 @@ export const ClubCard = ({
               <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-gray-300'}`} />
             </div>
             
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-8 w-8 p-0 relative"
-              onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
-            >
-              <MessageCircle className="h-4 w-4" />
-              {newMessageCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {newMessageCount}
-                </span>
-              )}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                  {newMessageCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                      {newMessageCount}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onClick={() => onSelect(club)}>
+                  View Details
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onOpenChat(club)}>
+                  Open Chat {newMessageCount > 0 && `(${newMessageCount})`}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardContent>
