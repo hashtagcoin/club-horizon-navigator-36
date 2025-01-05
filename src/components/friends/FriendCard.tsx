@@ -1,8 +1,7 @@
 import { Friend } from './FriendsList';
 import { Button } from "@/components/ui/button";
-import { MessageSquare, UserMinus, Dice1 } from 'lucide-react';
+import { MessageSquare, UserMinus } from 'lucide-react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { toast } from 'sonner';
 
 interface FriendCardProps {
   friend: Friend;
@@ -11,10 +10,6 @@ interface FriendCardProps {
 }
 
 export function FriendCard({ friend, onRemove, onStartChat }: FriendCardProps) {
-  const handleGameClick = () => {
-    toast.info("Games feature coming soon!");
-  };
-
   return (
     <div className="flex items-center justify-between p-2 hover:bg-accent/50 transition-colors">
       <div className="flex items-center gap-2">
@@ -34,7 +29,7 @@ export function FriendCard({ friend, onRemove, onStartChat }: FriendCardProps) {
           {friend.name}
         </span>
       </div>
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-2 gap-1">
         <Button
           variant="ghost"
           size="icon"
@@ -42,14 +37,6 @@ export function FriendCard({ friend, onRemove, onStartChat }: FriendCardProps) {
           onClick={() => onStartChat(friend)}
         >
           <MessageSquare className="h-3 w-3" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={handleGameClick}
-        >
-          <Dice1 className="h-3 w-3" />
         </Button>
         <Button
           variant="ghost"
