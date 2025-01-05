@@ -8,7 +8,7 @@ import { FriendSelection } from './FriendSelection';
 import { PrivateChat } from './PrivateChat';
 import { FriendsHeader } from './FriendsHeader';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { UserProfile } from './user-profile';
+import { UserProfile } from '@/components/user-profile';
 
 export interface Friend {
   id: string;
