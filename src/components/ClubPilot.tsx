@@ -11,12 +11,14 @@ import { AnimatedClubList } from './club/AnimatedClubList';
 import { MainLayout } from './layout/MainLayout';
 import { MapSection } from './map/MapSection';
 import { ChatWindow } from './chat/ChatWindow';
+import { Club } from '@/types/club';
 
 const libraries: Libraries = ['places'];
 
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
+  const [selectedClubs, setSelectedClubs] = useState<Club[]>([]);
 
   const locationManagement = useLocationManagement();
   const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
@@ -49,6 +51,20 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(mapControls.selectedClub);
 
+  const handleClubSelect = (club: Club) => {
+    setSelectedClubs(prevSelected => {
+      const isAlreadySelected = prevSelected.some(c => c.id === club.id);
+      if (isAlreadySelected) {
+        return prevSelected.filter(c => c.id !== club.id);
+      } else {
+        return [...prevSelected, club];
+      }
+    });
+    mapControls.handleClubSelect(club);
+    locationManagement.setMapCenter(club.position);
+    locationManagement.setMapZoom(16);
+  };
+
   if (showUserProfile) {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
   }
@@ -75,7 +91,7 @@ export default function ClubPilot() {
         isCollapsed={listState.isListCollapsed}
         onToggle={listState.toggleList}
         clubs={filteredClubs}
-        selectedClub={mapControls.selectedClub}
+        selectedClubs={selectedClubs}
         selectedDay={selectedDay}
         sortBy={sortBy}
         setSortBy={setSortBy}
@@ -83,11 +99,7 @@ export default function ClubPilot() {
         setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        onSelectClub={(club) => {
-          mapControls.handleClubSelect(club);
-          locationManagement.setMapCenter(club.position);
-          locationManagement.setMapZoom(16);
-        }}
+        onSelectClub={handleClubSelect}
         onOpenChat={chatManager.openChat}
         newMessageCounts={chatManager.newMessageCounts}
         isLoading={isLoadingClubs}
@@ -97,18 +109,14 @@ export default function ClubPilot() {
         isListCollapsed={listState.isListCollapsed}
         isLoaded={isLoaded}
         filteredClubs={filteredClubs}
-        selectedClub={mapControls.selectedClub}
+        selectedClubs={selectedClubs}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
         mapCenter={locationManagement.mapCenter}
         mapZoom={locationManagement.mapZoom}
         userLocation={userLocation}
         directions={mapControls.directions}
-        onClubSelect={(club) => {
-          mapControls.handleClubSelect(club);
-          locationManagement.setMapCenter(club.position);
-          locationManagement.setMapZoom(16);
-        }}
+        onClubSelect={handleClubSelect}
         locationManagement={locationManagement}
       />
 

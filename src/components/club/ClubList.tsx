@@ -6,7 +6,7 @@ import { Club } from '@/types/club';
 
 interface ClubListProps {
   clubs: Club[];
-  selectedClub: Club | null;
+  selectedClubs: Club[];
   selectedDay: string;
   sortBy: string;
   setSortBy: (value: string) => void;
@@ -22,7 +22,7 @@ interface ClubListProps {
 
 export const ClubList: FC<ClubListProps> = ({
   clubs,
-  selectedClub,
+  selectedClubs,
   selectedDay,
   sortBy,
   setSortBy,
@@ -39,13 +39,13 @@ export const ClubList: FC<ClubListProps> = ({
   const selectedClubRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedClub && selectedClubRef.current) {
+    if (selectedClubs.length > 0 && selectedClubRef.current) {
       selectedClubRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [selectedClub]);
+  }, [selectedClubs]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -76,12 +76,12 @@ export const ClubList: FC<ClubListProps> = ({
             clubs.map(club => (
               <div 
                 key={club.id} 
-                ref={selectedClub?.id === club.id ? selectedClubRef : null}
+                ref={selectedClubs.some(c => c.id === club.id) ? selectedClubRef : null}
               >
                 <ClubCard
                   club={club}
                   selectedDay={selectedDay}
-                  isSelected={selectedClub?.id === club.id}
+                  isSelected={selectedClubs.some(c => c.id === club.id)}
                   onSelect={onSelectClub}
                   onOpenChat={onOpenChat}
                   newMessageCount={newMessageCounts[club.id] || 0}

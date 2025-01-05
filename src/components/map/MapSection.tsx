@@ -5,7 +5,7 @@ interface MapSectionProps {
   isListCollapsed: boolean;
   isLoaded: boolean;
   filteredClubs: Club[];
-  selectedClub: Club | null;
+  selectedClubs: Club[];
   selectedDay: string;
   setSelectedDay: (day: string) => void;
   mapCenter: google.maps.LatLngLiteral;
@@ -20,7 +20,7 @@ export const MapSection = ({
   isListCollapsed,
   isLoaded,
   filteredClubs,
-  selectedClub,
+  selectedClubs,
   selectedDay,
   setSelectedDay,
   mapCenter,
@@ -39,7 +39,7 @@ export const MapSection = ({
       <MapView
         isLoaded={isLoaded}
         clubs={filteredClubs}
-        selectedClub={selectedClub}
+        selectedClubs={selectedClubs}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
         mapCenter={mapCenter}
