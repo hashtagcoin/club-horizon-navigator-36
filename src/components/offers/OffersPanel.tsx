@@ -46,22 +46,22 @@ interface OffersPanelProps {
 export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
   const { toast } = useToast();
   
-  const { x } = useSpring({
+  const [{ x }, api] = useSpring(() => ({
     x: isOpen ? 0 : 100,
     config: { tension: 300, friction: 30 }
-  });
+  }));
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx] }) => {
       if (mx > 0) {
-        x.set(down ? mx : 0);
+        api.start({ x: down ? mx : 0 });
       }
     },
     onDragEnd: ({ movement: [mx] }) => {
       if (mx > 100) {
         onClose();
       } else {
-        x.set(0);
+        api.start({ x: 0 });
       }
     },
   });
@@ -98,7 +98,7 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
     <animated.div
       {...bind()}
       style={{
-        transform: x.to(x => `translateX(${x}%)`),
+        transform: x.to(value => `translateX(${value}%)`),
         touchAction: 'pan-y'
       }}
       className="fixed right-0 top-0 h-screen w-64 bg-black border-l border-white/10 shadow-xl flex flex-col z-50"
