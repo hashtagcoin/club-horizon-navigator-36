@@ -30,6 +30,20 @@ export function ClubMap({
   const mapRef = useRef<google.maps.Map | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
+  const mapOptions: google.maps.MapOptions = {
+    disableDefaultUI: true,
+    zoomControl: true,
+    zoomControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_BOTTOM
+    },
+    mapTypeControl: false,
+    scaleControl: false,
+    streetViewControl: false,
+    rotateControl: false,
+    fullscreenControl: false,
+    styles: mapStyles
+  };
+
   const onLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
     setMap(map);
@@ -44,21 +58,6 @@ export function ClubMap({
   }, []);
 
   if (!isLoaded) return null;
-
-  // Only define map options after confirming the map is loaded
-  const mapOptions: google.maps.MapOptions = {
-    disableDefaultUI: true,
-    zoomControl: true,
-    zoomControlOptions: {
-      position: google.maps.ControlPosition.RIGHT_BOTTOM
-    },
-    mapTypeControl: false,
-    scaleControl: false,
-    streetViewControl: false,
-    rotateControl: false,
-    fullscreenControl: false,
-    styles: mapStyles
-  };
 
   return (
     <div className="w-full h-full">
