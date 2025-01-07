@@ -28,7 +28,6 @@ export const ClubDetailsPanel = ({
 
   const handleShareWithContacts = async (selectedContacts: { name: string, tel: string }[]) => {
     try {
-      // Get website URL from app_settings
       const { data: settings, error: settingsError } = await supabase
         .from('app_settings')
         .select('value')
@@ -40,13 +39,11 @@ export const ClubDetailsPanel = ({
       const websiteUrl = settings?.value || 'https://clubpilot.lovable.dev';
       const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${websiteUrl}`;
       
-      // Create SMS links for each contact
       const smsLinks = selectedContacts.map(contact => {
         const encodedMessage = encodeURIComponent(shareText);
         return `sms:${contact.tel}?body=${encodedMessage}`;
       });
 
-      // Open SMS links in new tabs
       smsLinks.forEach(link => window.open(link, '_blank'));
 
       toast({
@@ -64,7 +61,7 @@ export const ClubDetailsPanel = ({
   };
 
   return (
-    <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full relative z-[999]">
+    <div className="fixed right-2 top-2 w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] bg-white p-2 rounded-lg shadow-md">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">
