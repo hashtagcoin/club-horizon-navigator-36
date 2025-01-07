@@ -35,7 +35,6 @@ export function MainLayout({
   children
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
-  const [showOffers, setShowOffers] = useState(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -57,8 +56,7 @@ export function MainLayout({
   };
 
   const toggleOffers = () => {
-    setShowOffers(!showOffers);
-    console.log('Toggling offers:', !showOffers); // Debug log
+    setShowSpecials(!showSpecials);
   };
 
   return (
@@ -75,8 +73,8 @@ export function MainLayout({
           onClose={() => setShowFriendsList(false)} 
         />
         <OffersPanel
-          isOpen={showOffers}
-          onClose={() => setShowOffers(false)}
+          isOpen={showSpecials}
+          onClose={() => setShowSpecials(false)}
         />
       </div>
 
@@ -92,7 +90,7 @@ export function MainLayout({
         toggleGeneralChat={toggleGeneralChat}
         showFriendsList={showFriendsList}
         toggleFriendsList={toggleFriendsList}
-        showOffers={showOffers}
+        showOffers={showSpecials}
         toggleOffers={toggleOffers}
       />
     </div>
