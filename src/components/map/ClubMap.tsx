@@ -1,9 +1,11 @@
 import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
+import { useState, useEffect } from 'react';
 
 interface ClubMapProps {
   isLoaded: boolean;
   clubs: Club[];
+  selectedClub: Club | null;
   mapCenter: google.maps.LatLngLiteral;
   mapZoom: number;
   userLocation: google.maps.LatLngLiteral | null;
@@ -15,6 +17,7 @@ interface ClubMapProps {
 export const ClubMap = ({
   isLoaded,
   clubs = [],
+  selectedClub,
   mapCenter,
   mapZoom,
   userLocation,
@@ -22,6 +25,29 @@ export const ClubMap = ({
   onClubSelect,
   calculatedBounds
 }: ClubMapProps) => {
+  const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
+
+  useEffect(() => {
+    if (isLoaded && userLocation && selectedClub) {
+      const directionsService = new google.maps.DirectionsService();
+
+      directionsService.route(
+        {
+          origin: userLocation,
+          destination: selectedClub.position,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirectionsResult(result);
+          } else {
+            console.error(`Error fetching directions: ${status}`);
+          }
+        }
+      );
+    }
+  }, [isLoaded, userLocation, selectedClub]);
+
   if (!isLoaded) return <div>Loading map...</div>;
 
   const mapOptions = {
@@ -168,9 +194,9 @@ export const ClubMap = ({
         />
       )}
 
-      {directions && (
+      {directionsResult && (
         <DirectionsRenderer
-          directions={directions}
+          directions={directionsResult}
           options={{
             suppressMarkers: true,
             polylineOptions: {
