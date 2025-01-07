@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { animated, useSpring, to as interpolate } from "@react-spring/web";
+import { animated, useSpring } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -68,17 +68,6 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
 
   const handleClaim = async (offerId: number) => {
     try {
-      const response = await fetch(`/api/offers/${offerId}/claim`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to claim offer');
-      }
-
       toast({
         title: "Offer Claimed!",
         description: "Check your email for the offer details.",
