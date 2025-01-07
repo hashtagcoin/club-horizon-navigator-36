@@ -60,7 +60,7 @@ export function MainLayout({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 text-sm">
+    <div className={`flex flex-col h-screen bg-gray-100 text-sm ${isMobile ? 'pb-[80px]' : ''}`}>
       <TopBar 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
