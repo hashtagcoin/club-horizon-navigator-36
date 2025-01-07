@@ -51,20 +51,29 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
     config: { tension: 300, friction: 30 }
   }));
 
-  const bindGesture = useGesture({
-    onDrag: ({ down, movement: [mx] }) => {
-      if (mx > 0) {
-        api.start({ x: down ? mx : 0 });
-      }
+  const bindGesture = useGesture(
+    {
+      onDrag: ({ down, movement: [mx] }) => {
+        if (mx > 0) {
+          api.start({ x: down ? mx : 0 });
+        }
+      },
+      onDragEnd: ({ movement: [mx] }) => {
+        if (mx > 100) {
+          onClose();
+        } else {
+          api.start({ x: 0 });
+        }
+      },
     },
-    onDragEnd: ({ movement: [mx] }) => {
-      if (mx > 100) {
-        onClose();
-      } else {
-        api.start({ x: 0 });
-      }
-    },
-  });
+    {
+      drag: {
+        from: () => [x.get(), 0],
+        bounds: { left: 0 },
+        rubberband: true,
+      },
+    }
+  );
 
   const handleClaim = async (offerId: number) => {
     try {
