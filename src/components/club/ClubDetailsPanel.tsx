@@ -61,7 +61,7 @@ export const ClubDetailsPanel = ({
   };
 
   return (
-    <div className="fixed right-2 top-2 w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] bg-white p-2 rounded-lg shadow-md">
+    <div className="fixed right-2 top-[4.5rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] bg-white p-2 rounded-lg shadow-md">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export const ClubDetailsPanel = ({
             key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
             variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
             size="sm"
-            className="h-6 text-xs px-1.5"
+            className="h-5 text-[10px] px-1 min-w-0 flex-1"
             onClick={() => setSelectedDay(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index])}
           >
             {day}
