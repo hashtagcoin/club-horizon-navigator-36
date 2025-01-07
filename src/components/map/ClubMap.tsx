@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
-import { mapStyles } from './map-styles';
+import { darkMapStyle as mapStyles } from './mapStyles';
 import { cn } from '@/lib/utils';
 
 interface ClubMapProps {
