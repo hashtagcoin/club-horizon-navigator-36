@@ -32,11 +32,13 @@ export const BottomBar: FC<BottomBarProps> = ({
   toggleOffers
 }) => {
   return (
-    <div className="bg-primary text-primary-foreground p-2">
-      <div className="flex justify-around">
+    <div className="bg-primary text-primary-foreground p-2 fixed bottom-0 left-0 right-0">
+      <div className="flex justify-around max-w-lg mx-auto">
         <Button
           variant={showHighTraffic ? "default" : "ghost"}
-          className="flex flex-col items-center h-12 w-16"
+          className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            showHighTraffic ? 'bg-white/20 text-white' : ''
+          }`}
           onClick={() => setShowHighTraffic(!showHighTraffic)}
         >
           <Zap className="h-5 w-5" />
@@ -44,7 +46,9 @@ export const BottomBar: FC<BottomBarProps> = ({
         </Button>
         <Button
           variant={sortByOpenLate ? "default" : "ghost"}
-          className="flex flex-col items-center h-12 w-16"
+          className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            sortByOpenLate ? 'bg-white/20 text-white' : ''
+          }`}
           onClick={() => setSortByOpenLate(!sortByOpenLate)}
         >
           <Moon className="h-5 w-5" />
@@ -52,7 +56,9 @@ export const BottomBar: FC<BottomBarProps> = ({
         </Button>
         <Button
           variant={chatOpen && isGeneralChat ? "default" : "ghost"}
-          className="flex flex-col items-center h-12 w-16"
+          className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            (chatOpen && isGeneralChat) ? 'bg-white/20 text-white' : ''
+          }`}
           onClick={toggleGeneralChat}
         >
           <MessageCircle className="h-5 w-5" />
@@ -60,7 +66,9 @@ export const BottomBar: FC<BottomBarProps> = ({
         </Button>
         <Button
           variant={showOffers ? "default" : "ghost"}
-          className="flex flex-col items-center h-12 w-16"
+          className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            showOffers ? 'bg-white/20 text-white' : ''
+          }`}
           onClick={toggleOffers}
         >
           <Tag className="h-5 w-5" />
@@ -68,7 +76,9 @@ export const BottomBar: FC<BottomBarProps> = ({
         </Button>
         <Button
           variant={showFriendsList ? "default" : "ghost"}
-          className="flex flex-col items-center h-12 w-16"
+          className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            showFriendsList ? 'bg-white/20 text-white' : ''
+          }`}
           onClick={toggleFriendsList}
         >
           <Users className="h-5 w-5" />
