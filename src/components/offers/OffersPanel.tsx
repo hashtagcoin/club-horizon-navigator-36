@@ -51,7 +51,7 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
     config: { tension: 300, friction: 30 }
   }));
 
-  const bind = useGesture({
+  const bindGesture = useGesture({
     onDrag: ({ down, movement: [mx] }) => {
       if (mx > 0) {
         api.start({ x: down ? mx : 0 });
@@ -85,7 +85,7 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
 
   return (
     <animated.div
-      {...bind()}
+      {...bindGesture()}
       style={{
         transform: x.to(value => `translateX(${value}%)`),
         touchAction: 'pan-y'
