@@ -1,8 +1,8 @@
-import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
+import { useRef, useState, useCallback } from 'react';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
-import { useState, useEffect } from 'react';
-import { MapMarkers } from './MapMarkers';
-import { darkMapStyle } from './mapStyles';
+import { mapStyles } from './map-styles';
+import { cn } from '@/lib/utils';
 
 interface ClubMapProps {
   isLoaded: boolean;
@@ -16,9 +16,9 @@ interface ClubMapProps {
   calculatedBounds: google.maps.LatLngBounds | null;
 }
 
-export const ClubMap = ({
+export function ClubMap({
   isLoaded,
-  clubs = [],
+  clubs,
   selectedClub,
   mapCenter,
   mapZoom,
@@ -26,76 +26,89 @@ export const ClubMap = ({
   directions,
   onClubSelect,
   calculatedBounds
-}: ClubMapProps) => {
-  const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
+}: ClubMapProps) {
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  useEffect(() => {
-    if (isLoaded && userLocation && selectedClub) {
-      const directionsService = new google.maps.DirectionsService();
-
-      directionsService.route(
-        {
-          origin: userLocation,
-          destination: selectedClub.position,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            setDirectionsResult(result);
-          } else {
-            console.error(`Error fetching directions: ${status}`);
-          }
-        }
-      );
-    }
-  }, [isLoaded, userLocation, selectedClub]);
-
-  if (!isLoaded) return <div>Loading map...</div>;
-
-  const mapOptions = {
+  const mapOptions: google.maps.MapOptions = {
     disableDefaultUI: true,
     zoomControl: true,
     zoomControlOptions: {
-      position: google.maps.ControlPosition.LEFT_BOTTOM
+      position: google.maps.ControlPosition.RIGHT_BOTTOM
     },
-    streetViewControl: false,
     mapTypeControl: false,
-    styles: darkMapStyle,
+    scaleControl: false,
+    streetViewControl: false,
+    rotateControl: false,
+    fullscreenControl: false,
+    styles: mapStyles
   };
 
-  return (
-    <GoogleMap
-      mapContainerStyle={{ width: '100%', height: '100%' }}
-      center={mapCenter}
-      zoom={mapZoom}
-      options={mapOptions}
-      onLoad={map => {
-        if (calculatedBounds) {
-          map.fitBounds(calculatedBounds);
-        }
-      }}
-    >
-      <MapMarkers
-        clubs={clubs}
-        selectedClub={selectedClub}
-        mapCenter={mapCenter}
-        userLocation={userLocation}
-        onClubSelect={onClubSelect}
-      />
+  const onLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+    setMap(map);
+    if (calculatedBounds) {
+      map.fitBounds(calculatedBounds);
+    }
+  }, [calculatedBounds]);
 
-      {directionsResult && (
-        <DirectionsRenderer
-          directions={directionsResult}
-          options={{
-            suppressMarkers: true,
-            polylineOptions: {
-              strokeColor: "#4285F4",
-              strokeOpacity: 0.8,
-              strokeWeight: 4,
-            },
-          }}
-        />
-      )}
-    </GoogleMap>
+  const onUnmount = useCallback(() => {
+    mapRef.current = null;
+    setMap(null);
+  }, []);
+
+  if (!isLoaded) return null;
+
+  return (
+    <div className="w-full h-full">
+      <GoogleMap
+        mapContainerClassName={cn(
+          "w-full h-full",
+          "map-container"
+        )}
+        center={mapCenter}
+        zoom={mapZoom}
+        options={mapOptions}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+      >
+        {clubs.map((club) => (
+          <Marker
+            key={club.id}
+            position={club.position}
+            onClick={() => onClubSelect(club)}
+            icon={{
+              url: selectedClub?.id === club.id
+                ? '/marker-selected.svg'
+                : '/marker.svg',
+              scaledSize: new google.maps.Size(40, 40)
+            }}
+          />
+        ))}
+
+        {userLocation && (
+          <Marker
+            position={userLocation}
+            icon={{
+              url: '/user-location.svg',
+              scaledSize: new google.maps.Size(24, 24)
+            }}
+          />
+        )}
+
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+            options={{
+              suppressMarkers: true,
+              polylineOptions: {
+                strokeColor: '#000000',
+                strokeWeight: 4
+              }
+            }}
+          />
+        )}
+      </GoogleMap>
+    </div>
   );
-};
+}

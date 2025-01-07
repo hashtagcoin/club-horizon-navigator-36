@@ -53,7 +53,7 @@ export function MapView({
         />
       </div>
       
-      <div className="absolute bottom-24 left-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
+      <div className="absolute bottom-24 right-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
         {showAllClubs ? (
           <Eye className="h-4 w-4 text-primary" />
         ) : (
