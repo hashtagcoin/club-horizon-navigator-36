@@ -58,6 +58,7 @@ export function MainLayout({
 
   const toggleOffers = () => {
     setShowOffers(!showOffers);
+    console.log('Toggling offers:', !showOffers); // Debug log
   };
 
   return (
