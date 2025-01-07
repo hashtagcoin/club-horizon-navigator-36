@@ -53,6 +53,9 @@ export const ClubMap = ({
   const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true,
+    zoomControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_CENTER
+    },
     streetViewControl: false,
     mapTypeControl: false,
     styles: [
