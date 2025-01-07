@@ -35,6 +35,7 @@ export function MainLayout({
   children
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
+  const [showOffers, setShowOffers] = useState(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -56,11 +57,12 @@ export function MainLayout({
   };
 
   const toggleOffers = () => {
-    setShowSpecials(!showSpecials);
+    setShowOffers(!showOffers);
+    console.log('Toggling offers:', !showOffers); // Debug log
   };
 
   return (
-    <div className={`flex flex-col h-screen bg-gray-100 text-sm ${isMobile ? 'pb-[80px]' : ''}`}>
+    <div className="flex flex-col h-screen bg-gray-100 text-sm">
       <TopBar 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -73,8 +75,8 @@ export function MainLayout({
           onClose={() => setShowFriendsList(false)} 
         />
         <OffersPanel
-          isOpen={showSpecials}
-          onClose={() => setShowSpecials(false)}
+          isOpen={showOffers}
+          onClose={() => setShowOffers(false)}
         />
       </div>
 
@@ -90,7 +92,7 @@ export function MainLayout({
         toggleGeneralChat={toggleGeneralChat}
         showFriendsList={showFriendsList}
         toggleFriendsList={toggleFriendsList}
-        showOffers={showSpecials}
+        showOffers={showOffers}
         toggleOffers={toggleOffers}
       />
     </div>

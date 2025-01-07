@@ -37,7 +37,7 @@
 }
 
 .map-container {
-  @apply overflow-hidden shadow-xl;
+  @apply rounded-xl overflow-hidden shadow-xl;
 }
 
 .club-card {
