@@ -40,6 +40,13 @@
   @apply overflow-hidden shadow-xl;
 }
 
+/* Position the map controls in a row */
+.map-container .gm-style .gm-bundled-control {
+  @apply flex flex-row-reverse items-center gap-2;
+  top: 10px !important;
+  right: 10px !important;
+}
+
 .club-card {
   @apply bg-white hover:bg-secondary transition-all duration-300;
 }
