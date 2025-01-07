@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Share2 } from 'lucide-react';
+import { MapPin, User, Share2, Gift } from 'lucide-react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/components/ui/use-toast";
@@ -90,7 +90,7 @@ export const ClubDetailsPanel = ({
       <div className="flex space-x-0.5 mt-1 w-full">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
           <Button
-            key={day}
+            key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
             variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
             size="sm"
             className="h-6 text-xs px-1.5"
@@ -103,6 +103,16 @@ export const ClubDetailsPanel = ({
       <p className="mt-1 text-xs font-medium w-full text-left">
         {selectedClub.openingHours[selectedDay]}
       </p>
+      
+      {selectedClub.hasSpecial && (
+        <div className="mt-2 bg-yellow-50 p-2 rounded-md border border-yellow-200">
+          <div className="flex items-center gap-1 text-yellow-700">
+            <Gift className="h-4 w-4" />
+            <span className="text-xs font-medium">Special Offer</span>
+          </div>
+          <p className="text-xs text-yellow-800 mt-1">2 for 1 drinks before 11 PM</p>
+        </div>
+      )}
 
       <ContactSelectionModal
         isOpen={isContactModalOpen}
