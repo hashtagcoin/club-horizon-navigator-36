@@ -43,7 +43,7 @@ export function MapView({
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden relative z-0">
+    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
         <ClubDetailsPanel
@@ -53,7 +53,7 @@ export function MapView({
         />
       </div>
       
-      <div className="absolute bottom-32 right-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
+      <div className="absolute bottom-16 right-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
         {showAllClubs ? (
           <Eye className="h-4 w-4 text-primary" />
         ) : (
@@ -66,7 +66,7 @@ export function MapView({
         />
       </div>
       
-      <div className="flex-grow h-full relative">
+      <div className="flex-grow h-full relative pb-14">
         <ClubMap
           isLoaded={isLoaded}
           clubs={visibleClubs}
