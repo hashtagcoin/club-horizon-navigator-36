@@ -1,6 +1,6 @@
 import { Club } from '@/types/club';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Clock, MessageCircle, User, Gift } from 'lucide-react';
+import { Music, Clock, MessageCircle, User, Smile } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface ClubCardProps {
@@ -37,14 +37,14 @@ export const ClubCard = ({
       <CardHeader className="flex justify-between items-start p-2">
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex items-center gap-2">
-          {club.hasSpecial && (
-            <Gift className="h-4 w-4 text-yellow-500" />
-          )}
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
             <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
             <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
             <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
           </div>
+          {club.hasSpecial && (
+            <Smile className="h-4 w-4 text-yellow-500" />
+          )}
         </div>
       </CardHeader>
       <CardContent className="pt-0 px-2 pb-2">
