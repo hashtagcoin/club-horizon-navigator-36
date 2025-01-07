@@ -49,6 +49,7 @@ export const MapColumn: FC<MapColumnProps> = ({
         <ClubMap
           isLoaded={isLoaded}
           clubs={clubs}
+          selectedClub={selectedClub}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}

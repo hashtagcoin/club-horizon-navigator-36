@@ -36,7 +36,6 @@ export function MapView({
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
   const [showAllClubs, setShowAllClubs] = useState(true);
 
-  // Reset showAllClubs to true when mapCenter changes (suburb change)
   useEffect(() => {
     setShowAllClubs(true);
   }, [mapCenter]);
@@ -71,6 +70,7 @@ export function MapView({
         <ClubMap
           isLoaded={isLoaded}
           clubs={visibleClubs}
+          selectedClub={selectedClub}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
           userLocation={userLocation}
