@@ -1,6 +1,7 @@
 import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
+import { VenueMarker } from './VenueMarker';
 
 interface ClubMapProps {
   isLoaded: boolean;
@@ -169,15 +170,31 @@ export const ClubMap = ({
           key={club.id}
           position={club.position}
           onClick={() => onClubSelect(club)}
-          icon={club.position.lat === mapCenter.lat && club.position.lng === mapCenter.lng ? {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 10,
-            fillColor: '#FFD700',
-            fillOpacity: 1,
-            strokeColor: '#000000',
-            strokeWeight: 2,
-          } : undefined}
+          icon={{
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+              `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <foreignObject x="0" y="0" width="40" height="40">
+                  <div xmlns="http://www.w3.org/1999/xhtml" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;">
+                    ${document.getElementById(`venue-marker-${club.id}`)?.innerHTML || ''}
+                  </div>
+                </foreignObject>
+              </svg>`
+            ),
+            anchor: new google.maps.Point(20, 20),
+          }}
         />
+      ))}
+
+      {clubs?.map((club) => (
+        <div key={`marker-${club.id}`} style={{ display: 'none' }}>
+          <div id={`venue-marker-${club.id}`}>
+            <VenueMarker
+              club={club}
+              isSelected={selectedClub?.id === club.id}
+              onClick={() => onClubSelect(club)}
+            />
+          </div>
+        </div>
       ))}
 
       {userLocation && (
