@@ -45,7 +45,7 @@ export function ClubFilters({
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
-    <div className="p-2">
+    <div className="p-2 bg-white border-b border-gray-200">
       <div className="flex gap-2 items-center">
         <Select 
           onValueChange={setSortBy} 
