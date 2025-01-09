@@ -40,27 +40,16 @@ export const ClubList: FC<ClubListProps> = ({
 
   useEffect(() => {
     if (selectedClub && selectedClubRef.current) {
-      const scrollContainer = selectedClubRef.current.closest('.scroll-area-viewport');
-      if (scrollContainer) {
-        const elementTop = selectedClubRef.current.offsetTop;
-        const containerTop = scrollContainer.scrollTop;
-        const containerHeight = scrollContainer.clientHeight;
-        const elementHeight = selectedClubRef.current.clientHeight;
-        
-        // Calculate the scroll position to center the element
-        const scrollTo = elementTop - (containerHeight / 2) + (elementHeight / 2);
-        
-        scrollContainer.scrollTo({
-          top: scrollTo,
-          behavior: 'smooth'
-        });
-      }
+      selectedClubRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
     }
   }, [selectedClub]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
-      <div className="flex-none sticky top-0 z-10 bg-white">
+      <div className="flex-none">
         <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
           <div className="flex items-center gap-2">
             <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
