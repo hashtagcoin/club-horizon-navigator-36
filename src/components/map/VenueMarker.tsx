@@ -1,4 +1,4 @@
-import { Building, Music, Beer, Coffee, Cocktail } from 'lucide-react';
+import { Building, Music, Beer, Coffee, Wine } from 'lucide-react';
 import { Club } from '@/types/club';
 
 interface VenueMarkerProps {
@@ -14,7 +14,7 @@ const getVenueIcon = (venueType: string) => {
     case 'bar':
       return Beer;
     case 'lounge':
-      return Cocktail;
+      return Wine;
     case 'pub':
       return Beer;
     case 'cafe':
