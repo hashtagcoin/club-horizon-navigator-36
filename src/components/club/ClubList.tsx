@@ -1,7 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
-import { ClubListHeader } from './ClubListHeader';
 import { Club } from '@/types/club';
 
 interface ClubListProps {
@@ -35,7 +34,6 @@ export const ClubList: FC<ClubListProps> = ({
   newMessageCounts,
   isLoading
 }) => {
-  const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,17 +46,8 @@ export const ClubList: FC<ClubListProps> = ({
   }, [selectedClub]);
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden bg-white shadow-lg">
-      <ClubListHeader 
-        clubCount={clubs.length}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        filterGenre={filterGenre}
-        setFilterGenre={setFilterGenre}
-        genres={genres}
-        currentSuburb="Sydney"
-      />
-      <ScrollArea className="flex-grow mt-[120px]">
+    <div className="w-full h-full flex flex-col overflow-hidden bg-white shadow-lg pt-24">
+      <ScrollArea className="flex-grow">
         <div className="space-y-2 p-2">
           {isLoading ? (
             <div>Loading venues...</div>
