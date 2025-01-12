@@ -1,85 +1,51 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatGenre } from '@/utils/formatGenre';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { genres } from "@/data/locations"
 
 interface ClubListHeaderProps {
-  clubCount: number;
-  sortBy: string;
-  setSortBy: (value: string) => void;
-  filterGenre: string[];
-  setFilterGenre: (value: string[]) => void;
-  genres: string[];
-  currentSuburb: string;
+  totalVenues: number;
+  selectedVenueType: string;
+  onVenueTypeChange: (value: string) => void;
+  sortOrder: string;
+  onSortOrderChange: (value: string) => void;
 }
 
-const sortOptions = [
-  { value: 'closest', label: 'Distance' },
-  { value: 'alphabetical', label: 'Alphabetical' },
-  { value: 'traffic', label: 'Traffic' },
-  { value: 'usersAtClub', label: 'Popular' },
-  { value: 'genre', label: 'Genre' }
-];
-
-export const ClubListHeader = ({
-  clubCount,
-  sortBy,
-  setSortBy,
-  filterGenre,
-  setFilterGenre,
-  genres,
-  currentSuburb
-}: ClubListHeaderProps) => {
-  const sortedGenres = ["all", ...genres.sort()];
-
+export function ClubListHeader({
+  totalVenues,
+  selectedVenueType,
+  onVenueTypeChange,
+  sortOrder,
+  onSortOrderChange
+}: ClubListHeaderProps) {
   return (
-    <div className="fixed top-14 left-0 w-1/2 bg-white z-30 border-b border-gray-200">
-      <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
-        <div className="flex items-center gap-2">
-          <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
-            {clubCount}
-          </div>
-          <span className="text-sm font-medium text-gray-600">
-            {clubCount === 1 ? 'Venue' : 'Venues'}
-          </span>
-        </div>
-        <h2 className="text-2xl font-bold text-white bg-black rounded-lg px-3 py-1 shadow-sm">
-          {currentSuburb}
-        </h2>
+    <div className="bg-white p-4 border-b flex items-center justify-between gap-4">
+      <div className="text-lg font-semibold">
+        {totalVenues} Venues
       </div>
-      <div className="p-2">
-        <div className="flex gap-2 items-center">
-          <Select 
-            onValueChange={setSortBy} 
-            defaultValue={sortBy}
-          >
-            <SelectTrigger className="w-[130px] h-8 text-sm">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      
+      <div className="flex items-center gap-2">
+        <Select value={selectedVenueType} onValueChange={onVenueTypeChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select venue type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Venues</SelectItem>
+            {genres.map((genre) => (
+              <SelectItem key={genre} value={genre.toLowerCase()}>{genre}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          <Select 
-            onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
-            defaultValue="all"
-          >
-            <SelectTrigger className="w-[130px] h-8 text-sm">
-              <SelectValue placeholder="Select venue type" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortedGenres.map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre === "all" ? "All Venues" : formatGenre(genre)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={sortOrder} onValueChange={onSortOrderChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="rating">Rating (High to Low)</SelectItem>
+            <SelectItem value="name">Name (A-Z)</SelectItem>
+            <SelectItem value="distance">Distance</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
-  );
-};
+  )
+}
