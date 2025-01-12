@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Share2, Gift } from 'lucide-react';
+import { MapPin, User, Share2 } from 'lucide-react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/components/ui/use-toast";
@@ -28,6 +28,7 @@ export const ClubDetailsPanel = ({
 
   const handleShareWithContacts = async (selectedContacts: { name: string, tel: string }[]) => {
     try {
+      // Get website URL from app_settings
       const { data: settings, error: settingsError } = await supabase
         .from('app_settings')
         .select('value')
@@ -39,11 +40,13 @@ export const ClubDetailsPanel = ({
       const websiteUrl = settings?.value || 'https://clubpilot.lovable.dev';
       const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${websiteUrl}`;
       
+      // Create SMS links for each contact
       const smsLinks = selectedContacts.map(contact => {
         const encodedMessage = encodeURIComponent(shareText);
         return `sms:${contact.tel}?body=${encodedMessage}`;
       });
 
+      // Open SMS links in new tabs
       smsLinks.forEach(link => window.open(link, '_blank'));
 
       toast({
@@ -61,7 +64,7 @@ export const ClubDetailsPanel = ({
   };
 
   return (
-    <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] bg-white p-2 rounded-lg shadow-md">
+    <div className="mt-2 bg-white p-2 rounded-lg shadow-md w-full relative z-[999]">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">
@@ -87,10 +90,10 @@ export const ClubDetailsPanel = ({
       <div className="flex space-x-0.5 mt-1 w-full">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
           <Button
-            key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
+            key={day}
             variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
             size="sm"
-            className="h-5 text-[10px] px-1 min-w-0 flex-1"
+            className="h-6 text-xs px-1.5"
             onClick={() => setSelectedDay(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index])}
           >
             {day}
@@ -100,16 +103,6 @@ export const ClubDetailsPanel = ({
       <p className="mt-1 text-xs font-medium w-full text-left">
         {selectedClub.openingHours[selectedDay]}
       </p>
-      
-      {selectedClub.hasSpecial && (
-        <div className="mt-2 bg-yellow-50 p-2 rounded-md border border-yellow-200">
-          <div className="flex items-center gap-1 text-yellow-700">
-            <Gift className="h-4 w-4" />
-            <span className="text-xs font-medium">Special Offer</span>
-          </div>
-          <p className="text-xs text-yellow-800 mt-1">2 for 1 drinks before 11 PM</p>
-        </div>
-      )}
 
       <ContactSelectionModal
         isOpen={isContactModalOpen}

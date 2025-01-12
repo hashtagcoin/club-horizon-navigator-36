@@ -32,7 +32,7 @@ export const BottomBar: FC<BottomBarProps> = ({
   toggleOffers
 }) => {
   return (
-    <div className="bg-primary text-primary-foreground p-2 fixed bottom-0 left-0 right-0">
+    <div className="bg-primary text-primary-foreground p-2 fixed bottom-0 left-0 right-0 z-50">
       <div className="flex justify-around max-w-lg mx-auto">
         <Button
           variant={showHighTraffic ? "default" : "ghost"}

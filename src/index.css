@@ -37,7 +37,7 @@
 }
 
 .map-container {
-  @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
+  @apply rounded-xl overflow-hidden shadow-xl;
 }
 
 .club-card {
@@ -61,9 +61,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Add styles to make bottom navbar always on top */
-.bg-primary.text-primary-foreground.p-2.fixed.bottom-0.left-0.right-0 {
-  @apply z-50;
 }

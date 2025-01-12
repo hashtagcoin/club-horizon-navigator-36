@@ -63,11 +63,11 @@ export const AnimatedClubList = ({
         <Button
           variant="ghost"
           size="icon"
-          className="bg-white shadow-lg h-10 w-5 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
+          className="bg-white shadow-lg h-20 w-10 rounded-r-xl border-r border-t border-b border-gray-200 hover:bg-gray-50 transition-all duration-300"
           onClick={onToggle}
         >
           <ChevronLeft 
-            className={`h-3 w-3 text-gray-600 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
+            className={`h-6 w-6 text-gray-600 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
             strokeWidth={2}
           />
         </Button>

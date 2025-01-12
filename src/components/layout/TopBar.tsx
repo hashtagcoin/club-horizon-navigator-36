@@ -14,7 +14,7 @@ export const TopBar: FC<TopBarProps> = ({ searchQuery = "", setSearchQuery }) =>
 
   return (
     <>
-      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4 fixed top-0 left-0 right-0 z-50">
+      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4">
         <div className="flex items-center space-x-2">
           <svg
             width="24"
@@ -38,7 +38,7 @@ export const TopBar: FC<TopBarProps> = ({ searchQuery = "", setSearchQuery }) =>
             placeholder="Search clubs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery?.(e.target.value)}
-            className="pl-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-base"
+            className="pl-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50"
           />
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary-foreground/50" />
         </div>

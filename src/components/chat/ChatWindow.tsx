@@ -147,7 +147,6 @@ export function ChatWindow({
             onChange={(e) => setChatMessage(e.target.value)}
             placeholder="Type a message..."
             className="flex-1 bg-white/5 border-none focus-visible:ring-0 text-white placeholder:text-white/50 text-xs h-7"
-            style={{ fontSize: '16px' }}
           />
           <Button 
             type="submit" 
