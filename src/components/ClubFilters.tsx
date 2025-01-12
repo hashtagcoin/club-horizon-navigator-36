@@ -41,7 +41,6 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
-  // Sort genres alphabetically and add "all" option at the beginning
   const sortedGenres = ["all", ...genres.sort()];
 
   return (

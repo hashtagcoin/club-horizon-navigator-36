@@ -4,6 +4,7 @@ import { FriendsList } from '../friends/FriendsList';
 import { OffersPanel } from '../offers/OffersPanel';
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ClubFilters } from '../ClubFilters';
 
 interface MainLayoutProps {
   searchQuery: string;
@@ -58,7 +59,6 @@ export function MainLayout({
 
   const toggleOffers = () => {
     setShowOffers(!showOffers);
-    console.log('Toggling offers:', !showOffers); // Debug log
   };
 
   return (
