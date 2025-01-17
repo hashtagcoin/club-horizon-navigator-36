@@ -1,7 +1,6 @@
 import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ClubMapProps {
   isLoaded: boolean;
@@ -27,7 +26,6 @@ export const ClubMap = ({
   calculatedBounds
 }: ClubMapProps) => {
   const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (isLoaded && userLocation && selectedClub) {
@@ -54,11 +52,9 @@ export const ClubMap = ({
 
   const mapOptions = {
     disableDefaultUI: true,
-    zoomControl: !isMobile,
+    zoomControl: true,
     streetViewControl: false,
     mapTypeControl: false,
-    gestureHandling: isMobile ? 'none' : 'auto',
-    draggable: !isMobile,
     styles: [
       { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
       { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
