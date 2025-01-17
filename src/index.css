@@ -37,16 +37,23 @@
     position: fixed;
     width: 100%;
     height: 100%;
+    touch-action: none;
   }
   #root {
     padding-top: 56px; /* Add padding for fixed top bar */
     padding-bottom: 64px; /* Add padding for fixed bottom bar */
     height: 100%;
+    touch-action: none;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
 .map-container {
   @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .club-card {

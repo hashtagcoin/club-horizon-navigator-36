@@ -35,20 +35,27 @@ export const MapSection = ({
       className={`transition-all duration-300 ease-in-out h-[75vh] ${
         isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
       }`}
+      style={{
+        isolation: 'isolate',
+        touchAction: 'none',
+        WebkitOverflowScrolling: 'touch',
+      }}
     >
-      <MapView
-        isLoaded={isLoaded}
-        clubs={filteredClubs}
-        selectedClub={selectedClub}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        mapCenter={mapCenter}
-        mapZoom={mapZoom}
-        userLocation={userLocation}
-        directions={directions}
-        onClubSelect={onClubSelect}
-        locationManagement={locationManagement}
-      />
+      <div className="relative w-full h-full overflow-hidden">
+        <MapView
+          isLoaded={isLoaded}
+          clubs={filteredClubs}
+          selectedClub={selectedClub}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          mapCenter={mapCenter}
+          mapZoom={mapZoom}
+          userLocation={userLocation}
+          directions={directions}
+          onClubSelect={onClubSelect}
+          locationManagement={locationManagement}
+        />
+      </div>
     </div>
   );
 };
