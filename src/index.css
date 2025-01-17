@@ -39,7 +39,7 @@
     height: 100%;
   }
   #root {
-    padding-top: 112px; /* Increased padding to accommodate both top bar and filter bar */
+    padding-top: 104px; /* Reduced padding to remove extra white space */
     padding-bottom: 64px; /* Add padding for fixed bottom bar */
     height: 100%;
   }

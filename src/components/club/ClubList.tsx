@@ -58,7 +58,7 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea className="flex-grow mt-[112px]">
+      <ScrollArea className="flex-grow mt-[104px]">
         <div className="space-y-2 pr-2">
           {isLoading ? (
             <div>Loading venues...</div>
