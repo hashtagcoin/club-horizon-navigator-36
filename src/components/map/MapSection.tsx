@@ -32,7 +32,7 @@ export const MapSection = ({
 }: MapSectionProps) => {
   return (
     <div 
-      className={`transition-all duration-300 ease-in-out h-[75vh] ${
+      className={`transition-all duration-300 ease-in-out map-container ${
         isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
       }`}
     >
