@@ -4,7 +4,6 @@ import { FriendsList } from '../friends/FriendsList';
 import { OffersPanel } from '../offers/OffersPanel';
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ClubFilters } from '../ClubFilters';
 
 interface MainLayoutProps {
   searchQuery: string;
@@ -68,7 +67,7 @@ export function MainLayout({
         setSearchQuery={setSearchQuery}
       />
       
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden pt-14 pb-16">
         {children}
         <FriendsList 
           isOpen={showFriendsList} 

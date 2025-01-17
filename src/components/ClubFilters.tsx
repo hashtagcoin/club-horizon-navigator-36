@@ -41,10 +41,11 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
+  // Sort genres alphabetically and add "all" option at the beginning
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
-    <div className="p-2">
+    <div className="p-2 bg-white border-b border-gray-200">
       <div className="flex gap-2 items-center">
         <Select 
           onValueChange={setSortBy} 

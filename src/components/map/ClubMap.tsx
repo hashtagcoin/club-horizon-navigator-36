@@ -1,8 +1,6 @@
-import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
-import { MapMarkers } from './MapMarkers';
-import { darkMapStyle } from './mapStyles';
 
 interface ClubMapProps {
   isLoaded: boolean;
@@ -55,12 +53,103 @@ export const ClubMap = ({
   const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true,
-    zoomControlOptions: {
-      position: google.maps.ControlPosition.LEFT_BOTTOM
-    },
     streetViewControl: false,
     mapTypeControl: false,
-    styles: darkMapStyle,
+    styles: [
+      { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+      { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+      {
+        featureType: "administrative.locality",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#d59563" }],
+      },
+      {
+        featureType: "administrative.neighborhood",
+        elementType: "labels.text",
+        stylers: [
+          {
+            color: "#ffffff",
+            weight: 0.5,
+          },
+        ],
+      },
+      {
+        featureType: "administrative.neighborhood",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#333333",
+            weight: 1,
+          },
+        ],
+      },
+      {
+        featureType: "poi",
+        elementType: "labels",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "transit",
+        elementType: "geometry",
+        stylers: [{ color: "#2f3948" }],
+      },
+      {
+        featureType: "transit.station",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#d59563" }],
+      },
+      {
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [{ color: "#38414e" }],
+      },
+      {
+        featureType: "road",
+        elementType: "geometry.stroke",
+        stylers: [{ color: "#212a37" }],
+      },
+      {
+        featureType: "road",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#9ca5b3" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [{ color: "#746855" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "geometry.stroke",
+        stylers: [{ color: "#1f2835" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#f3d19c" }],
+      },
+      {
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [{ color: "#17263c" }],
+      },
+      {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#515c6d" }],
+      },
+      {
+        featureType: "water",
+        elementType: "labels.text.stroke",
+        stylers: [{ color: "#17263c" }],
+      },
+    ],
   };
 
   return (
@@ -75,13 +164,35 @@ export const ClubMap = ({
         }
       }}
     >
-      <MapMarkers
-        clubs={clubs}
-        selectedClub={selectedClub}
-        mapCenter={mapCenter}
-        userLocation={userLocation}
-        onClubSelect={onClubSelect}
-      />
+      {clubs?.map((club) => (
+        <Marker
+          key={club.id}
+          position={club.position}
+          onClick={() => onClubSelect(club)}
+          icon={club.position.lat === mapCenter.lat && club.position.lng === mapCenter.lng ? {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: '#FFD700',
+            fillOpacity: 1,
+            strokeColor: '#000000',
+            strokeWeight: 2,
+          } : undefined}
+        />
+      ))}
+
+      {userLocation && (
+        <Marker
+          position={userLocation}
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#4285F4',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          }}
+        />
+      )}
 
       {directionsResult && (
         <DirectionsRenderer

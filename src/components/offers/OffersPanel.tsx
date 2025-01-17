@@ -4,7 +4,7 @@ import { useGesture } from "@use-gesture/react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Beer, Gift, Music, X, Ticket, Star } from "lucide-react";
+import { Beer, Gift, Music, PartyPopper, X, Ticket, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const offers = [
@@ -57,7 +57,6 @@ interface OffersPanelProps {
 
 export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
   const { toast } = useToast();
-  console.log('OffersPanel isOpen:', isOpen); // Debug log
   
   const [{ x }, api] = useSpring(() => ({
     x: isOpen ? 0 : 100,
@@ -103,7 +102,7 @@ export function OffersPanel({ isOpen, onClose }: OffersPanelProps) {
         transform: x.to(value => `translateX(${value}%)`),
         touchAction: 'pan-y'
       }}
-      className="fixed right-0 top-0 h-screen w-80 bg-black border-l border-white/10 shadow-xl flex flex-col z-40"
+      className="fixed right-0 top-0 h-screen w-80 bg-black border-l border-white/10 shadow-xl flex flex-col z-50"
     >
       <div className="bg-black/90 text-white p-4 flex items-center justify-between border-b border-white/10">
         <h2 className="font-semibold text-lg">Today's Special Offers</h2>
