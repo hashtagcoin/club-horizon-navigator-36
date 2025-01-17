@@ -39,7 +39,7 @@
     height: 100%;
   }
   #root {
-    padding-top: 56px; /* Add padding for fixed top bar */
+    padding-top: 112px; /* Increased padding to accommodate both top bar and filter bar */
     padding-bottom: 64px; /* Add padding for fixed bottom bar */
     height: 100%;
   }
@@ -59,6 +59,10 @@
 
 .selected-club-card {
   @apply border-4 border-black rounded-xl;
+}
+
+.filter-bar {
+  @apply bg-white shadow-sm fixed top-[56px] left-0 right-0 z-40;
 }
 
 @keyframes fade-in {
