@@ -49,27 +49,25 @@ export const ClubList: FC<ClubListProps> = ({
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
-      <div className="flex-none">
-        <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
-          <div className="flex items-center gap-2">
-            <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
-              {clubs.length}
-            </div>
-            <span className="text-sm font-medium text-gray-600">
-              {clubs.length === 1 ? 'Venue' : 'Venues'}
-            </span>
+      <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
+        <div className="flex items-center gap-2">
+          <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
+            {clubs.length}
           </div>
+          <span className="text-sm font-medium text-gray-600">
+            {clubs.length === 1 ? 'Venue' : 'Venues'}
+          </span>
         </div>
-        <ClubFilters
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          filterGenre={filterGenre}
-          setFilterGenre={setFilterGenre}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          genres={genres}
-        />
       </div>
+      <ClubFilters
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        filterGenre={filterGenre}
+        setFilterGenre={setFilterGenre}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        genres={genres}
+      />
       <ScrollArea className="flex-grow">
         <div className="space-y-2 pr-2">
           {isLoading ? (

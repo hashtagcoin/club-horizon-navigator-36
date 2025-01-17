@@ -67,7 +67,7 @@ export function MainLayout({
         setSearchQuery={setSearchQuery}
       />
       
-      <div className="flex-1 relative overflow-hidden pt-14 pb-16">
+      <div className="flex-1 relative overflow-hidden">
         {children}
         <FriendsList 
           isOpen={showFriendsList} 
