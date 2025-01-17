@@ -33,6 +33,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    padding-top: 56px; /* Add padding for fixed top bar */
+    padding-bottom: 64px; /* Add padding for fixed bottom bar */
   }
 }
 

@@ -14,7 +14,7 @@ export const TopBar: FC<TopBarProps> = ({ searchQuery = "", setSearchQuery }) =>
 
   return (
     <>
-      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4">
+      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center space-x-2">
           <svg
             width="24"
