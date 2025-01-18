@@ -55,7 +55,7 @@ export const AnimatedClubList = ({
           position: 'fixed',
           top: '0',
           left: isCollapsed ? 0 : '50%',
-          transform: 'translateY(140px)', // Position at the middle of second card (assuming ~140px for card + spacing)
+          transform: 'translateY(240px)', // Position at the middle of third card (assuming ~120px per card including spacing)
           zIndex: 25,
           transition: 'left 0.3s ease-in-out',
         }}
