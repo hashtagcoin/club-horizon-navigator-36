@@ -40,7 +40,7 @@ export const BottomBar: FC<BottomBarProps> = ({
             variant="ghost"
             className={`flex flex-col items-center h-12 w-16 transition-colors ${
               showHighTraffic 
-                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
+                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black hover:[&_svg]:text-black hover:[&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
             }`}
             onClick={() => setShowHighTraffic(!showHighTraffic)}
@@ -52,7 +52,7 @@ export const BottomBar: FC<BottomBarProps> = ({
             variant="ghost"
             className={`flex flex-col items-center h-12 w-16 transition-colors ${
               sortByOpenLate 
-                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
+                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black hover:[&_svg]:text-black hover:[&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
             }`}
             onClick={() => setSortByOpenLate(!sortByOpenLate)}
@@ -64,7 +64,7 @@ export const BottomBar: FC<BottomBarProps> = ({
             variant="ghost"
             className={`flex flex-col items-center h-12 w-16 transition-colors ${
               (chatOpen && isGeneralChat)
-                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
+                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black hover:[&_svg]:text-black hover:[&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
             }`}
             onClick={toggleGeneralChat}
@@ -76,7 +76,7 @@ export const BottomBar: FC<BottomBarProps> = ({
             variant="ghost"
             className={`flex flex-col items-center h-12 w-16 transition-colors ${
               showOffers 
-                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
+                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black hover:[&_svg]:text-black hover:[&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
             }`}
             onClick={toggleOffers}
@@ -88,7 +88,7 @@ export const BottomBar: FC<BottomBarProps> = ({
             variant="ghost"
             className={`flex flex-col items-center h-12 w-16 transition-colors ${
               showFriendsList 
-                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
+                ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black hover:[&_svg]:text-black hover:[&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
             }`}
             onClick={toggleFriendsList}
