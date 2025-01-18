@@ -41,7 +41,7 @@ export function UserProfile({
   const [selectedOffer, setSelectedOffer] = useState<ClaimedOffer | null>(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("/placeholder.svg");
-  const [presenceEnabled, setPresenceEnabled] = useState(true);
+  const [presenceEnabled, setPresenceEnabled] = useState(true); // Set to true by default
   const [isOnline, setIsOnline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const presenceChannel = useRef<any>(null);
@@ -55,8 +55,9 @@ export function UserProfile({
       setAvatarUrl(savedAvatarUrl);
     }
 
+    // Initialize presence immediately since it's enabled by default
     loadPresenceSettings();
-
+    
     return () => {
       if (presenceChannel.current) {
         presenceChannel.current.unsubscribe();
