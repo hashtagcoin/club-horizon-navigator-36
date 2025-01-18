@@ -43,7 +43,16 @@ export function useClubFilters() {
     }
     
     if (showHighTraffic) {
+      // First filter to only show high traffic clubs
       filtered = filtered.filter(club => club.traffic === "High");
+      
+      // Then sort remaining clubs by traffic level
+      const trafficOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+      filtered.sort((a, b) => 
+        (trafficOrder[b.traffic as keyof typeof trafficOrder] || 0) - 
+        (trafficOrder[a.traffic as keyof typeof trafficOrder] || 0)
+      );
+      return filtered;
     }
     
     if (showSpecials) {
