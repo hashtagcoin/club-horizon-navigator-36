@@ -37,7 +37,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant={showHighTraffic ? "default" : "ghost"}
           className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showHighTraffic ? 'bg-white/20 text-white' : ''
+            showHighTraffic ? 'bg-white text-black' : ''
           }`}
           onClick={() => setShowHighTraffic(!showHighTraffic)}
         >
@@ -47,7 +47,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant={sortByOpenLate ? "default" : "ghost"}
           className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            sortByOpenLate ? 'bg-white/20 text-white' : ''
+            sortByOpenLate ? 'bg-white text-black' : ''
           }`}
           onClick={() => setSortByOpenLate(!sortByOpenLate)}
         >
@@ -57,7 +57,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant={chatOpen && isGeneralChat ? "default" : "ghost"}
           className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            (chatOpen && isGeneralChat) ? 'bg-white/20 text-white' : ''
+            (chatOpen && isGeneralChat) ? 'bg-white text-black' : ''
           }`}
           onClick={toggleGeneralChat}
         >
@@ -67,7 +67,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant={showOffers ? "default" : "ghost"}
           className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showOffers ? 'bg-white/20 text-white' : ''
+            showOffers ? 'bg-white text-black' : ''
           }`}
           onClick={toggleOffers}
         >
@@ -77,7 +77,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant={showFriendsList ? "default" : "ghost"}
           className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showFriendsList ? 'bg-white/20 text-white' : ''
+            showFriendsList ? 'bg-white text-black' : ''
           }`}
           onClick={toggleFriendsList}
         >
