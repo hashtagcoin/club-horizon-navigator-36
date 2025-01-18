@@ -35,9 +35,9 @@ export const BottomBar: FC<BottomBarProps> = ({
     <div className="bg-primary text-primary-foreground p-2 fixed bottom-0 left-0 right-0">
       <div className="flex justify-around max-w-lg mx-auto">
         <Button
-          variant={showHighTraffic ? "default" : "ghost"}
-          className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showHighTraffic ? 'bg-white text-black' : ''
+          variant="ghost"
+          className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
+            showHighTraffic ? 'bg-[#FEF7CD] text-black' : ''
           }`}
           onClick={() => setShowHighTraffic(!showHighTraffic)}
         >
@@ -45,9 +45,9 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">High Traffic</span>
         </Button>
         <Button
-          variant={sortByOpenLate ? "default" : "ghost"}
-          className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            sortByOpenLate ? 'bg-white text-black' : ''
+          variant="ghost"
+          className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
+            sortByOpenLate ? 'bg-[#FEF7CD] text-black' : ''
           }`}
           onClick={() => setSortByOpenLate(!sortByOpenLate)}
         >
@@ -55,9 +55,9 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Open Late</span>
         </Button>
         <Button
-          variant={chatOpen && isGeneralChat ? "default" : "ghost"}
-          className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            (chatOpen && isGeneralChat) ? 'bg-white text-black' : ''
+          variant="ghost"
+          className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
+            (chatOpen && isGeneralChat) ? 'bg-[#FEF7CD] text-black' : ''
           }`}
           onClick={toggleGeneralChat}
         >
@@ -65,9 +65,9 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Chat</span>
         </Button>
         <Button
-          variant={showOffers ? "default" : "ghost"}
-          className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showOffers ? 'bg-white text-black' : ''
+          variant="ghost"
+          className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
+            showOffers ? 'bg-[#FEF7CD] text-black' : ''
           }`}
           onClick={toggleOffers}
         >
@@ -75,9 +75,9 @@ export const BottomBar: FC<BottomBarProps> = ({
           <span className="text-[0.6rem] mt-0.5">Offers</span>
         </Button>
         <Button
-          variant={showFriendsList ? "default" : "ghost"}
-          className={`flex flex-col items-center h-12 w-16 transition-colors ${
-            showFriendsList ? 'bg-white text-black' : ''
+          variant="ghost"
+          className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
+            showFriendsList ? 'bg-[#FEF7CD] text-black' : ''
           }`}
           onClick={toggleFriendsList}
         >
