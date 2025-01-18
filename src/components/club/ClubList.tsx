@@ -41,17 +41,18 @@ export const ClubList: FC<ClubListProps> = ({
 
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const scrollArea = scrollAreaRef.current;
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollContainer) return;
+
       const clubElement = selectedClubRef.current;
-      
-      // Calculate the scroll position to center the selected club
-      const scrollAreaRect = scrollArea.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
       const clubRect = clubElement.getBoundingClientRect();
       
-      const scrollTop = clubElement.offsetTop - (scrollAreaRect.height / 2) + (clubRect.height / 2);
+      // Calculate the scroll position to center the selected club
+      const scrollTop = clubElement.offsetTop - (containerRect.height / 2) + (clubRect.height / 2);
       
       // Smooth scroll to the calculated position
-      scrollArea.scrollTo({
+      scrollContainer.scrollTo({
         top: scrollTop,
         behavior: 'smooth'
       });
