@@ -60,10 +60,11 @@
   touch-action: pan-x pan-y pinch-zoom;
 }
 
-/* Add extra padding for mobile devices on clubpilot.net */
+/* Update mobile padding to move map up by 115% of navbar height */
 @media (max-width: 768px) {
   .map-container {
-    padding-bottom: calc(70.4px); /* 110% of bottom navbar height (64px) */
+    padding-bottom: calc(73.6px); /* 115% of bottom navbar height (64px) */
+    transform: translateY(-9.6px); /* Move up by 15% of navbar height */
   }
 }
 

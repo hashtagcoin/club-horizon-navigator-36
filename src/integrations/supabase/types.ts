@@ -194,6 +194,7 @@ export type Database = {
           sunday_hours_open: string | null
           thursday_hours_close: string | null
           thursday_hours_open: string | null
+          traffic: Database["public"]["Enums"]["traffic_level"] | null
           tuesday_hours_close: string | null
           tuesday_hours_open: string | null
           venue_type: string | null
@@ -223,6 +224,7 @@ export type Database = {
           sunday_hours_open?: string | null
           thursday_hours_close?: string | null
           thursday_hours_open?: string | null
+          traffic?: Database["public"]["Enums"]["traffic_level"] | null
           tuesday_hours_close?: string | null
           tuesday_hours_open?: string | null
           venue_type?: string | null
@@ -252,6 +254,7 @@ export type Database = {
           sunday_hours_open?: string | null
           thursday_hours_close?: string | null
           thursday_hours_open?: string | null
+          traffic?: Database["public"]["Enums"]["traffic_level"] | null
           tuesday_hours_close?: string | null
           tuesday_hours_open?: string | null
           venue_type?: string | null
