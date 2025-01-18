@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Club } from '@/types/club';
+import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
-import { MapControls } from './MapControls';
-import { MapContainer } from './MapContainer';
+import { Switch } from "@/components/ui/switch";
+import { Eye, EyeOff } from "lucide-react";
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -33,7 +34,11 @@ export function MapView({
   locationManagement,
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
-  const [showAllClubs, setShowAllClubs] = useState(false);
+  const [showAllClubs, setShowAllClubs] = useState(false); // Changed initial state to false
+
+  useEffect(() => {
+    setShowAllClubs(false); // Also update the effect to maintain false state on center change
+  }, [mapCenter]);
 
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
@@ -48,13 +53,21 @@ export function MapView({
         />
       </div>
       
-      <MapControls 
-        showAllClubs={showAllClubs}
-        setShowAllClubs={setShowAllClubs}
-      />
+      <div className="absolute bottom-20 left-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
+        {showAllClubs ? (
+          <Eye className="h-4 w-4 text-primary" />
+        ) : (
+          <EyeOff className="h-4 w-4 text-muted-foreground" />
+        )}
+        <Switch
+          checked={showAllClubs}
+          onCheckedChange={setShowAllClubs}
+          aria-label="Toggle all clubs visibility"
+        />
+      </div>
       
       <div className="flex-grow h-full relative pb-14">
-        <MapContainer
+        <ClubMap
           isLoaded={isLoaded}
           clubs={visibleClubs}
           selectedClub={selectedClub}
@@ -63,6 +76,7 @@ export function MapView({
           userLocation={userLocation}
           directions={directions}
           onClubSelect={onClubSelect}
+          calculatedBounds={null}
         />
       </div>
     </div>
