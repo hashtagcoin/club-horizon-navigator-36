@@ -5,6 +5,7 @@ import { Globe, Loader2 } from 'lucide-react'
 import { locations } from '@/data/locations'
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
+import { supabase } from "@/integrations/supabase/client"
 
 interface LocationControlsProps {
   currentCountry: string
@@ -26,6 +27,36 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+  const [suburbs, setSuburbs] = useState<string[]>([])
+
+  useEffect(() => {
+    fetchSuburbs()
+  }, [])
+
+  const fetchSuburbs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('Clublist_Australia')
+        .select('area')
+        .not('area', 'is', null)
+      
+      if (error) {
+        console.error('Error fetching suburbs:', error)
+        return
+      }
+
+      // Extract unique suburbs and remove nulls
+      const uniqueSuburbs = Array.from(new Set(data.map(item => item.area).filter(Boolean)))
+      setSuburbs(uniqueSuburbs)
+      
+      // If no suburb is selected and we have suburbs, select the first one
+      if (!currentSuburb && uniqueSuburbs.length > 0) {
+        onSuburbChange(uniqueSuburbs[0])
+      }
+    } catch (error) {
+      console.error('Error processing suburbs:', error)
+    }
+  }
 
   const getCurrentLocation = () => {
     setIsLoadingLocation(true)
@@ -114,11 +145,9 @@ export function LocationControls({
                 <SelectValue placeholder="Select suburb" />
               </SelectTrigger>
               <SelectContent>
-                {locations[currentCountry] && locations[currentCountry][currentState] && 
-                  Object.keys(locations[currentCountry][currentState]).map((suburb) => (
-                    <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
-                  ))
-                }
+                {suburbs.map((suburb) => (
+                  <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -173,11 +202,9 @@ export function LocationControls({
                 <SelectValue placeholder="Select suburb" />
               </SelectTrigger>
               <SelectContent>
-                {locations[currentCountry] && locations[currentCountry][currentState] && 
-                  Object.keys(locations[currentCountry][currentState]).map((suburb) => (
-                    <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
-                  ))
-                }
+                {suburbs.map((suburb) => (
+                  <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
