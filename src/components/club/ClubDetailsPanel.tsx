@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, User, Share2, Gift, Clock } from 'lucide-react';
 import { Club } from '@/types/club';
@@ -19,6 +19,12 @@ export const ClubDetailsPanel = ({
 }: ClubDetailsPanelProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Set the initial day to today when the component mounts
+    const today = new Date().toLocaleString('en-us', { weekday: 'long' });
+    setSelectedDay(today);
+  }, []); // Empty dependency array means this runs once when component mounts
 
   if (!selectedClub) return null;
 
