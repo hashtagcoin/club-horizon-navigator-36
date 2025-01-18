@@ -44,11 +44,13 @@ export const ClubList: FC<ClubListProps> = ({
       const scrollArea = scrollAreaRef.current;
       const clubElement = selectedClubRef.current;
       
+      // Calculate the scroll position to center the selected club
       const scrollAreaRect = scrollArea.getBoundingClientRect();
       const clubRect = clubElement.getBoundingClientRect();
       
       const scrollTop = clubElement.offsetTop - (scrollAreaRect.height / 2) + (clubRect.height / 2);
       
+      // Smooth scroll to the calculated position
       scrollArea.scrollTo({
         top: scrollTop,
         behavior: 'smooth'
