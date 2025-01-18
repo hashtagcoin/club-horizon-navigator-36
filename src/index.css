@@ -60,6 +60,13 @@
   touch-action: pan-x pan-y pinch-zoom;
 }
 
+/* Add extra padding for mobile devices on clubpilot.net */
+@media (max-width: 768px) {
+  .map-container {
+    padding-bottom: calc(70.4px); /* 110% of bottom navbar height (64px) */
+  }
+}
+
 .club-card {
   @apply bg-white hover:bg-secondary transition-all duration-300;
 }
