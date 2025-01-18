@@ -51,7 +51,7 @@ export const ClubList: FC<ClubListProps> = ({
       // Calculate the scroll position to align with the toggle button (at 50vh)
       const windowHeight = window.innerHeight;
       const targetPosition = windowHeight * 0.5; // 50vh - where the toggle button is
-      const scrollTop = clubElement.offsetTop - targetPosition + (clubRect.height / 2);
+      const scrollTop = clubElement.offsetTop - targetPosition;
       
       // Smooth scroll to the calculated position
       scrollContainer.scrollTo({
