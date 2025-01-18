@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import { UserCheck, MapPin, Music, UserX, QrCode, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useState, useEffect, useRef } from "react"
+import { supabase } from "@/integrations/supabase/client"
 
 interface UserProfileProps {
   onClose: () => void;
@@ -37,7 +39,10 @@ export function UserProfile({
   const [claimedOffers, setClaimedOffers] = useState<ClaimedOffer[]>([]);
   const [selectedOffer, setSelectedOffer] = useState<ClaimedOffer | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string>("/placeholder.svg");
+  const [presenceEnabled, setPresenceEnabled] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const presenceChannel = useRef<any>(null);
 
   useEffect(() => {
     const offers = JSON.parse(localStorage.getItem('claimedOffers') || '[]');
@@ -48,7 +53,78 @@ export function UserProfile({
     if (savedAvatarUrl) {
       setAvatarUrl(savedAvatarUrl);
     }
+
+    // Load presence settings
+    loadPresenceSettings();
+
+    return () => {
+      if (presenceChannel.current) {
+        presenceChannel.current.unsubscribe();
+      }
+    };
   }, []);
+
+  const loadPresenceSettings = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: settings } = await supabase
+      .from('user_settings')
+      .select('presence_enabled')
+      .eq('user_id', user.id)
+      .single();
+
+    if (settings) {
+      setPresenceEnabled(settings.presence_enabled);
+      if (settings.presence_enabled) {
+        initializePresence(user.id);
+      }
+    } else {
+      // Create default settings if they don't exist
+      await supabase
+        .from('user_settings')
+        .insert([{ user_id: user.id, presence_enabled: true }]);
+      initializePresence(user.id);
+    }
+  };
+
+  const initializePresence = (userId: string) => {
+    presenceChannel.current = supabase.channel(`presence:${userId}`)
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.current.presenceState();
+        setIsOnline(Object.keys(state).length > 0);
+      })
+      .subscribe(async (status: string) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.current.track({
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+  };
+
+  const handlePresenceToggle = async (enabled: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    setPresenceEnabled(enabled);
+    
+    await supabase
+      .from('user_settings')
+      .update({ presence_enabled: enabled })
+      .eq('user_id', user.id);
+
+    if (enabled) {
+      initializePresence(user.id);
+      toast.success("Presence enabled");
+    } else {
+      if (presenceChannel.current) {
+        await presenceChannel.current.unsubscribe();
+        presenceChannel.current = null;
+      }
+      toast.success("Presence disabled");
+    }
+  };
 
   const handleRemoveFriend = () => {
     if (onRemoveFriend) {
@@ -88,10 +164,17 @@ export function UserProfile({
         </DialogHeader>
         <div className="flex flex-col items-center space-y-4 py-4">
           <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={avatarUrl} />
-              <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="h-20 w-20">
+                <AvatarImage src={avatarUrl} />
+                <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              {presenceEnabled && (
+                <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+                  isOnline ? 'bg-green-500' : 'bg-gray-400'
+                }`} />
+              )}
+            </div>
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
               <Upload className="h-6 w-6 text-white" />
             </div>
@@ -106,6 +189,13 @@ export function UserProfile({
           <div className="text-center">
             <h2 className="text-xl font-bold">{name}</h2>
             <p className="text-sm text-muted-foreground">Member since {memberSince}</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-muted-foreground">Show Presence</span>
+            <Switch
+              checked={presenceEnabled}
+              onCheckedChange={handlePresenceToggle}
+            />
           </div>
           <div className="flex space-x-2">
             <Badge variant="secondary" className="flex items-center space-x-1">
