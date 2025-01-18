@@ -39,6 +39,7 @@ export const ClubList: FC<ClubListProps> = ({
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Effect for handling selected club scrolling
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -57,6 +58,17 @@ export const ClubList: FC<ClubListProps> = ({
       });
     }
   }, [selectedClub]);
+
+  // Effect for scrolling to top when clubs list changes
+  useEffect(() => {
+    const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }, [clubs]); // This will trigger when the clubs array changes due to filtering
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
