@@ -75,7 +75,7 @@ export function UserProfile({
       .single();
 
     if (settings) {
-      setPresenceEnabled(settings.presence_enabled);
+      setPresenceEnabled(settings.presence_enabled || false);
       if (settings.presence_enabled) {
         initializePresence(user.id);
       }
