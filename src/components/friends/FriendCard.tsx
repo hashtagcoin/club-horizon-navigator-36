@@ -10,8 +10,8 @@ interface FriendCardProps {
 export function FriendCard({ friend, isSelected, onToggle }: FriendCardProps) {
   return (
     <div 
-      className={`flex items-center p-2 hover:bg-white/5 transition-colors cursor-pointer ${
-        isSelected ? 'bg-green-100 dark:bg-green-900/30' : ''
+      className={`flex items-center p-2 cursor-pointer ${
+        isSelected ? 'bg-[#D946EF]/30' : ''
       }`}
       onClick={() => onToggle(friend)}
     >
