@@ -48,13 +48,11 @@ export function UserProfile({
     const offers = JSON.parse(localStorage.getItem('claimedOffers') || '[]');
     setClaimedOffers(offers);
     
-    // Load saved avatar URL from localStorage
     const savedAvatarUrl = localStorage.getItem('userAvatarUrl');
     if (savedAvatarUrl) {
       setAvatarUrl(savedAvatarUrl);
     }
 
-    // Load presence settings
     loadPresenceSettings();
 
     return () => {
@@ -75,16 +73,18 @@ export function UserProfile({
       .single();
 
     if (settings) {
-      setPresenceEnabled(settings.presence_enabled || false);
+      setPresenceEnabled(settings.presence_enabled ?? false);
       if (settings.presence_enabled) {
         initializePresence(user.id);
       }
     } else {
-      // Create default settings if they don't exist
-      await supabase
+      const { error } = await supabase
         .from('user_settings')
         .insert([{ user_id: user.id, presence_enabled: true }]);
-      initializePresence(user.id);
+        
+      if (!error) {
+        initializePresence(user.id);
+      }
     }
   };
 
@@ -109,20 +109,22 @@ export function UserProfile({
 
     setPresenceEnabled(enabled);
     
-    await supabase
+    const { error } = await supabase
       .from('user_settings')
       .update({ presence_enabled: enabled })
       .eq('user_id', user.id);
 
-    if (enabled) {
-      initializePresence(user.id);
-      toast.success("Presence enabled");
-    } else {
-      if (presenceChannel.current) {
-        await presenceChannel.current.unsubscribe();
-        presenceChannel.current = null;
+    if (!error) {
+      if (enabled) {
+        initializePresence(user.id);
+        toast.success("Presence enabled");
+      } else {
+        if (presenceChannel.current) {
+          await presenceChannel.current.unsubscribe();
+          presenceChannel.current = null;
+        }
+        toast.success("Presence disabled");
       }
-      toast.success("Presence disabled");
     }
   };
 
