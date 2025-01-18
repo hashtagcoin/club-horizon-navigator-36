@@ -5,6 +5,7 @@ import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 import { Switch } from "@/components/ui/switch";
 import { Eye, EyeOff } from "lucide-react";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MapViewProps {
   isLoaded: boolean;
@@ -35,6 +36,7 @@ export function MapView({
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
   const [showAllClubs, setShowAllClubs] = useState(false);
+  const isMobile = useIsMobile();
 
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
@@ -49,7 +51,9 @@ export function MapView({
         />
       </div>
       
-      <div className="absolute bottom-[140px] left-4 z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md">
+      <div className={`absolute z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md ${
+        isMobile ? 'bottom-[200px] right-4' : 'bottom-[140px] left-4'
+      }`}>
         {showAllClubs ? (
           <Eye className="h-4 w-4 text-primary" />
         ) : (
