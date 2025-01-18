@@ -26,6 +26,42 @@ export const ClubMap = ({
   calculatedBounds
 }: ClubMapProps) => {
   const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
+  const [bounds, setBounds] = useState<google.maps.LatLngBounds | null>(null);
+
+  useEffect(() => {
+    if (isLoaded && (clubs.length > 0 || userLocation)) {
+      const newBounds = new google.maps.LatLngBounds();
+      
+      // Add club positions to bounds
+      clubs.forEach(club => {
+        newBounds.extend(club.position);
+      });
+      
+      // Add user location to bounds if available
+      if (userLocation) {
+        newBounds.extend(userLocation);
+      }
+      
+      // Add padding to bounds
+      const padding = { top: 100, right: 50, bottom: 50, left: 400 }; // Adjusted for club list and details panel
+      const ne = newBounds.getNorthEast();
+      const sw = newBounds.getSouthWest();
+      
+      const latPadding = (ne.lat() - sw.lat()) * 0.1;
+      const lngPadding = (ne.lng() - sw.lng()) * 0.1;
+      
+      newBounds.extend(new google.maps.LatLng(
+        ne.lat() + latPadding,
+        ne.lng() + lngPadding
+      ));
+      newBounds.extend(new google.maps.LatLng(
+        sw.lat() - latPadding,
+        sw.lng() - lngPadding
+      ));
+      
+      setBounds(newBounds);
+    }
+  }, [isLoaded, clubs, userLocation]);
 
   useEffect(() => {
     if (isLoaded && userLocation && selectedClub) {
@@ -159,8 +195,8 @@ export const ClubMap = ({
       zoom={mapZoom}
       options={mapOptions}
       onLoad={map => {
-        if (calculatedBounds) {
-          map.fitBounds(calculatedBounds);
+        if (bounds) {
+          map.fitBounds(bounds);
         }
       }}
     >
