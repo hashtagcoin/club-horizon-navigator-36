@@ -32,7 +32,7 @@ export function PrivateChat({
           {selectedFriends.map((friend) => (
             <div key={friend.id} className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
               <span 
-                className="text-xs cursor-pointer"
+                className="text-xs cursor-pointer text-white"
                 onDoubleClick={() => onShowProfile(friend)}
               >
                 {friend.name}

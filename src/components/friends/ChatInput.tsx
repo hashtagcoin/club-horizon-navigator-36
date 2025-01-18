@@ -9,7 +9,7 @@ interface ChatInputProps {
 
 export function ChatInput({ message, onMessageChange, onSendMessage }: ChatInputProps) {
   return (
-    <div className="p-2 border-t border-white/10 flex gap-2 bg-black/20">
+    <div className="p-2 border-t border-white/10 flex gap-2 bg-black">
       <input
         type="text"
         value={message}

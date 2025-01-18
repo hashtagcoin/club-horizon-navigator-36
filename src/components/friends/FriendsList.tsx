@@ -117,7 +117,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
         transform: to([x], (x) => `translateX(${x}px)`),
         touchAction: 'pan-y'
       }}
-      className="fixed right-0 top-0 h-screen w-64 bg-background border-l border-border shadow-xl flex flex-col z-50"
+      className="fixed right-0 top-0 h-screen w-64 bg-black text-white border-l border-white/10 shadow-xl flex flex-col z-50"
     >
       {viewingFriend && (
         <UserProfile
@@ -157,7 +157,7 @@ export function FriendsList({ isOpen, onClose }: FriendsListProps) {
 
         {selectedFriends.length > 0 && (
           <>
-            <ResizableHandle withHandle />
+            <ResizableHandle withHandle className="bg-white/10" />
             <ResizablePanel defaultSize={40} minSize={20}>
               <PrivateChat
                 selectedFriends={friends.filter(f => selectedFriends.includes(f.id))}
