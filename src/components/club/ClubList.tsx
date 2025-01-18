@@ -41,20 +41,22 @@ export const ClubList: FC<ClubListProps> = ({
 
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (!scrollContainer) return;
+      // Add a small delay to ensure the DOM has updated
+      setTimeout(() => {
+        const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+        if (!scrollContainer) return;
 
-      const clubElement = selectedClubRef.current;
-      const clubRect = clubElement.getBoundingClientRect();
-      const cardHeight = clubRect.height;
-      
-      // Calculate scroll position to place selected club as second item
-      const scrollTop = clubElement.offsetTop - cardHeight;
-      
-      scrollContainer.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
+        const clubElement = selectedClubRef.current;
+        if (!clubElement) return;
+
+        const cardHeight = clubElement.offsetHeight;
+        const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }, 100);
     }
   }, [selectedClub]);
 
@@ -90,7 +92,10 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea className="flex-grow" ref={scrollAreaRef}>
+      <ScrollArea 
+        className="flex-grow" 
+        ref={scrollAreaRef}
+      >
         <div className="space-y-2 pr-2">
           {isLoading ? (
             <div>Loading venues...</div>

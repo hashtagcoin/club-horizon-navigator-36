@@ -34,30 +34,21 @@
   
   html {
     height: 100%;
-    overflow: hidden;
-    position: fixed;
     width: 100%;
-    touch-action: none;
   }
   
   body {
     @apply bg-background text-foreground;
     height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-    position: fixed;
     width: 100%;
     padding-top: 56px; /* Add padding for fixed top bar */
     padding-bottom: 64px; /* Add padding for fixed bottom bar */
-    touch-action: none;
-    -webkit-overflow-scrolling: none;
   }
 }
 
 .map-container {
   @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
   height: calc(100vh - 120px); /* Account for top and bottom bars */
-  touch-action: pan-x pan-y pinch-zoom;
 }
 
 /* Update mobile padding to move map up by 115% of navbar height */
