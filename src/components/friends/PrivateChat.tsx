@@ -26,7 +26,7 @@ export function PrivateChat({
   onShowProfile
 }: PrivateChatProps) {
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col -translate-y-[200px]">
       <div className="p-2 bg-black text-white border-y border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-x-auto">
           {selectedFriends.map((friend) => (
