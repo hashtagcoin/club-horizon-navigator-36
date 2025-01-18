@@ -35,6 +35,8 @@
   html {
     height: 100%;
     width: 100%;
+    overflow: hidden;
+    position: fixed;
   }
   
   body {
@@ -43,6 +45,8 @@
     width: 100%;
     padding-top: 56px; /* Add padding for fixed top bar */
     padding-bottom: 64px; /* Add padding for fixed bottom bar */
+    overflow: hidden;
+    position: fixed;
   }
 }
 
