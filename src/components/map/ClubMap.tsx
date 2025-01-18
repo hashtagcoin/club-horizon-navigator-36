@@ -32,18 +32,15 @@ export const ClubMap = ({
     if (isLoaded && (clubs.length > 0 || userLocation)) {
       const newBounds = new google.maps.LatLngBounds();
       
-      // Add club positions to bounds
       clubs.forEach(club => {
         newBounds.extend(club.position);
       });
       
-      // Add user location to bounds if available
       if (userLocation) {
         newBounds.extend(userLocation);
       }
       
-      // Add padding to bounds
-      const padding = { top: 100, right: 50, bottom: 50, left: 400 }; // Adjusted for club list and details panel
+      const padding = { top: 100, right: 50, bottom: 50, left: 400 };
       const ne = newBounds.getNorthEast();
       const sw = newBounds.getSouthWest();
       
@@ -88,7 +85,7 @@ export const ClubMap = ({
 
   const mapOptions = {
     disableDefaultUI: true,
-    zoomControl: true,
+    zoomControl: false,
     streetViewControl: false,
     mapTypeControl: false,
     styles: [
