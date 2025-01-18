@@ -36,10 +36,9 @@ export function ChatWindow({
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
   const bind = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
-    // Determine swipe direction based on chat type
     const shouldClose = isGeneralChat 
-      ? (dx < 0 && mx < -50) // Swipe left for general chat
-      : (dx > 0 && mx > 50); // Swipe right for club chat
+      ? (dx < 0 && mx < -50)
+      : (dx > 0 && mx > 50);
 
     if (shouldClose && Math.abs(vx) > 0.2) {
       cancel();
@@ -85,7 +84,7 @@ export function ChatWindow({
         position: 'fixed',
         touchAction: 'none'
       }}
-      className="backdrop-blur-xl bg-black/40 rounded-lg overflow-hidden shadow-lg border border-white/10 w-64 h-72 z-50"
+      className="bg-black rounded-lg overflow-hidden shadow-lg border border-white/10 w-64 h-72 z-50"
     >
       <div className="flex justify-between items-center p-2 bg-black text-white border-b border-white/10">
         <span className="text-sm font-medium">
@@ -134,7 +133,7 @@ export function ChatWindow({
           })}
         </div>
       </ScrollArea>
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/20 border-t border-white/10">
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-black border-t border-white/10">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
