@@ -38,7 +38,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <div className="flex justify-around max-w-lg mx-auto">
           <Button
             variant="ghost"
-            className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            className={`flex flex-col items-center h-12 w-16 transition-colors active:bg-[#FEF7CD] active:[&_svg]:text-black active:[&_span]:text-black ${
               showHighTraffic 
                 ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
@@ -50,7 +50,7 @@ export const BottomBar: FC<BottomBarProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            className={`flex flex-col items-center h-12 w-16 transition-colors active:bg-[#FEF7CD] active:[&_svg]:text-black active:[&_span]:text-black ${
               sortByOpenLate 
                 ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
@@ -62,7 +62,7 @@ export const BottomBar: FC<BottomBarProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            className={`flex flex-col items-center h-12 w-16 transition-colors active:bg-[#FEF7CD] active:[&_svg]:text-black active:[&_span]:text-black ${
               (chatOpen && isGeneralChat)
                 ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
@@ -74,7 +74,7 @@ export const BottomBar: FC<BottomBarProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            className={`flex flex-col items-center h-12 w-16 transition-colors active:bg-[#FEF7CD] active:[&_svg]:text-black active:[&_span]:text-black ${
               showOffers 
                 ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
@@ -86,7 +86,7 @@ export const BottomBar: FC<BottomBarProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className={`flex flex-col items-center h-12 w-16 transition-colors ${
+            className={`flex flex-col items-center h-12 w-16 transition-colors active:bg-[#FEF7CD] active:[&_svg]:text-black active:[&_span]:text-black ${
               showFriendsList 
                 ? 'bg-[#FEF7CD] [&_svg]:text-black [&_span]:text-black' 
                 : '[&_svg]:text-white [&_span]:text-white'
