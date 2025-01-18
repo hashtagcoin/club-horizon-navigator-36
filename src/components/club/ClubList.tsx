@@ -45,13 +45,12 @@ export const ClubList: FC<ClubListProps> = ({
       if (!scrollContainer) return;
 
       const clubElement = selectedClubRef.current;
-      const containerRect = scrollContainer.getBoundingClientRect();
       const clubRect = clubElement.getBoundingClientRect();
+      const cardHeight = clubRect.height;
       
-      // Calculate the scroll position to center the selected club
-      const scrollTop = clubElement.offsetTop - (containerRect.height / 2) + (clubRect.height / 2);
+      // Calculate position to make selected club the second item
+      const scrollTop = clubElement.offsetTop - cardHeight;
       
-      // Smooth scroll to the calculated position
       scrollContainer.scrollTo({
         top: scrollTop,
         behavior: 'smooth'
