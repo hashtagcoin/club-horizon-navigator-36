@@ -42,14 +42,10 @@ export const ClubList: FC<ClubListProps> = ({
     if (selectedClub && selectedClubRef.current) {
       selectedClubRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'center'
       });
     }
   }, [selectedClub]);
-
-  const handleClubSelect = (club: Club) => {
-    onSelectClub(club);
-  };
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -86,7 +82,7 @@ export const ClubList: FC<ClubListProps> = ({
                   club={club}
                   selectedDay={selectedDay}
                   isSelected={selectedClub?.id === club.id}
-                  onSelect={handleClubSelect}
+                  onSelect={onSelectClub}
                   onOpenChat={onOpenChat}
                   newMessageCount={newMessageCounts[club.id] || 0}
                 />
