@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { UserCheck, MapPin, Music, UserX, QrCode } from "lucide-react"
+import { UserCheck, MapPin, Music, UserX, QrCode, Upload } from "lucide-react"
 import { toast } from "sonner"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 interface UserProfileProps {
   onClose: () => void;
@@ -36,10 +36,18 @@ export function UserProfile({
 }: UserProfileProps) {
   const [claimedOffers, setClaimedOffers] = useState<ClaimedOffer[]>([]);
   const [selectedOffer, setSelectedOffer] = useState<ClaimedOffer | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("/placeholder.svg");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const offers = JSON.parse(localStorage.getItem('claimedOffers') || '[]');
     setClaimedOffers(offers);
+    
+    // Load saved avatar URL from localStorage
+    const savedAvatarUrl = localStorage.getItem('userAvatarUrl');
+    if (savedAvatarUrl) {
+      setAvatarUrl(savedAvatarUrl);
+    }
   }, []);
 
   const handleRemoveFriend = () => {
@@ -47,6 +55,24 @@ export function UserProfile({
       onRemoveFriend();
       toast.success("Friend removed successfully");
       onClose();
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setAvatarUrl(result);
+        localStorage.setItem('userAvatarUrl', result);
+        toast.success("Profile picture updated successfully");
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -61,10 +87,22 @@ export function UserProfile({
           <DialogTitle>Profile</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center space-y-4 py-4">
-          <Avatar className="h-20 w-20">
-            <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={avatarUrl} />
+              <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+              <Upload className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            className="hidden" 
+            accept="image/*"
+            onChange={handleFileChange}
+          />
           <div className="text-center">
             <h2 className="text-xl font-bold">{name}</h2>
             <p className="text-sm text-muted-foreground">Member since {memberSince}</p>
