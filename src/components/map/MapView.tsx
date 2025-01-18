@@ -34,10 +34,10 @@ export function MapView({
   locationManagement,
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
-  const [showAllClubs, setShowAllClubs] = useState(true);
+  const [showAllClubs, setShowAllClubs] = useState(false); // Changed initial state to false
 
   useEffect(() => {
-    setShowAllClubs(true);
+    setShowAllClubs(false); // Also update the effect to maintain false state on center change
   }, [mapCenter]);
 
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
