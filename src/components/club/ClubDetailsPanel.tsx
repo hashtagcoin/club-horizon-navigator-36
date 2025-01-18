@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Share2, Gift } from 'lucide-react';
+import { MapPin, User, Share2, Gift, Clock } from 'lucide-react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/components/ui/use-toast";
@@ -97,9 +97,12 @@ export const ClubDetailsPanel = ({
           </Button>
         ))}
       </div>
-      <p className="mt-1 text-xs font-medium w-full text-left">
-        {selectedClub.openingHours[selectedDay]}
-      </p>
+      <div className="mt-1 flex items-center space-x-1">
+        <Clock className="h-3 w-3 text-muted-foreground" />
+        <p className="text-xs font-medium">
+          {selectedClub.openingHours[selectedDay]}
+        </p>
+      </div>
       
       {selectedClub.hasSpecial && (
         <div className="mt-2 bg-yellow-50 p-2 rounded-md border border-yellow-200">
