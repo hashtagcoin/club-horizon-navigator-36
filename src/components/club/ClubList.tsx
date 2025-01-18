@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
@@ -36,25 +36,6 @@ export const ClubList: FC<ClubListProps> = ({
   isLoading
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
-  const selectedClubRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const scrollArea = scrollAreaRef.current;
-      const clubElement = selectedClubRef.current;
-      
-      const scrollAreaRect = scrollArea.getBoundingClientRect();
-      const clubRect = clubElement.getBoundingClientRect();
-      
-      const scrollTop = clubElement.offsetTop - (scrollAreaRect.height / 2) + (clubRect.height / 2);
-      
-      scrollArea.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
-    }
-  }, [selectedClub]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -77,16 +58,13 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea className="flex-grow" ref={scrollAreaRef}>
+      <ScrollArea className="flex-grow">
         <div className="space-y-2 pr-2">
           {isLoading ? (
             <div>Loading venues...</div>
           ) : (
             clubs.map(club => (
-              <div 
-                key={club.id} 
-                ref={selectedClub?.id === club.id ? selectedClubRef : null}
-              >
+              <div key={club.id}>
                 <ClubCard
                   club={club}
                   selectedDay={selectedDay}
