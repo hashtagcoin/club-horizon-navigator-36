@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
@@ -34,11 +34,7 @@ export function MapView({
   locationManagement,
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
-  const [showAllClubs, setShowAllClubs] = useState(false); // Changed initial state to false
-
-  useEffect(() => {
-    setShowAllClubs(false); // Also update the effect to maintain false state on center change
-  }, [mapCenter]);
+  const [showAllClubs, setShowAllClubs] = useState(false);
 
   const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
