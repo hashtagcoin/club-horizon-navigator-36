@@ -4,7 +4,7 @@ import { sortClubs } from '@/utils/sortClubs';
 
 export function useClubFilters() {
   const [sortBy, setSortBy] = useState("closest");
-  const [filterGenre, setFilterGenre] = useState<string[]>([]);  // Changed to array
+  const [filterGenre, setFilterGenre] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showHighTraffic, setShowHighTraffic] = useState(false);
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
@@ -15,6 +15,17 @@ export function useClubFilters() {
     const today = new Date().toLocaleString('en-us', {weekday: 'long'});
     setSelectedDay(today);
   }, []);
+
+  const getClosingHour = (club: Club, day: string) => {
+    const hours = club.openingHours[day];
+    if (!hours || hours === "Closed") return -1;
+    const closingTime = hours.split(" - ")[1];
+    if (!closingTime) return -1;
+    const [hourStr] = closingTime.split(":");
+    const hour = parseInt(hourStr);
+    // Convert early morning hours (1am-6am) to 25-30 for proper sorting
+    return hour < 6 ? hour + 24 : hour;
+  };
 
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
     let filtered = [...clubs];
@@ -38,19 +49,18 @@ export function useClubFilters() {
     if (showSpecials) {
       filtered = filtered.filter(club => club.hasSpecial);
     }
-    
-    if (sortByOpenLate) {
-      filtered = filtered.filter(club => {
-        const hours = club.openingHours[selectedDay];
-        if (!hours || hours === "Closed") return false;
-        const closingTime = hours.split(" - ")[1];
-        if (!closingTime) return false;
-        const [hourStr] = closingTime.split(":");
-        const hour = parseInt(hourStr);
-        return hour < 6 || hour >= 22;
-      });
-    }
 
+    // Sort by closing time if sortByOpenLate is true
+    if (sortByOpenLate) {
+      filtered.sort((a, b) => {
+        const aClosingHour = getClosingHour(a, selectedDay);
+        const bClosingHour = getClosingHour(b, selectedDay);
+        return bClosingHour - aClosingHour; // Sort in descending order
+      });
+      return filtered;
+    }
+    
+    // Apply other sorting if not sorting by closing time
     return sortClubs(filtered, sortBy, userLocation);
   };
 
