@@ -100,7 +100,6 @@ export const ClubList: FC<ClubListProps> = ({
               <div 
                 key={club.id} 
                 ref={selectedClub?.id === club.id ? selectedClubRef : null}
-                data-club-card
               >
                 <ClubCard
                   club={club}
