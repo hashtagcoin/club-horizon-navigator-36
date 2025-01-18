@@ -45,17 +45,21 @@ export const ClubList: FC<ClubListProps> = ({
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (!scrollContainer) return;
 
-      const clubElement = selectedClubRef.current;
-      const clubRect = clubElement.getBoundingClientRect();
-      const cardHeight = clubRect.height;
+      // Get all club elements
+      const clubElements = Array.from(scrollContainer.querySelectorAll('[data-club-card]'));
+      const selectedIndex = clubElements.findIndex(el => el === selectedClubRef.current);
       
-      // Calculate position to make selected club the second item
-      const scrollTop = clubElement.offsetTop - cardHeight;
-      
-      scrollContainer.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
+      if (selectedIndex !== -1) {
+        const cardHeight = selectedClubRef.current.offsetHeight;
+        // Calculate scroll position to make selected club the second item
+        // Multiply by 1 to account for the first card that should be visible
+        const scrollTop = Math.max(0, (selectedIndex - 1) * cardHeight);
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
     }
   }, [selectedClub]);
 
@@ -100,6 +104,7 @@ export const ClubList: FC<ClubListProps> = ({
               <div 
                 key={club.id} 
                 ref={selectedClub?.id === club.id ? selectedClubRef : null}
+                data-club-card
               >
                 <ClubCard
                   club={club}
