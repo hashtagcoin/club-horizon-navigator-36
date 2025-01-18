@@ -84,14 +84,14 @@ export function OffersModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] rounded-xl bg-white/90 backdrop-blur-sm">
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <DialogContent className="sm:max-w-[425px] rounded-xl bg-white">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-black">Tonight's Special Offers</h2>
         </div>
         <ScrollArea className="h-[60vh] px-4">
           <div className="space-y-4 py-4">
             {availableOffers.map((offer) => (
-              <Card key={offer.id} className="bg-black/5 border border-white/20 backdrop-blur-sm">
+              <Card key={offer.id} className="bg-gray-50 border border-gray-200">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-black">
                     {offer.clubName}
@@ -103,7 +103,7 @@ export function OffersModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   <p className="text-sm text-gray-600 mb-3">{offer.description}</p>
                   <Button 
                     onClick={() => handleClaimOffer(offer)}
-                    className="w-full bg-black/80 hover:bg-black text-white"
+                    className="w-full bg-black hover:bg-black/90 text-white"
                   >
                     Claim Offer
                   </Button>
