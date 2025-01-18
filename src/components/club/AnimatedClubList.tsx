@@ -55,7 +55,7 @@ export const AnimatedClubList = ({
           position: 'fixed',
           top: '50%',
           left: isCollapsed ? 0 : '50%',
-          transform: 'translateY(-50%)',
+          transform: 'translateY(-50%)', // Center vertically
           zIndex: 25,
           transition: 'left 0.3s ease-in-out',
         }}
