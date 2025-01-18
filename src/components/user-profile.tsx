@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { UserCheck, MapPin, Music, UserX, QrCode, Upload, X } from "lucide-react"
+import { UserCheck, MapPin, Music, UserX, QrCode, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "@/integrations/supabase/client"
@@ -273,15 +273,6 @@ export function UserProfile({
 
       <Sheet open={showQRCode} onOpenChange={setShowQRCode}>
         <SheetContent side="bottom" className="h-[400px]">
-          <div className="absolute right-4 top-4">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setShowQRCode(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
           <div className="flex flex-col items-center justify-center h-full space-y-4">
             <h3 className="font-semibold text-lg">Offer QR Code</h3>
             <div className="bg-white p-4 rounded-lg">
