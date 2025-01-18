@@ -11,7 +11,7 @@ export function FriendCard({ friend, isSelected, onToggle }: FriendCardProps) {
   return (
     <div 
       className={`flex items-center p-2 hover:bg-accent/50 transition-colors cursor-pointer ${
-        isSelected ? 'bg-accent/50' : ''
+        isSelected ? 'bg-green-100 dark:bg-green-900/30' : ''
       }`}
       onClick={() => onToggle(friend)}
     >
