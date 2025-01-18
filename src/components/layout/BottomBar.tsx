@@ -37,7 +37,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant="ghost"
           className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
-            showHighTraffic ? 'bg-[#FEF7CD] text-black' : ''
+            showHighTraffic ? 'bg-[#FEF7CD] text-black [&_svg]:text-black' : 'text-white [&_svg]:text-white'
           }`}
           onClick={() => setShowHighTraffic(!showHighTraffic)}
         >
@@ -47,7 +47,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant="ghost"
           className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
-            sortByOpenLate ? 'bg-[#FEF7CD] text-black' : ''
+            sortByOpenLate ? 'bg-[#FEF7CD] text-black [&_svg]:text-black' : 'text-white [&_svg]:text-white'
           }`}
           onClick={() => setSortByOpenLate(!sortByOpenLate)}
         >
@@ -57,7 +57,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant="ghost"
           className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
-            (chatOpen && isGeneralChat) ? 'bg-[#FEF7CD] text-black' : ''
+            (chatOpen && isGeneralChat) ? 'bg-[#FEF7CD] text-black [&_svg]:text-black' : 'text-white [&_svg]:text-white'
           }`}
           onClick={toggleGeneralChat}
         >
@@ -67,7 +67,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant="ghost"
           className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
-            showOffers ? 'bg-[#FEF7CD] text-black' : ''
+            showOffers ? 'bg-[#FEF7CD] text-black [&_svg]:text-black' : 'text-white [&_svg]:text-white'
           }`}
           onClick={toggleOffers}
         >
@@ -77,7 +77,7 @@ export const BottomBar: FC<BottomBarProps> = ({
         <Button
           variant="ghost"
           className={`flex flex-col items-center h-12 w-16 transition-colors hover:bg-transparent ${
-            showFriendsList ? 'bg-[#FEF7CD] text-black' : ''
+            showFriendsList ? 'bg-[#FEF7CD] text-black [&_svg]:text-black' : 'text-white [&_svg]:text-white'
           }`}
           onClick={toggleFriendsList}
         >
