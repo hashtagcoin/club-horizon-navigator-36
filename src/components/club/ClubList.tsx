@@ -37,12 +37,21 @@ export const ClubList: FC<ClubListProps> = ({
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedClub && selectedClubRef.current) {
-      selectedClubRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
+    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
+      const scrollArea = scrollAreaRef.current;
+      const clubElement = selectedClubRef.current;
+      
+      const scrollAreaRect = scrollArea.getBoundingClientRect();
+      const clubRect = clubElement.getBoundingClientRect();
+      
+      const scrollTop = clubElement.offsetTop - (scrollAreaRect.height / 2) + (clubRect.height / 2);
+      
+      scrollArea.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth'
       });
     }
   }, [selectedClub]);
@@ -68,7 +77,7 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea className="flex-grow">
+      <ScrollArea className="flex-grow" ref={scrollAreaRef}>
         <div className="space-y-2 pr-2">
           {isLoading ? (
             <div>Loading venues...</div>
