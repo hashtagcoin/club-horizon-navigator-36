@@ -171,10 +171,11 @@ export type Database = {
         }
         Relationships: []
       }
-      club_lIst_Sydney: {
+      Clublist_Australia: {
         Row: {
           address: string | null
           area: string | null
+          Country: string | null
           friday_hours_close: string | null
           friday_hours_open: string | null
           latitude: number | null
@@ -184,11 +185,11 @@ export type Database = {
           monday_hours_open: string | null
           name: string | null
           phone: string | null
-          place_id: string | null
-          price_level: number | null
+          place_id: string
           rating: number | null
           saturday_hours_close: string | null
           saturday_hours_open: string | null
+          State: string | null
           sunday_hours_close: string | null
           sunday_hours_open: string | null
           thursday_hours_close: string | null
@@ -203,6 +204,7 @@ export type Database = {
         Insert: {
           address?: string | null
           area?: string | null
+          Country?: string | null
           friday_hours_close?: string | null
           friday_hours_open?: string | null
           latitude?: number | null
@@ -212,11 +214,11 @@ export type Database = {
           monday_hours_open?: string | null
           name?: string | null
           phone?: string | null
-          place_id?: string | null
-          price_level?: number | null
+          place_id: string
           rating?: number | null
           saturday_hours_close?: string | null
           saturday_hours_open?: string | null
+          State?: string | null
           sunday_hours_close?: string | null
           sunday_hours_open?: string | null
           thursday_hours_close?: string | null
@@ -231,6 +233,7 @@ export type Database = {
         Update: {
           address?: string | null
           area?: string | null
+          Country?: string | null
           friday_hours_close?: string | null
           friday_hours_open?: string | null
           latitude?: number | null
@@ -240,11 +243,11 @@ export type Database = {
           monday_hours_open?: string | null
           name?: string | null
           phone?: string | null
-          place_id?: string | null
-          price_level?: number | null
+          place_id?: string
           rating?: number | null
           saturday_hours_close?: string | null
           saturday_hours_open?: string | null
+          State?: string | null
           sunday_hours_close?: string | null
           sunday_hours_open?: string | null
           thursday_hours_close?: string | null

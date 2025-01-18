@@ -4,18 +4,32 @@ import { Club } from "@/types/club";
 
 const transformClubData = (data: any[]): Club[] => {
   return data.map((club) => ({
-    id: club.id,
+    id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
     name: club.name || 'Unknown Club',
     address: club.address || 'Address not available',
     traffic: club.traffic || 'Low',
     openingHours: {
-      Monday: club.monday_hours || 'Closed',
-      Tuesday: club.tuesday_hours || 'Closed',
-      Wednesday: club.wednesday_hours || 'Closed',
-      Thursday: club.thursday_hours || 'Closed',
-      Friday: club.friday_hours || 'Closed',
-      Saturday: club.saturday_hours || 'Closed',
-      Sunday: club.sunday_hours || 'Closed'
+      Monday: club.monday_hours_open && club.monday_hours_close 
+        ? `${club.monday_hours_open} - ${club.monday_hours_close}`
+        : 'Closed',
+      Tuesday: club.tuesday_hours_open && club.tuesday_hours_close
+        ? `${club.tuesday_hours_open} - ${club.tuesday_hours_close}`
+        : 'Closed',
+      Wednesday: club.wednesday_hours_open && club.wednesday_hours_close
+        ? `${club.wednesday_hours_open} - ${club.wednesday_hours_close}`
+        : 'Closed',
+      Thursday: club.thursday_hours_open && club.thursday_hours_close
+        ? `${club.thursday_hours_open} - ${club.thursday_hours_close}`
+        : 'Closed',
+      Friday: club.friday_hours_open && club.friday_hours_close
+        ? `${club.friday_hours_open} - ${club.friday_hours_close}`
+        : 'Closed',
+      Saturday: club.saturday_hours_open && club.saturday_hours_close
+        ? `${club.saturday_hours_open} - ${club.saturday_hours_close}`
+        : 'Closed',
+      Sunday: club.sunday_hours_open && club.sunday_hours_close
+        ? `${club.sunday_hours_open} - ${club.sunday_hours_close}`
+        : 'Closed'
     },
     position: {
       lat: club.latitude || -33.8688,
@@ -32,7 +46,7 @@ export const useClubData = () => {
     queryKey: ['clubs'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('club_cards')
+        .from('Clublist_Australia')
         .select('*');
       
       if (error) throw error;
