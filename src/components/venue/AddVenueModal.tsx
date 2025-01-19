@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -53,16 +53,17 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   useEffect(() => {
     if (!isOpen || !autocompleteInputRef.current) return;
 
-    // Wait for Google Maps API to be loaded
+    let timeoutId: NodeJS.Timeout;
+
     const initializeAutocomplete = () => {
-      if (!window.google || !window.google.maps) {
-        console.log("Google Maps API not loaded yet, retrying in 500ms");
-        setTimeout(initializeAutocomplete, 500);
+      if (!window.google?.maps?.places) {
+        console.log("Google Maps Places API not loaded yet, retrying in 500ms");
+        timeoutId = setTimeout(initializeAutocomplete, 500);
         return;
       }
 
       try {
-        // Clean up previous instance if it exists
+        // Clean up previous instance
         if (autocompleteInstance.current) {
           google.maps.event.clearInstanceListeners(autocompleteInstance.current);
         }
@@ -73,7 +74,6 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
           fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
         };
 
-        // Create new autocomplete instance
         const autocomplete = new google.maps.places.Autocomplete(
           autocompleteInputRef.current,
           options
@@ -81,20 +81,9 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
         
         autocompleteInstance.current = autocomplete;
 
-        // Add place_changed listener
-        const placeChangedListener = autocomplete.addListener('place_changed', () => {
-          handlePlaceSelection();
-        });
+        autocomplete.addListener('place_changed', handlePlaceSelection);
 
-        return () => {
-          if (placeChangedListener) {
-            google.maps.event.removeListener(placeChangedListener);
-          }
-          if (autocompleteInstance.current) {
-            google.maps.event.clearInstanceListeners(autocompleteInstance.current);
-            autocompleteInstance.current = null;
-          }
-        };
+        console.log("Autocomplete initialized successfully");
       } catch (error) {
         console.error("Error initializing Google Places Autocomplete:", error);
         toast({
@@ -106,6 +95,14 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
     };
 
     initializeAutocomplete();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (autocompleteInstance.current) {
+        google.maps.event.clearInstanceListeners(autocompleteInstance.current);
+        autocompleteInstance.current = null;
+      }
+    };
   }, [isOpen, toast]);
 
   const handlePlaceSelection = () => {
@@ -286,6 +283,9 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Venue</DialogTitle>
+          <DialogDescription>
+            Search for a venue or manually enter the details below.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
