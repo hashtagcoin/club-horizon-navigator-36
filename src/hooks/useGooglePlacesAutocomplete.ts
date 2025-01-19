@@ -58,8 +58,10 @@ export function useGooglePlacesAutocomplete(
         
         autocompleteInstance.current = autocomplete;
 
+        // Add the place_changed event listener
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
+          console.log("Selected place:", place); // Debug log
           
           if (!place.geometry) {
             toast({
@@ -120,6 +122,7 @@ export function useGooglePlacesAutocomplete(
             openingHours
           };
 
+          console.log("Parsed place result:", placeResult); // Debug log
           onPlaceSelect(placeResult);
         });
 
