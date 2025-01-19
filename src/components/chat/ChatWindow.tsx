@@ -2,11 +2,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Send, X } from 'lucide-react'
+import { Send, X, Smile, ImagePlus } from 'lucide-react'
 import { ChatMessage, ChatMessages, Club } from '@/types/club'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
+import EmojiPicker from 'emoji-picker-react'
+import { supabase } from "@/integrations/supabase/client"
+import { toast } from "sonner"
 
 interface ChatWindowProps {
   isGeneralChat: boolean;
@@ -33,6 +36,8 @@ export function ChatWindow({
   chatClub,
   isGeneralChat,
 }: ChatWindowProps) {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
   const bind = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
@@ -61,6 +66,45 @@ export function ChatWindow({
     rubberband: true
   });
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/gif', 'video/mp4'].includes(file.type)) {
+      toast.error("Unsupported file type. Please upload images (JPG, PNG, GIF) or MP4 videos.");
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error("File is too large. Maximum size is 10MB.");
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('chat_media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('chat_media')
+        .getPublicUrl(filePath);
+
+      // Append the media URL to the message
+      setChatMessage(prev => `${prev} ${publicUrl}`);
+      toast.success("File uploaded successfully!");
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error("Failed to upload file. Please try again.");
+    }
+  };
+
   const getPosition = () => {
     if (isGeneralChat) {
       return {
@@ -73,6 +117,61 @@ export function ChatWindow({
         bottom: '72px',
       };
     }
+  };
+
+  const renderMessage = (message: ChatMessage, index: number) => {
+    const opacity = messageOpacities[`${message.clubId}-${index}`] || 1;
+    const hasMedia = message.text.includes('https://') && 
+      (message.text.includes('.jpg') || message.text.includes('.png') || 
+       message.text.includes('.gif') || message.text.includes('.mp4'));
+
+    return (
+      <div
+        key={index}
+        className="flex items-start space-x-2"
+        data-message-id={`${message.clubId}-${index}`}
+        style={{ opacity }}
+      >
+        <Avatar className="h-6 w-6 shrink-0">
+          <AvatarImage 
+            src={`/placeholder.svg?height=24&width=24`} 
+            alt={`${message.sender} Avatar`} 
+          />
+          <AvatarFallback>
+            {message.sender.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="text-xs text-white/70 mb-1">
+            {message.sender}
+          </span>
+          <div className="bg-white/10 text-white px-3 py-2 rounded-lg max-w-[80%] break-words">
+            <p className="text-xs whitespace-pre-wrap">{message.text}</p>
+            {hasMedia && (
+              <div className="mt-2">
+                {message.text.includes('.mp4') ? (
+                  <video 
+                    controls 
+                    className="max-w-full rounded-lg"
+                    style={{ maxHeight: '200px' }}
+                  >
+                    <source src={message.text.match(/(https:\/\/[^\s]+)/)?.[0]} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <img 
+                    src={message.text.match(/(https:\/\/[^\s]+)/)?.[0]} 
+                    alt="Shared media"
+                    className="max-w-full rounded-lg"
+                    style={{ maxHeight: '200px' }}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -101,39 +200,22 @@ export function ChatWindow({
       </div>
       <ScrollArea className="h-[calc(100%-6rem)] p-4">
         <div className="space-y-3" ref={chatScrollRef}>
-          {allMessages.map((message, index) => {
-            const opacity = messageOpacities[`${message.clubId}-${index}`] || 1;
-            
-            return (
-              <div
-                key={index}
-                className="flex items-start space-x-2"
-                data-message-id={`${message.clubId}-${index}`}
-                style={{ opacity }}
-              >
-                <Avatar className="h-6 w-6 shrink-0">
-                  <AvatarImage 
-                    src={`/placeholder.svg?height=24&width=24`} 
-                    alt={`${message.sender} Avatar`} 
-                  />
-                  <AvatarFallback>
-                    {message.sender.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-xs text-white/70 mb-1">
-                    {message.sender}
-                  </span>
-                  <div className="bg-white/10 text-white px-3 py-2 rounded-lg max-w-[80%] break-words">
-                    <p className="text-xs">{message.text}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {allMessages.map((message, index) => renderMessage(message, index))}
         </div>
       </ScrollArea>
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-black border-t border-white/10">
+        {showEmojiPicker && (
+          <div className="absolute bottom-full mb-2 left-0">
+            <EmojiPicker
+              onEmojiClick={(emojiData) => {
+                setChatMessage(prev => prev + emojiData.emoji);
+                setShowEmojiPicker(false);
+              }}
+              width={250}
+              height={350}
+            />
+          </div>
+        )}
         <form 
           onSubmit={(e) => {
             e.preventDefault();
@@ -141,6 +223,31 @@ export function ChatWindow({
           }}
           className="flex items-center gap-2"
         >
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/jpeg,image/png,image/gif,video/mp4"
+            onChange={handleFileUpload}
+          />
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 shrink-0 text-white hover:text-white/80"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <ImagePlus className="h-3 w-3" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 shrink-0 text-white hover:text-white/80"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <Smile className="h-3 w-3" />
+          </Button>
           <Input
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
