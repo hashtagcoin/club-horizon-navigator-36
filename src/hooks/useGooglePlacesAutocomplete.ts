@@ -27,10 +27,11 @@ export function useGooglePlacesAutocomplete(
 ) {
   const { toast } = useToast();
   const autocompleteInstance = useRef<google.maps.places.Autocomplete | null>(null);
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    if (!isOpen || !inputRef.current) {
-      console.log("Hook not initialized: form closed or input ref not ready");
+    // Only initialize once when the modal opens
+    if (!isOpen || !inputRef.current || isInitialized.current) {
       return;
     }
 
@@ -46,11 +47,6 @@ export function useGooglePlacesAutocomplete(
 
     const initializeAutocomplete = () => {
       try {
-        // Clear any existing listeners
-        if (autocompleteInstance.current) {
-          google.maps.event.clearInstanceListeners(autocompleteInstance.current);
-        }
-
         const options: google.maps.places.AutocompleteOptions = {
           types: ['establishment'],
           componentRestrictions: { country: 'AU' },
@@ -63,8 +59,9 @@ export function useGooglePlacesAutocomplete(
         );
 
         console.log("Autocomplete instance created successfully");
-
+        
         autocompleteInstance.current.addListener('place_changed', handlePlaceSelection);
+        isInitialized.current = true;
         
       } catch (error) {
         console.error("Error initializing autocomplete:", error);
@@ -77,15 +74,11 @@ export function useGooglePlacesAutocomplete(
     };
 
     const handlePlaceSelection = () => {
-      if (!autocompleteInstance.current) {
-        console.error("Autocomplete instance not found");
-        return;
-      }
+      if (!autocompleteInstance.current) return;
 
       try {
         const place = autocompleteInstance.current.getPlace();
-        console.log("Raw place data:", place);
-
+        
         if (!place.geometry?.location || !place.name) {
           toast({
             title: "Error",
@@ -105,8 +98,7 @@ export function useGooglePlacesAutocomplete(
           coordinates: {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng()
-          },
-          openingHours: {}
+          }
         };
 
         // Parse address components
@@ -128,6 +120,7 @@ export function useGooglePlacesAutocomplete(
 
         // Parse opening hours if available
         if (place.opening_hours?.periods) {
+          placeResult.openingHours = {};
           place.opening_hours.periods.forEach(period => {
             if (period.open && period.close) {
               const day = getDayName(period.open.day);
@@ -139,7 +132,6 @@ export function useGooglePlacesAutocomplete(
           });
         }
 
-        console.log("Processed place result:", placeResult);
         onPlaceSelect(placeResult);
 
       } catch (error) {
@@ -154,14 +146,16 @@ export function useGooglePlacesAutocomplete(
 
     initializeAutocomplete();
 
+    // Cleanup function
     return () => {
       if (autocompleteInstance.current) {
         google.maps.event.clearInstanceListeners(autocompleteInstance.current);
         autocompleteInstance.current = null;
+        isInitialized.current = false;
         console.log("Cleaned up autocomplete instance");
       }
     };
-  }, [isOpen, toast, onPlaceSelect, inputRef]);
+  }, [isOpen, toast, onPlaceSelect]); // Only re-run if these dependencies change
 }
 
 function getDayName(day: number): string {
