@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   const [isLoadingPlace, setIsLoadingPlace] = useState(false);
   const [genres, setGenres] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<Record<string, { open: string; close: string; status: string }>>({});
-  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
+  const autocompleteInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize hours state for each day
   useEffect(() => {
@@ -50,22 +50,25 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
 
   // Initialize Google Places Autocomplete
   useEffect(() => {
-    if (!isOpen) return;
-
-    const input = document.getElementById('venue-name-input') as HTMLInputElement;
-    if (!input) return;
+    if (!isOpen || !autocompleteInputRef.current) return;
 
     const options = {
       types: ['establishment'],
       componentRestrictions: { country: 'AU' }
     };
 
-    const newAutocomplete = new google.maps.places.Autocomplete(input, options);
-    setAutocomplete(newAutocomplete);
-
-    newAutocomplete.addListener('place_changed', () => {
-      const place = newAutocomplete.getPlace();
-      if (!place.geometry) return;
+    const autocomplete = new google.maps.places.Autocomplete(autocompleteInputRef.current, options);
+    
+    const placeChangedListener = autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        toast({
+          title: "Error",
+          description: "Please select a venue from the dropdown list",
+          variant: "destructive"
+        });
+        return;
+      }
 
       setIsLoadingPlace(true);
       try {
@@ -131,9 +134,9 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
     });
 
     return () => {
-      google.maps.event.clearInstanceListeners(newAutocomplete);
+      google.maps.event.removeListener(placeChangedListener);
     };
-  }, [isOpen]);
+  }, [isOpen, toast]);
 
   const handleHoursChange = (day: string, type: 'open' | 'close' | 'status', value: string) => {
     setHours(prev => ({
@@ -235,7 +238,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
           <div>
             <label className="text-sm font-medium">Venue Name</label>
             <Input
-              id="venue-name-input"
+              ref={autocompleteInputRef}
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Start typing venue name..."
@@ -355,7 +358,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
               </div>
             </div>
           ))}
-          
+
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>
             <Button onClick={handleSubmit} disabled={isLoading}>
