@@ -82,15 +82,29 @@ export function ChatWindow({
     }
 
     try {
+      // Get the current user's session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        toast.error("You must be logged in to upload files.");
+        return;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data } = await supabase.storage
         .from('chat_media')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('chat_media')
