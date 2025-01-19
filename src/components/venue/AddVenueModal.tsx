@@ -1,13 +1,15 @@
-import { useState, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
 import { VenueHoursForm } from "./VenueHoursForm";
 import { VenueAddressForm } from "./VenueAddressForm";
+import { VenueFormHeader } from "./VenueFormHeader";
+import { VenueFormActions } from "./VenueFormActions";
+import { useVenueForm } from "@/hooks/useVenueForm";
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 interface AddVenueModalProps {
   isOpen: boolean;
@@ -15,30 +17,27 @@ interface AddVenueModalProps {
   onVenueAdded: (venue: any) => void;
 }
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
 export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalProps) {
   const { toast } = useToast();
-  const [name, setName] = useState("");
-  const [addressComponents, setAddressComponents] = useState({
-    streetAddress: "",
-    suburb: "",
-    state: "",
-    country: ""
-  });
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPlace, setIsLoadingPlace] = useState(false);
-  const [genres, setGenres] = useState<Record<string, string>>({});
-  const [hours, setHours] = useState<Record<string, { open: string; close: string; status: string }>>({});
   const autocompleteInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    name,
+    setName,
+    addressComponents,
+    setAddressComponents,
+    genres,
+    hours,
+    handleHoursChange,
+    handleGenreChange
+  } = useVenueForm();
 
   useGooglePlacesAutocomplete(isOpen, autocompleteInputRef, (place) => {
     setIsLoadingPlace(true);
     try {
-      // Set venue name
       setName(place.name);
-
-      // Set address components
       setAddressComponents({
         streetAddress: place.streetAddress,
         suburb: place.suburb,
@@ -46,17 +45,12 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
         country: place.country
       });
 
-      // Set opening hours
       if (place.openingHours) {
-        const newHours = { ...hours };
         Object.entries(place.openingHours).forEach(([day, dayHours]) => {
-          newHours[day.toLowerCase()] = {
-            open: dayHours.open,
-            close: dayHours.close,
-            status: 'open'
-          };
+          handleHoursChange(day, 'open', dayHours.open);
+          handleHoursChange(day, 'close', dayHours.close);
+          handleHoursChange(day, 'status', 'open');
         });
-        setHours(newHours);
       }
     } catch (error) {
       console.error('Error processing place details:', error);
@@ -70,22 +64,10 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
     }
   });
 
-  const handleHoursChange = (day: string, type: 'open' | 'close' | 'status', value: string) => {
-    setHours(prev => ({
-      ...prev,
-      [day.toLowerCase()]: {
-        ...prev[day.toLowerCase()],
-        [type]: value,
-        ...(type === 'status' && value !== 'open' ? { open: '', close: '' } : {})
-      }
-    }));
-  };
-
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
 
-      // Check if club name exists
       const { data: exists } = await supabase
         .rpc('check_club_name_exists', { club_name: name });
 
@@ -98,7 +80,6 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
         return;
       }
 
-      // Get coordinates from address
       const geocoder = new google.maps.Geocoder();
       const fullAddress = `${addressComponents.streetAddress}, ${addressComponents.suburb}, ${addressComponents.state}, ${addressComponents.country}`;
       
@@ -114,7 +95,6 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
 
       const location = geocodeResult as google.maps.LatLng;
 
-      // Prepare venue data
       const venueData = {
         name,
         address: fullAddress,
@@ -132,7 +112,6 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
         }), {})
       };
 
-      // Insert new venue
       const { data: newVenue, error } = await supabase
         .from('user_added_venues')
         .insert(venueData)
@@ -163,29 +142,14 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Venue</DialogTitle>
-          <DialogDescription>
-            Search for a venue or manually enter the details below.
-          </DialogDescription>
-        </DialogHeader>
+        <VenueFormHeader
+          name={name}
+          onNameChange={setName}
+          isLoadingPlace={isLoadingPlace}
+          inputRef={autocompleteInputRef}
+        />
+        
         <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Venue Name</label>
-            <Input
-              ref={autocompleteInputRef}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Start typing venue name..."
-              className={isLoadingPlace ? "pr-10" : ""}
-            />
-            {isLoadingPlace && (
-              <div className="relative">
-                <Loader2 className="absolute right-3 -top-8 h-4 w-4 animate-spin" />
-              </div>
-            )}
-          </div>
-
           <VenueAddressForm
             addressComponents={addressComponents}
             onChange={setAddressComponents}
@@ -198,16 +162,15 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
               hours={hours[day.toLowerCase()] || { open: "", close: "", status: "open" }}
               genre={genres[day.toLowerCase()] || ""}
               onHoursChange={handleHoursChange}
-              onGenreChange={(value) => setGenres(prev => ({ ...prev, [day.toLowerCase()]: value }))}
+              onGenreChange={(value) => handleGenreChange(day, value)}
             />
           ))}
 
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Venue"}
-            </Button>
-          </div>
+          <VenueFormActions
+            onClose={onClose}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+          />
         </div>
       </DialogContent>
     </Dialog>
