@@ -51,53 +51,61 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
 
   // Initialize Google Places Autocomplete
   useEffect(() => {
-    if (!isOpen || !autocompleteInputRef.current || !window.google || !window.google.maps) {
-      console.log("Missing required dependencies for Google Places Autocomplete");
-      return;
-    }
+    if (!isOpen || !autocompleteInputRef.current) return;
 
-    try {
-      const options: google.maps.places.AutocompleteOptions = {
-        types: ['establishment'],
-        componentRestrictions: { country: 'AU' },
-        fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
-      };
-
-      // Clean up previous instance if it exists
-      if (autocompleteInstance.current) {
-        google.maps.event.clearInstanceListeners(autocompleteInstance.current);
+    // Wait for Google Maps API to be loaded
+    const initializeAutocomplete = () => {
+      if (!window.google || !window.google.maps) {
+        console.log("Google Maps API not loaded yet, retrying in 500ms");
+        setTimeout(initializeAutocomplete, 500);
+        return;
       }
 
-      // Create new autocomplete instance
-      const autocomplete = new google.maps.places.Autocomplete(
-        autocompleteInputRef.current,
-        options
-      );
-      
-      autocompleteInstance.current = autocomplete;
-
-      // Add place_changed listener
-      const placeChangedListener = autocomplete.addListener('place_changed', () => {
-        handlePlaceSelection();
-      });
-
-      return () => {
-        if (placeChangedListener) {
-          google.maps.event.removeListener(placeChangedListener);
-        }
+      try {
+        // Clean up previous instance if it exists
         if (autocompleteInstance.current) {
           google.maps.event.clearInstanceListeners(autocompleteInstance.current);
-          autocompleteInstance.current = null;
         }
-      };
-    } catch (error) {
-      console.error("Error initializing Google Places Autocomplete:", error);
-      toast({
-        title: "Error",
-        description: "Failed to initialize venue search. Please try again.",
-        variant: "destructive"
-      });
-    }
+
+        const options: google.maps.places.AutocompleteOptions = {
+          types: ['establishment'],
+          componentRestrictions: { country: 'AU' },
+          fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
+        };
+
+        // Create new autocomplete instance
+        const autocomplete = new google.maps.places.Autocomplete(
+          autocompleteInputRef.current,
+          options
+        );
+        
+        autocompleteInstance.current = autocomplete;
+
+        // Add place_changed listener
+        const placeChangedListener = autocomplete.addListener('place_changed', () => {
+          handlePlaceSelection();
+        });
+
+        return () => {
+          if (placeChangedListener) {
+            google.maps.event.removeListener(placeChangedListener);
+          }
+          if (autocompleteInstance.current) {
+            google.maps.event.clearInstanceListeners(autocompleteInstance.current);
+            autocompleteInstance.current = null;
+          }
+        };
+      } catch (error) {
+        console.error("Error initializing Google Places Autocomplete:", error);
+        toast({
+          title: "Error",
+          description: "Failed to initialize venue search. Please try again.",
+          variant: "destructive"
+        });
+      }
+    };
+
+    initializeAutocomplete();
   }, [isOpen, toast]);
 
   const handlePlaceSelection = () => {
