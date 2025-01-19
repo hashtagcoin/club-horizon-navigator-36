@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
+import { VenueHoursForm } from "./VenueHoursForm";
+import { VenueAddressForm } from "./VenueAddressForm";
 
 interface AddVenueModalProps {
   isOpen: boolean;
@@ -13,21 +15,12 @@ interface AddVenueModalProps {
   onVenueAdded: (venue: any) => void;
 }
 
-interface AddressComponents {
-  streetAddress: string;
-  suburb: string;
-  state: string;
-  country: string;
-}
-
-const MUSIC_GENRES = ["EDM", "Rock n Roll", "House", "Afrobeats", "RnB"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ":00");
 
 export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalProps) {
   const { toast } = useToast();
   const [name, setName] = useState("");
-  const [addressComponents, setAddressComponents] = useState<AddressComponents>({
+  const [addressComponents, setAddressComponents] = useState({
     streetAddress: "",
     suburb: "",
     state: "",
@@ -38,142 +31,20 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   const [genres, setGenres] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<Record<string, { open: string; close: string; status: string }>>({});
   const autocompleteInputRef = useRef<HTMLInputElement>(null);
-  const autocompleteInstance = useRef<google.maps.places.Autocomplete | null>(null);
 
-  // Initialize hours state for each day
-  useEffect(() => {
-    const initialHours = DAYS.reduce((acc, day) => ({
-      ...acc,
-      [day.toLowerCase()]: { open: "09:00", close: "17:00", status: "open" }
-    }), {});
-    setHours(initialHours);
-  }, []);
-
-  // Initialize Google Places Autocomplete
-  useEffect(() => {
-    if (!isOpen || !autocompleteInputRef.current) return;
-
-    let timeoutId: NodeJS.Timeout;
-
-    const initializeAutocomplete = () => {
-      if (!window.google?.maps?.places) {
-        console.log("Google Maps Places API not loaded yet, retrying in 500ms");
-        timeoutId = setTimeout(initializeAutocomplete, 500);
-        return;
-      }
-
-      try {
-        // Clean up previous instance
-        if (autocompleteInstance.current) {
-          google.maps.event.clearInstanceListeners(autocompleteInstance.current);
-        }
-
-        const options: google.maps.places.AutocompleteOptions = {
-          types: ['establishment'],
-          componentRestrictions: { country: 'AU' },
-          fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
-        };
-
-        const autocomplete = new google.maps.places.Autocomplete(
-          autocompleteInputRef.current,
-          options
-        );
-        
-        autocompleteInstance.current = autocomplete;
-
-        autocomplete.addListener('place_changed', handlePlaceSelection);
-
-        console.log("Autocomplete initialized successfully");
-      } catch (error) {
-        console.error("Error initializing Google Places Autocomplete:", error);
-        toast({
-          title: "Error",
-          description: "Failed to initialize venue search. Please try again.",
-          variant: "destructive"
-        });
-      }
-    };
-
-    initializeAutocomplete();
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      if (autocompleteInstance.current) {
-        google.maps.event.clearInstanceListeners(autocompleteInstance.current);
-        autocompleteInstance.current = null;
-      }
-    };
-  }, [isOpen, toast]);
-
-  const handlePlaceSelection = () => {
-    if (!autocompleteInstance.current) {
-      console.error("Autocomplete instance not available");
-      return;
-    }
-
+  useGooglePlacesAutocomplete(isOpen, autocompleteInputRef, (place) => {
     setIsLoadingPlace(true);
-    const place = autocompleteInstance.current.getPlace();
-    
-    console.log("Selected place:", place);
-
-    if (!place.geometry) {
-      toast({
-        title: "Error",
-        description: "Please select a venue from the dropdown list",
-        variant: "destructive"
-      });
-      setIsLoadingPlace(false);
-      return;
-    }
-
     try {
-      // Update venue name
-      setName(place.name || '');
-
-      // Parse and set address components
-      const addressComps: AddressComponents = {
-        streetAddress: '',
-        suburb: '',
-        state: '',
-        country: ''
-      };
-
-      place.address_components?.forEach(component => {
-        const types = component.types;
-        if (types.includes('street_number') || types.includes('route')) {
-          addressComps.streetAddress += (addressComps.streetAddress ? ' ' : '') + component.long_name;
-        } else if (types.includes('locality') || types.includes('sublocality')) {
-          addressComps.suburb = component.long_name;
-        } else if (types.includes('administrative_area_level_1')) {
-          addressComps.state = component.short_name;
-        } else if (types.includes('country')) {
-          addressComps.country = component.long_name;
-        }
-      });
-
-      setAddressComponents(addressComps);
-
-      // Update opening hours if available
-      if (place.opening_hours) {
-        const periods = place.opening_hours.periods;
+      setName(place.name);
+      if (place.openingHours) {
         const newHours = { ...hours };
-
-        DAYS.forEach((day, index) => {
-          const period = periods.find(p => p.open?.day === index);
-          if (!period) {
-            newHours[day.toLowerCase()] = { open: "", close: "", status: "closed" };
-          } else if (period.open && period.close && 
-                   period.open.time === "0000" && period.close.time === "0000") {
-            newHours[day.toLowerCase()] = { open: "", close: "", status: "24hr" };
-          } else if (period.open && period.close) {
-            newHours[day.toLowerCase()] = {
-              open: `${period.open.time.slice(0, 2)}:00`,
-              close: `${period.close.time.slice(0, 2)}:00`,
-              status: "open"
-            };
-          }
+        Object.entries(place.openingHours).forEach(([day, dayHours]) => {
+          newHours[day.toLowerCase()] = {
+            open: dayHours.open,
+            close: dayHours.close,
+            status: 'open'
+          };
         });
-
         setHours(newHours);
       }
     } catch (error) {
@@ -186,7 +57,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
     } finally {
       setIsLoadingPlace(false);
     }
-  };
+  });
 
   const handleHoursChange = (day: string, type: 'open' | 'close' | 'status', value: string) => {
     setHours(prev => ({
@@ -304,112 +175,20 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Street Address</label>
-              <Input
-                value={addressComponents.streetAddress}
-                onChange={(e) => setAddressComponents(prev => ({ ...prev, streetAddress: e.target.value }))}
-                placeholder="Street address"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Suburb</label>
-              <Input
-                value={addressComponents.suburb}
-                onChange={(e) => setAddressComponents(prev => ({ ...prev, suburb: e.target.value }))}
-                placeholder="Suburb"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">State</label>
-              <Input
-                value={addressComponents.state}
-                onChange={(e) => setAddressComponents(prev => ({ ...prev, state: e.target.value }))}
-                placeholder="State"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Country</label>
-              <Input
-                value={addressComponents.country}
-                onChange={(e) => setAddressComponents(prev => ({ ...prev, country: e.target.value }))}
-                placeholder="Country"
-              />
-            </div>
-          </div>
+          <VenueAddressForm
+            addressComponents={addressComponents}
+            onChange={setAddressComponents}
+          />
           
           {DAYS.map(day => (
-            <div key={day} className="space-y-2">
-              <h3 className="font-medium">{day}</h3>
-              <div className="grid grid-cols-4 gap-2">
-                <Select
-                  value={genres[day.toLowerCase()]}
-                  onValueChange={(value) => setGenres(prev => ({ ...prev, [day.toLowerCase()]: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select genre" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MUSIC_GENRES.map(genre => (
-                      <SelectItem key={genre} value={genre}>
-                        {genre}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={hours[day.toLowerCase()]?.status || "open"}
-                  onValueChange={(value) => handleHoursChange(day, 'status', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="open">Open</SelectItem>
-                    <SelectItem value="closed">Closed</SelectItem>
-                    <SelectItem value="24hr">24 Hours</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {hours[day.toLowerCase()]?.status === 'open' && (
-                  <>
-                    <Select
-                      value={hours[day.toLowerCase()]?.open}
-                      onValueChange={(value) => handleHoursChange(day, 'open', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Opening" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {HOURS.map(hour => (
-                          <SelectItem key={hour} value={hour}>
-                            {hour}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={hours[day.toLowerCase()]?.close}
-                      onValueChange={(value) => handleHoursChange(day, 'close', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Closing" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {HOURS.map(hour => (
-                          <SelectItem key={hour} value={hour}>
-                            {hour}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </>
-                )}
-              </div>
-            </div>
+            <VenueHoursForm
+              key={day}
+              day={day}
+              hours={hours[day.toLowerCase()] || { open: "", close: "", status: "open" }}
+              genre={genres[day.toLowerCase()] || ""}
+              onHoursChange={handleHoursChange}
+              onGenreChange={(value) => setGenres(prev => ({ ...prev, [day.toLowerCase()]: value }))}
+            />
           ))}
 
           <div className="flex justify-end space-x-2">
