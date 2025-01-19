@@ -13,6 +13,13 @@ interface AddVenueModalProps {
   onVenueAdded: (venue: any) => void;
 }
 
+interface AddressComponents {
+  streetAddress: string;
+  suburb: string;
+  state: string;
+  country: string;
+}
+
 const MUSIC_GENRES = ["EDM", "Rock n Roll", "House", "Afrobeats", "RnB"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ":00");
@@ -20,11 +27,17 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')
 export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalProps) {
   const { toast } = useToast();
   const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+  const [addressComponents, setAddressComponents] = useState<AddressComponents>({
+    streetAddress: "",
+    suburb: "",
+    state: "",
+    country: ""
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPlace, setIsLoadingPlace] = useState(false);
   const [genres, setGenres] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<Record<string, { open: string; close: string; status: string }>>({});
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
 
   // Initialize hours state for each day
   useEffect(() => {
@@ -35,66 +48,92 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
     setHours(initialHours);
   }, []);
 
-  // Fetch place details when name changes
+  // Initialize Google Places Autocomplete
   useEffect(() => {
-    if (!name || name.length < 3) return;
+    if (!isOpen) return;
 
-    const fetchPlaceDetails = async () => {
+    const input = document.getElementById('venue-name-input') as HTMLInputElement;
+    if (!input) return;
+
+    const options = {
+      types: ['establishment'],
+      componentRestrictions: { country: 'AU' }
+    };
+
+    const newAutocomplete = new google.maps.places.Autocomplete(input, options);
+    setAutocomplete(newAutocomplete);
+
+    newAutocomplete.addListener('place_changed', () => {
+      const place = newAutocomplete.getPlace();
+      if (!place.geometry) return;
+
       setIsLoadingPlace(true);
       try {
-        const service = new google.maps.places.PlacesService(document.createElement('div'));
-        
-        // First, search for the place
-        const request = {
-          query: name,
-          fields: ['name', 'formatted_address', 'opening_hours', 'geometry']
+        // Update venue name
+        setName(place.name || '');
+
+        // Parse and set address components
+        const addressComps: AddressComponents = {
+          streetAddress: '',
+          suburb: '',
+          state: '',
+          country: ''
         };
 
-        service.textSearch(request, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results?.[0]) {
-            const place = results[0];
-            setAddress(place.formatted_address || '');
-
-            // Get detailed place information
-            service.getDetails({
-              placeId: place.place_id,
-              fields: ['opening_hours']
-            }, (placeDetails, detailsStatus) => {
-              if (detailsStatus === google.maps.places.PlacesServiceStatus.OK && placeDetails?.opening_hours) {
-                const periods = placeDetails.opening_hours.periods;
-                const newHours = { ...hours };
-
-                DAYS.forEach((day, index) => {
-                  const period = periods.find(p => p.open?.day === index);
-                  if (!period) {
-                    newHours[day.toLowerCase()] = { open: "", close: "", status: "closed" };
-                  } else if (period.open && period.close && 
-                           period.open.time === "0000" && period.close.time === "0000") {
-                    newHours[day.toLowerCase()] = { open: "", close: "", status: "24hr" };
-                  } else if (period.open && period.close) {
-                    newHours[day.toLowerCase()] = {
-                      open: `${period.open.time.slice(0, 2)}:00`,
-                      close: `${period.close.time.slice(0, 2)}:00`,
-                      status: "open"
-                    };
-                  }
-                });
-
-                setHours(newHours);
-              }
-            });
+        place.address_components?.forEach(component => {
+          const types = component.types;
+          if (types.includes('street_number') || types.includes('route')) {
+            addressComps.streetAddress += (addressComps.streetAddress ? ' ' : '') + component.long_name;
+          } else if (types.includes('locality') || types.includes('sublocality')) {
+            addressComps.suburb = component.long_name;
+          } else if (types.includes('administrative_area_level_1')) {
+            addressComps.state = component.short_name;
+          } else if (types.includes('country')) {
+            addressComps.country = component.long_name;
           }
         });
+
+        setAddressComponents(addressComps);
+
+        // Update opening hours if available
+        if (place.opening_hours) {
+          const periods = place.opening_hours.periods;
+          const newHours = { ...hours };
+
+          DAYS.forEach((day, index) => {
+            const period = periods.find(p => p.open?.day === index);
+            if (!period) {
+              newHours[day.toLowerCase()] = { open: "", close: "", status: "closed" };
+            } else if (period.open && period.close && 
+                     period.open.time === "0000" && period.close.time === "0000") {
+              newHours[day.toLowerCase()] = { open: "", close: "", status: "24hr" };
+            } else if (period.open && period.close) {
+              newHours[day.toLowerCase()] = {
+                open: `${period.open.time.slice(0, 2)}:00`,
+                close: `${period.close.time.slice(0, 2)}:00`,
+                status: "open"
+              };
+            }
+          });
+
+          setHours(newHours);
+        }
       } catch (error) {
-        console.error('Error fetching place details:', error);
+        console.error('Error processing place details:', error);
+        toast({
+          title: "Error",
+          description: "Failed to process venue details. Please try again.",
+          variant: "destructive"
+        });
       } finally {
         setIsLoadingPlace(false);
       }
-    };
+    });
 
-    const debounceTimer = setTimeout(fetchPlaceDetails, 500);
-    return () => clearTimeout(debounceTimer);
-  }, [name]);
+    return () => {
+      google.maps.event.clearInstanceListeners(newAutocomplete);
+    };
+  }, [isOpen]);
 
   const handleHoursChange = (day: string, type: 'open' | 'close' | 'status', value: string) => {
     setHours(prev => ({
@@ -126,8 +165,10 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
 
       // Get coordinates from address
       const geocoder = new google.maps.Geocoder();
+      const fullAddress = `${addressComponents.streetAddress}, ${addressComponents.suburb}, ${addressComponents.state}, ${addressComponents.country}`;
+      
       const geocodeResult = await new Promise((resolve, reject) => {
-        geocoder.geocode({ address }, (results, status) => {
+        geocoder.geocode({ address: fullAddress }, (results, status) => {
           if (status === google.maps.GeocoderStatus.OK && results?.[0]) {
             resolve(results[0].geometry.location);
           } else {
@@ -141,7 +182,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
       // Prepare venue data
       const venueData = {
         name,
-        address,
+        address: fullAddress,
         latitude: location.lat(),
         longitude: location.lng(),
         created_by: (await supabase.auth.getUser()).data.user?.id,
@@ -194,23 +235,51 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
           <div>
             <label className="text-sm font-medium">Venue Name</label>
             <Input
+              id="venue-name-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter venue name"
+              placeholder="Start typing venue name..."
+              className={isLoadingPlace ? "pr-10" : ""}
             />
+            {isLoadingPlace && (
+              <div className="relative">
+                <Loader2 className="absolute right-3 -top-8 h-4 w-4 animate-spin" />
+              </div>
+            )}
           </div>
-          <div>
-            <label className="text-sm font-medium">Address</label>
-            <div className="relative">
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Street Address</label>
               <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter full address"
-                className={isLoadingPlace ? "pr-10" : ""}
+                value={addressComponents.streetAddress}
+                onChange={(e) => setAddressComponents(prev => ({ ...prev, streetAddress: e.target.value }))}
+                placeholder="Street address"
               />
-              {isLoadingPlace && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin" />
-              )}
+            </div>
+            <div>
+              <label className="text-sm font-medium">Suburb</label>
+              <Input
+                value={addressComponents.suburb}
+                onChange={(e) => setAddressComponents(prev => ({ ...prev, suburb: e.target.value }))}
+                placeholder="Suburb"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">State</label>
+              <Input
+                value={addressComponents.state}
+                onChange={(e) => setAddressComponents(prev => ({ ...prev, state: e.target.value }))}
+                placeholder="State"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Country</label>
+              <Input
+                value={addressComponents.country}
+                onChange={(e) => setAddressComponents(prev => ({ ...prev, country: e.target.value }))}
+                placeholder="Country"
+              />
             </div>
           </div>
           
