@@ -17,31 +17,41 @@ const App = () => {
   useEffect(() => {
     const autoLogin = async () => {
       try {
-        const { data: { user } } = await supabase.auth.signUp({
+        // Try to sign in first, since the account might already exist
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: 'admin@clubpilot.com',
           password: 'clubpilot123',
         });
 
-        if (user) {
+        if (signInData.user) {
           setIsAuthenticated(true);
           toast.success("Logged in as admin");
+          return;
         }
-      } catch (error) {
-        // If signup fails, try to sign in
-        try {
-          const { data: { user } } = await supabase.auth.signInWithPassword({
+
+        // If sign in fails because the user doesn't exist, try to sign up
+        if (signInError && signInError.message.includes('Invalid login credentials')) {
+          // Add a delay before signup to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          const { data: { user }, error: signUpError } = await supabase.auth.signUp({
             email: 'admin@clubpilot.com',
             password: 'clubpilot123',
           });
 
           if (user) {
             setIsAuthenticated(true);
-            toast.success("Logged in as admin");
+            toast.success("Admin account created and logged in");
           }
-        } catch (signInError) {
-          console.error("Error during auto-login:", signInError);
-          toast.error("Failed to auto-login");
+
+          if (signUpError) {
+            console.error("Error during signup:", signUpError);
+            toast.error("Failed to create admin account");
+          }
         }
+      } catch (error) {
+        console.error("Error during authentication:", error);
+        toast.error("Authentication failed");
       } finally {
         setIsLoading(false);
       }
