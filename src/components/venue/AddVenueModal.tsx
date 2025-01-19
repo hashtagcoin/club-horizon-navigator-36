@@ -38,6 +38,7 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   const [genres, setGenres] = useState<Record<string, string>>({});
   const [hours, setHours] = useState<Record<string, { open: string; close: string; status: string }>>({});
   const autocompleteInputRef = useRef<HTMLInputElement>(null);
+  const autocompleteInstance = useRef<google.maps.places.Autocomplete | null>(null);
 
   // Initialize hours state for each day
   useEffect(() => {
@@ -50,93 +51,125 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
 
   // Initialize Google Places Autocomplete
   useEffect(() => {
-    if (!isOpen || !autocompleteInputRef.current) return;
+    if (!isOpen || !autocompleteInputRef.current || !window.google || !window.google.maps) {
+      console.log("Missing required dependencies for Google Places Autocomplete");
+      return;
+    }
 
-    const options = {
-      types: ['establishment'],
-      componentRestrictions: { country: 'AU' }
-    };
+    try {
+      const options: google.maps.places.AutocompleteOptions = {
+        types: ['establishment'],
+        componentRestrictions: { country: 'AU' },
+        fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
+      };
 
-    const autocomplete = new google.maps.places.Autocomplete(autocompleteInputRef.current, options);
-    
-    const placeChangedListener = autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        toast({
-          title: "Error",
-          description: "Please select a venue from the dropdown list",
-          variant: "destructive"
-        });
-        return;
+      // Clean up previous instance if it exists
+      if (autocompleteInstance.current) {
+        google.maps.event.clearInstanceListeners(autocompleteInstance.current);
       }
 
-      setIsLoadingPlace(true);
-      try {
-        // Update venue name
-        setName(place.name || '');
+      // Create new autocomplete instance
+      autocompleteInstance.current = new google.maps.places.Autocomplete(
+        autocompleteInputRef.current,
+        options
+      );
 
-        // Parse and set address components
-        const addressComps: AddressComponents = {
-          streetAddress: '',
-          suburb: '',
-          state: '',
-          country: ''
-        };
+      console.log("Autocomplete instance created:", autocompleteInstance.current);
 
-        place.address_components?.forEach(component => {
-          const types = component.types;
-          if (types.includes('street_number') || types.includes('route')) {
-            addressComps.streetAddress += (addressComps.streetAddress ? ' ' : '') + component.long_name;
-          } else if (types.includes('locality') || types.includes('sublocality')) {
-            addressComps.suburb = component.long_name;
-          } else if (types.includes('administrative_area_level_1')) {
-            addressComps.state = component.short_name;
-          } else if (types.includes('country')) {
-            addressComps.country = component.long_name;
-          }
-        });
+      // Add place_changed listener
+      const placeChangedListener = autocompleteInstance.current.addListener('place_changed', () => {
+        if (!autocompleteInstance.current) return;
 
-        setAddressComponents(addressComps);
+        const place = autocompleteInstance.current.getPlace();
+        console.log("Selected place:", place);
 
-        // Update opening hours if available
-        if (place.opening_hours) {
-          const periods = place.opening_hours.periods;
-          const newHours = { ...hours };
+        if (!place.geometry) {
+          toast({
+            title: "Error",
+            description: "Please select a venue from the dropdown list",
+            variant: "destructive"
+          });
+          return;
+        }
 
-          DAYS.forEach((day, index) => {
-            const period = periods.find(p => p.open?.day === index);
-            if (!period) {
-              newHours[day.toLowerCase()] = { open: "", close: "", status: "closed" };
-            } else if (period.open && period.close && 
-                     period.open.time === "0000" && period.close.time === "0000") {
-              newHours[day.toLowerCase()] = { open: "", close: "", status: "24hr" };
-            } else if (period.open && period.close) {
-              newHours[day.toLowerCase()] = {
-                open: `${period.open.time.slice(0, 2)}:00`,
-                close: `${period.close.time.slice(0, 2)}:00`,
-                status: "open"
-              };
+        setIsLoadingPlace(true);
+        try {
+          // Update venue name
+          setName(place.name || '');
+
+          // Parse and set address components
+          const addressComps: AddressComponents = {
+            streetAddress: '',
+            suburb: '',
+            state: '',
+            country: ''
+          };
+
+          place.address_components?.forEach(component => {
+            const types = component.types;
+            if (types.includes('street_number') || types.includes('route')) {
+              addressComps.streetAddress += (addressComps.streetAddress ? ' ' : '') + component.long_name;
+            } else if (types.includes('locality') || types.includes('sublocality')) {
+              addressComps.suburb = component.long_name;
+            } else if (types.includes('administrative_area_level_1')) {
+              addressComps.state = component.short_name;
+            } else if (types.includes('country')) {
+              addressComps.country = component.long_name;
             }
           });
 
-          setHours(newHours);
-        }
-      } catch (error) {
-        console.error('Error processing place details:', error);
-        toast({
-          title: "Error",
-          description: "Failed to process venue details. Please try again.",
-          variant: "destructive"
-        });
-      } finally {
-        setIsLoadingPlace(false);
-      }
-    });
+          setAddressComponents(addressComps);
 
-    return () => {
-      google.maps.event.removeListener(placeChangedListener);
-    };
-  }, [isOpen, toast]);
+          // Update opening hours if available
+          if (place.opening_hours) {
+            const periods = place.opening_hours.periods;
+            const newHours = { ...hours };
+
+            DAYS.forEach((day, index) => {
+              const period = periods.find(p => p.open?.day === index);
+              if (!period) {
+                newHours[day.toLowerCase()] = { open: "", close: "", status: "closed" };
+              } else if (period.open && period.close && 
+                       period.open.time === "0000" && period.close.time === "0000") {
+                newHours[day.toLowerCase()] = { open: "", close: "", status: "24hr" };
+              } else if (period.open && period.close) {
+                newHours[day.toLowerCase()] = {
+                  open: `${period.open.time.slice(0, 2)}:00`,
+                  close: `${period.close.time.slice(0, 2)}:00`,
+                  status: "open"
+                };
+              }
+            });
+
+            setHours(newHours);
+          }
+        } catch (error) {
+          console.error('Error processing place details:', error);
+          toast({
+            title: "Error",
+            description: "Failed to process venue details. Please try again.",
+            variant: "destructive"
+          });
+        } finally {
+          setIsLoadingPlace(false);
+        }
+      });
+
+      return () => {
+        if (autocompleteInstance.current) {
+          google.maps.event.clearInstanceListeners(autocompleteInstance.current);
+          autocompleteInstance.current = null;
+        }
+      };
+    } catch (error) {
+      console.error("Error initializing Google Places Autocomplete:", error);
+      toast({
+        title: "Error",
+        description: "Failed to initialize venue search. Please try again.",
+        variant: "destructive"
+      });
+    }
+  }, [isOpen, toast, hours]);
 
   const handleHoursChange = (day: string, type: 'open' | 'close' | 'status', value: string) => {
     setHours(prev => ({
