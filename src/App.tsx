@@ -26,7 +26,7 @@ const App = () => {
           return;
         }
 
-        // If no session, try to sign up first since we know we want to create this account
+        // If no session, try to sign up
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: 'admin@clubpilot.com',
           password: 'clubpilot123',
@@ -45,19 +45,14 @@ const App = () => {
           });
 
           if (signInError) {
-            if (signInError.message.includes('Email not confirmed')) {
-              toast.error("Please check your email to confirm your account before logging in");
-              // You can also go to Supabase dashboard -> Authentication -> Settings 
-              // and disable email confirmation for development
-            } else {
-              toast.error("Authentication failed: " + signInError.message);
-            }
+            toast.error("Authentication failed: " + signInError.message);
           } else if (signInData.user) {
             setIsAuthenticated(true);
             toast.success("Logged in as admin");
           }
         } else if (signUpData.user) {
-          toast.info("Admin account created. Please check your email to confirm your account.");
+          setIsAuthenticated(true);
+          toast.success("Admin account created successfully");
         }
       } catch (error) {
         console.error("Error during authentication:", error);
