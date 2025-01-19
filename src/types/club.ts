@@ -13,6 +13,7 @@ export interface Club {
   usersAtClub: number;
   hasSpecial: boolean;
   genre: string;
+  isUserAdded?: boolean;
 }
 
 export interface ChatMessage {

@@ -1,6 +1,6 @@
 import { Club } from '@/types/club';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Clock, MessageCircle, User, Smile } from 'lucide-react';
+import { Music, Clock, MessageCircle, User, Smile, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface ClubCardProps {
@@ -44,6 +44,9 @@ export const ClubCard = ({
           </div>
           {club.hasSpecial && (
             <Smile className="h-4 w-4 text-yellow-500" />
+          )}
+          {club.isUserAdded && (
+            <Plus className="h-4 w-4 text-blue-500" />
           )}
         </div>
       </CardHeader>

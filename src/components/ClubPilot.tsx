@@ -11,15 +11,15 @@ import { AnimatedClubList } from './club/AnimatedClubList';
 import { MainLayout } from './layout/MainLayout';
 import { MapSection } from './map/MapSection';
 import { ChatWindow } from './chat/ChatWindow';
-
-const libraries: Libraries = ['places'];
+import { useToast } from "@/hooks/use-toast";
 
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
+  const { toast } = useToast();
 
   const locationManagement = useLocationManagement();
-  const { data: clubs = [], isLoading: isLoadingClubs } = useClubData();
+  const { data: clubs = [], isLoading: isLoadingClubs, refetch } = useClubData();
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0",
@@ -49,6 +49,45 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(mapControls.selectedClub);
 
+  const handleVenueAdded = async (venue: any) => {
+    await refetch();
+    
+    // Create a club object from the venue
+    const newClub = {
+      id: venue.id,
+      name: venue.name,
+      address: venue.address,
+      position: {
+        lat: venue.latitude,
+        lng: venue.longitude
+      },
+      traffic: "Low",
+      openingHours: {
+        Monday: `${venue.monday_hours_open || 'Closed'} - ${venue.monday_hours_close || 'Closed'}`,
+        Tuesday: `${venue.tuesday_hours_open || 'Closed'} - ${venue.tuesday_hours_close || 'Closed'}`,
+        Wednesday: `${venue.wednesday_hours_open || 'Closed'} - ${venue.wednesday_hours_close || 'Closed'}`,
+        Thursday: `${venue.thursday_hours_open || 'Closed'} - ${venue.thursday_hours_close || 'Closed'}`,
+        Friday: `${venue.friday_hours_open || 'Closed'} - ${venue.friday_hours_close || 'Closed'}`,
+        Saturday: `${venue.saturday_hours_open || 'Closed'} - ${venue.saturday_hours_close || 'Closed'}`,
+        Sunday: `${venue.sunday_hours_open || 'Closed'} - ${venue.sunday_hours_close || 'Closed'}`
+      },
+      genre: venue[`${selectedDay.toLowerCase()}_genre`] || 'Various',
+      usersAtClub: 0,
+      hasSpecial: false,
+      isUserAdded: true
+    };
+
+    // Select the new club and center the map on it
+    mapControls.handleClubSelect(newClub);
+    locationManagement.setMapCenter(newClub.position);
+    locationManagement.setMapZoom(16);
+
+    toast({
+      title: "New Venue Added",
+      description: `${venue.name} has been added to the map`
+    });
+  };
+
   if (showUserProfile) {
     return <UserProfile onClose={() => setShowUserProfile(false)} />;
   }
@@ -68,6 +107,7 @@ export default function ClubPilot() {
       chatOpen={chatManager.chatOpen}
       isGeneralChat={chatManager.isGeneralChat}
       toggleGeneralChat={chatManager.toggleGeneralChat}
+      onVenueAdded={handleVenueAdded}
     >
       <AnimatedClubList
         x={listState.x}

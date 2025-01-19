@@ -408,6 +408,99 @@ export type Database = {
         }
         Relationships: []
       }
+      user_added_venues: {
+        Row: {
+          address: string
+          created_at: string | null
+          created_by: string | null
+          friday_genre: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          id: number
+          latitude: number | null
+          longitude: number | null
+          monday_genre: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          name: string
+          saturday_genre: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_genre: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_genre: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_genre: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          wednesday_genre: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string | null
+          created_by?: string | null
+          friday_genre?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          id?: number
+          latitude?: number | null
+          longitude?: number | null
+          monday_genre?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          name: string
+          saturday_genre?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_genre?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_genre?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_genre?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          wednesday_genre?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string | null
+          created_by?: string | null
+          friday_genre?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          id?: number
+          latitude?: number | null
+          longitude?: number | null
+          monday_genre?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          name?: string
+          saturday_genre?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_genre?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_genre?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_genre?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          wednesday_genre?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
       user_settings: {
         Row: {
           created_at: string | null
@@ -434,6 +527,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_club_name_exists: {
+        Args: {
+          club_name: string
+        }
+        Returns: boolean
+      }
       random_traffic: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["traffic_level"]
@@ -448,6 +547,7 @@ export type Database = {
         | "Oceania"
         | "North America"
         | "South America"
+      music_genre: "EDM" | "Rock n Roll" | "House" | "Afrobeats" | "RnB"
       traffic_level: "Low" | "Medium" | "High"
     }
     CompositeTypes: {

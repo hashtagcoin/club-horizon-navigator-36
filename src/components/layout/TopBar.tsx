@@ -1,16 +1,23 @@
 import { FC, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, User } from "lucide-react";
+import { Search, User, Plus } from "lucide-react";
 import { UserProfile } from '../user-profile';
+import { AddVenueModal } from '../venue/AddVenueModal';
 
 interface TopBarProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
+  onVenueAdded?: (venue: any) => void;
 }
 
-export const TopBar: FC<TopBarProps> = ({ searchQuery = "", setSearchQuery }) => {
+export const TopBar: FC<TopBarProps> = ({ 
+  searchQuery = "", 
+  setSearchQuery,
+  onVenueAdded 
+}) => {
   const [showProfile, setShowProfile] = useState(false);
+  const [showAddVenue, setShowAddVenue] = useState(false);
 
   return (
     <>
@@ -43,17 +50,32 @@ export const TopBar: FC<TopBarProps> = ({ searchQuery = "", setSearchQuery }) =>
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary-foreground/50" />
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowProfile(true)}
-          className="text-primary-foreground"
-        >
-          <User className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowAddVenue(true)}
+            className="text-primary-foreground"
+          >
+            <Plus className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowProfile(true)}
+            className="text-primary-foreground"
+          >
+            <User className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
+      <AddVenueModal 
+        isOpen={showAddVenue} 
+        onClose={() => setShowAddVenue(false)}
+        onVenueAdded={onVenueAdded}
+      />
     </>
   );
 };
