@@ -17,35 +17,49 @@ const App = () => {
   useEffect(() => {
     const autoLogin = async () => {
       try {
-        // Try to sign up first to ensure the account exists
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        // First, try to get the current session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setIsAuthenticated(true);
+          toast.success("Welcome back, admin!");
+          return;
+        }
+
+        // If no session, try to sign in
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: 'admin@clubpilot.com',
           password: 'clubpilot123',
         });
 
-        if (signUpError) {
-          // If signup fails because user exists, try to sign in
-          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-            email: 'admin@clubpilot.com',
-            password: 'clubpilot123',
-          });
+        if (signInError) {
+          if (signInError.message.includes('Invalid login credentials')) {
+            // Wait before attempting signup to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Try to sign up since the user doesn't exist
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+              email: 'admin@clubpilot.com',
+              password: 'clubpilot123',
+            });
 
-          if (signInError) {
-            if (signInError.message.includes('Email not confirmed')) {
-              toast.error("Please check your email to confirm your account before logging in");
-            } else {
-              toast.error("Authentication failed: " + signInError.message);
+            if (signUpError) {
+              if (signUpError.message.includes('rate limit')) {
+                toast.error("Please wait a moment before trying again");
+              } else {
+                toast.error("Failed to create account: " + signUpError.message);
+              }
+            } else if (signUpData.user) {
+              toast.info("Admin account created. Please check your email to confirm your account.");
             }
-            return;
+          } else if (signInError.message.includes('Email not confirmed')) {
+            toast.error("Please check your email to confirm your account before logging in");
+          } else {
+            toast.error("Authentication failed: " + signInError.message);
           }
-
-          if (signInData.user) {
-            setIsAuthenticated(true);
-            toast.success("Logged in as admin");
-          }
-        } else if (signUpData.user) {
-          // If signup is successful but email confirmation is required
-          toast.info("Admin account created. Please check your email to confirm your account.");
+        } else if (signInData.user) {
+          setIsAuthenticated(true);
+          toast.success("Logged in as admin");
         }
       } catch (error) {
         console.error("Error during authentication:", error);
