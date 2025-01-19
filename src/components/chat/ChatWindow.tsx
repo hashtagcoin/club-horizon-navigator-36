@@ -96,8 +96,7 @@ export function ChatWindow({
         .from('chat_media')
         .getPublicUrl(filePath);
 
-      // Append the media URL to the message
-      setChatMessage(prev => `${prev} ${publicUrl}`);
+      setChatMessage(`${chatMessage} ${publicUrl}`);
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error('Error uploading file:', error);
