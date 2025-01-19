@@ -391,6 +391,7 @@ export type Database = {
           favorite_club: string | null
           id: string
           last_seen: string | null
+          loged_in: boolean | null
           user_id: string
           username: string | null
         }
@@ -400,6 +401,7 @@ export type Database = {
           favorite_club?: string | null
           id?: string
           last_seen?: string | null
+          loged_in?: boolean | null
           user_id: string
           username?: string | null
         }
@@ -409,6 +411,7 @@ export type Database = {
           favorite_club?: string | null
           id?: string
           last_seen?: string | null
+          loged_in?: boolean | null
           user_id?: string
           username?: string | null
         }
