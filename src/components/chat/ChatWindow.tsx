@@ -96,7 +96,8 @@ export function ChatWindow({
         .from('chat_media')
         .getPublicUrl(filePath);
 
-      setChatMessage(`${chatMessage} ${publicUrl}`);
+      const newMessage = chatMessage.trim() ? `${chatMessage} ${publicUrl}` : publicUrl;
+      setChatMessage(newMessage);
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -207,7 +208,8 @@ export function ChatWindow({
           <div className="absolute bottom-full mb-2 left-0">
             <EmojiPicker
               onEmojiClick={(emojiData) => {
-                setChatMessage(prev => prev + emojiData.emoji);
+                const newMessage = chatMessage + emojiData.emoji;
+                setChatMessage(newMessage);
                 setShowEmojiPicker(false);
               }}
               width={250}
