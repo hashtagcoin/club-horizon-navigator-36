@@ -4,6 +4,10 @@ import { useToast } from "@/hooks/use-toast";
 interface PlaceResult {
   name: string;
   address: string;
+  streetAddress: string;
+  suburb: string;
+  state: string;
+  country: string;
   coordinates: {
     lat: number;
     lng: number;
@@ -44,7 +48,7 @@ export function useGooglePlacesAutocomplete(
         const options: google.maps.places.AutocompleteOptions = {
           types: ['establishment'],
           componentRestrictions: { country: 'AU' },
-          fields: ['address_components', 'geometry', 'name', 'opening_hours', 'place_id']
+          fields: ['address_components', 'geometry', 'name', 'opening_hours', 'formatted_address']
         };
 
         const autocomplete = new google.maps.places.Autocomplete(
@@ -66,27 +70,55 @@ export function useGooglePlacesAutocomplete(
             return;
           }
 
-          const placeResult: PlaceResult = {
-            name: place.name || '',
-            address: inputRef.current?.value || '',
-            coordinates: {
-              lat: place.geometry.location?.lat() || 0,
-              lng: place.geometry.location?.lng() || 0
-            }
-          };
+          // Parse address components
+          let streetNumber = '';
+          let route = '';
+          let suburb = '';
+          let state = '';
+          let country = '';
 
+          place.address_components?.forEach(component => {
+            const types = component.types;
+            if (types.includes('street_number')) {
+              streetNumber = component.long_name;
+            } else if (types.includes('route')) {
+              route = component.long_name;
+            } else if (types.includes('locality')) {
+              suburb = component.long_name;
+            } else if (types.includes('administrative_area_level_1')) {
+              state = component.short_name;
+            } else if (types.includes('country')) {
+              country = component.long_name;
+            }
+          });
+
+          // Parse opening hours
+          const openingHours: PlaceResult['openingHours'] = {};
           if (place.opening_hours?.periods) {
-            placeResult.openingHours = {};
             place.opening_hours.periods.forEach(period => {
               if (period.open && period.close) {
-                const day = period.open.day;
-                placeResult.openingHours![getDayName(day)] = {
+                const day = getDayName(period.open.day);
+                openingHours[day] = {
                   open: `${period.open.time.slice(0, 2)}:00`,
                   close: `${period.close.time.slice(0, 2)}:00`
                 };
               }
             });
           }
+
+          const placeResult: PlaceResult = {
+            name: place.name || '',
+            address: place.formatted_address || '',
+            streetAddress: streetNumber ? `${streetNumber} ${route}` : route,
+            suburb,
+            state,
+            country,
+            coordinates: {
+              lat: place.geometry.location?.lat() || 0,
+              lng: place.geometry.location?.lng() || 0
+            },
+            openingHours
+          };
 
           onPlaceSelect(placeResult);
         });

@@ -35,7 +35,18 @@ export function AddVenueModal({ isOpen, onClose, onVenueAdded }: AddVenueModalPr
   useGooglePlacesAutocomplete(isOpen, autocompleteInputRef, (place) => {
     setIsLoadingPlace(true);
     try {
+      // Set venue name
       setName(place.name);
+
+      // Set address components
+      setAddressComponents({
+        streetAddress: place.streetAddress,
+        suburb: place.suburb,
+        state: place.state,
+        country: place.country
+      });
+
+      // Set opening hours
       if (place.openingHours) {
         const newHours = { ...hours };
         Object.entries(place.openingHours).forEach(([day, dayHours]) => {
