@@ -55,78 +55,93 @@ export function useGooglePlacesAutocomplete(
           inputRef.current,
           options
         );
-        
-        autocompleteInstance.current = autocomplete;
 
-        // Add the place_changed event listener
         autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          console.log("Selected place:", place); // Debug log
-          
-          if (!place.geometry) {
-            toast({
-              title: "Error",
-              description: "Please select a venue from the dropdown list",
-              variant: "destructive"
-            });
-            return;
-          }
+          try {
+            const place = autocomplete.getPlace();
+            console.log("Raw place data:", place);
 
-          // Parse address components
-          let streetNumber = '';
-          let route = '';
-          let suburb = '';
-          let state = '';
-          let country = '';
-
-          place.address_components?.forEach(component => {
-            const types = component.types;
-            if (types.includes('street_number')) {
-              streetNumber = component.long_name;
-            } else if (types.includes('route')) {
-              route = component.long_name;
-            } else if (types.includes('locality')) {
-              suburb = component.long_name;
-            } else if (types.includes('administrative_area_level_1')) {
-              state = component.short_name;
-            } else if (types.includes('country')) {
-              country = component.long_name;
+            if (!place.geometry || !place.name) {
+              console.error("Invalid place data received");
+              toast({
+                title: "Error",
+                description: "Please select a venue from the dropdown list",
+                variant: "destructive"
+              });
+              return;
             }
-          });
 
-          // Parse opening hours
-          const openingHours: PlaceResult['openingHours'] = {};
-          if (place.opening_hours?.periods) {
-            place.opening_hours.periods.forEach(period => {
-              if (period.open && period.close) {
-                const day = getDayName(period.open.day);
-                openingHours[day] = {
-                  open: `${period.open.time.slice(0, 2)}:00`,
-                  close: `${period.close.time.slice(0, 2)}:00`
-                };
+            // Parse address components
+            let streetNumber = '';
+            let route = '';
+            let suburb = '';
+            let state = '';
+            let country = '';
+
+            place.address_components?.forEach(component => {
+              const types = component.types;
+              console.log("Processing component:", component);
+              
+              if (types.includes('street_number')) {
+                streetNumber = component.long_name;
+              } else if (types.includes('route')) {
+                route = component.long_name;
+              } else if (types.includes('locality')) {
+                suburb = component.long_name;
+              } else if (types.includes('administrative_area_level_1')) {
+                state = component.short_name;
+              } else if (types.includes('country')) {
+                country = component.long_name;
               }
             });
+
+            // Parse opening hours
+            const openingHours: PlaceResult['openingHours'] = {};
+            
+            if (place.opening_hours?.periods) {
+              console.log("Processing opening hours:", place.opening_hours.periods);
+              
+              place.opening_hours.periods.forEach(period => {
+                if (period.open && period.close) {
+                  const day = getDayName(period.open.day).toLowerCase();
+                  openingHours[day] = {
+                    open: `${period.open.time.slice(0, 2)}:${period.open.time.slice(2, 4)}`,
+                    close: `${period.close.time.slice(0, 2)}:${period.close.time.slice(2, 4)}`
+                  };
+                }
+              });
+            }
+
+            const placeResult: PlaceResult = {
+              name: place.name,
+              address: place.formatted_address || '',
+              streetAddress: streetNumber ? `${streetNumber} ${route}` : route,
+              suburb,
+              state,
+              country,
+              coordinates: {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+              },
+              openingHours
+            };
+
+            console.log("Processed place result:", placeResult);
+            onPlaceSelect(placeResult);
+
+          } catch (error) {
+            console.error("Error processing place selection:", error);
+            toast({
+              title: "Error",
+              description: "Failed to process venue details. Please try again.",
+              variant: "destructive"
+            });
           }
-
-          const placeResult: PlaceResult = {
-            name: place.name || '',
-            address: place.formatted_address || '',
-            streetAddress: streetNumber ? `${streetNumber} ${route}` : route,
-            suburb,
-            state,
-            country,
-            coordinates: {
-              lat: place.geometry.location?.lat() || 0,
-              lng: place.geometry.location?.lng() || 0
-            },
-            openingHours
-          };
-
-          console.log("Parsed place result:", placeResult); // Debug log
-          onPlaceSelect(placeResult);
         });
-
+        
+        autocompleteInstance.current = autocomplete;
         console.log("Autocomplete initialized successfully");
+
       } catch (error) {
         console.error("Error initializing Google Places Autocomplete:", error);
         toast({
@@ -150,6 +165,6 @@ export function useGooglePlacesAutocomplete(
 }
 
 function getDayName(day: number): string {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   return days[day];
 }
