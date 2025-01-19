@@ -17,6 +17,7 @@ interface MainLayoutProps {
   chatOpen: boolean;
   isGeneralChat: boolean;
   toggleGeneralChat: () => void;
+  onVenueAdded?: (venue: any) => void;
   children?: React.ReactNode;
 }
 
@@ -32,6 +33,7 @@ export function MainLayout({
   chatOpen,
   isGeneralChat,
   toggleGeneralChat,
+  onVenueAdded,
   children
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
@@ -65,6 +67,7 @@ export function MainLayout({
       <TopBar 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        onVenueAdded={onVenueAdded}
       />
       
       <div className="flex-1 relative overflow-hidden">

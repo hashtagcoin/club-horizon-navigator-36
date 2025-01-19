@@ -13,6 +13,9 @@ import { MapSection } from './map/MapSection';
 import { ChatWindow } from './chat/ChatWindow';
 import { useToast } from "@/hooks/use-toast";
 
+// Define the libraries we need for Google Maps
+const libraries: Libraries = ['places', 'geometry'];
+
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
@@ -61,7 +64,7 @@ export default function ClubPilot() {
         lat: venue.latitude,
         lng: venue.longitude
       },
-      traffic: "Low",
+      traffic: "Low" as const, // Type assertion to match the Club type
       openingHours: {
         Monday: `${venue.monday_hours_open || 'Closed'} - ${venue.monday_hours_close || 'Closed'}`,
         Tuesday: `${venue.tuesday_hours_open || 'Closed'} - ${venue.tuesday_hours_close || 'Closed'}`,
