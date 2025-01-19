@@ -26,40 +26,38 @@ const App = () => {
           return;
         }
 
-        // If no session, try to sign in
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        // If no session, try to sign up first since we know we want to create this account
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: 'admin@clubpilot.com',
           password: 'clubpilot123',
         });
 
-        if (signInError) {
-          if (signInError.message.includes('Invalid login credentials')) {
-            // Wait before attempting signup to avoid rate limiting
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Try to sign up since the user doesn't exist
-            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-              email: 'admin@clubpilot.com',
-              password: 'clubpilot123',
-            });
-
-            if (signUpError) {
-              if (signUpError.message.includes('rate limit')) {
-                toast.error("Please wait a moment before trying again");
-              } else {
-                toast.error("Failed to create account: " + signUpError.message);
-              }
-            } else if (signUpData.user) {
-              toast.info("Admin account created. Please check your email to confirm your account.");
-            }
-          } else if (signInError.message.includes('Email not confirmed')) {
-            toast.error("Please check your email to confirm your account before logging in");
-          } else {
-            toast.error("Authentication failed: " + signInError.message);
+        if (signUpError) {
+          if (signUpError.message.includes('rate limit')) {
+            toast.error("Please wait a moment before trying again");
+            return;
           }
-        } else if (signInData.user) {
-          setIsAuthenticated(true);
-          toast.success("Logged in as admin");
+          
+          // If signup fails (likely because user exists), try to sign in
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: 'admin@clubpilot.com',
+            password: 'clubpilot123',
+          });
+
+          if (signInError) {
+            if (signInError.message.includes('Email not confirmed')) {
+              toast.error("Please check your email to confirm your account before logging in");
+              // You can also go to Supabase dashboard -> Authentication -> Settings 
+              // and disable email confirmation for development
+            } else {
+              toast.error("Authentication failed: " + signInError.message);
+            }
+          } else if (signInData.user) {
+            setIsAuthenticated(true);
+            toast.success("Logged in as admin");
+          }
+        } else if (signUpData.user) {
+          toast.info("Admin account created. Please check your email to confirm your account.");
         }
       } catch (error) {
         console.error("Error during authentication:", error);
