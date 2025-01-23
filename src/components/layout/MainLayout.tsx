@@ -42,59 +42,17 @@ export function MainLayout({
 
   useEffect(() => {
     const enableFullscreen = async () => {
-      // Check if it's iOS
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-      
-      if (isIOS) {
+      if (isMobile && document.documentElement.requestFullscreen) {
         try {
-          // Add iOS specific meta tags
-          const viewportMeta = document.querySelector('meta[name="viewport"]');
-          if (viewportMeta) {
-            viewportMeta.setAttribute('content', 
-              'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-            );
-          }
-
-          // Add iOS specific styles
-          const style = document.createElement('style');
-          style.textContent = `
-            html {
-              height: 100vh;
-              width: 100vw;
-              position: fixed;
-              overflow: hidden;
-              -webkit-overflow-scrolling: touch;
-            }
-            body {
-              height: 100%;
-              width: 100%;
-              overflow: hidden;
-              position: fixed;
-              -webkit-overflow-scrolling: touch;
-              padding-top: env(safe-area-inset-top);
-              padding-bottom: env(safe-area-inset-bottom);
-            }
-          `;
-          document.head.appendChild(style);
-
-          // Request fullscreen if available
-          if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen();
-          }
-
-          // Add to homescreen prompt
-          window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            // Optionally show a custom "Add to Home Screen" prompt
-          });
+          await document.documentElement.requestFullscreen();
         } catch (err) {
-          console.log('Fullscreen setup error:', err);
+          console.log('Fullscreen request failed:', err);
         }
       }
     };
 
     enableFullscreen();
-  }, []);
+  }, [isMobile]);
 
   const toggleFriendsList = () => {
     setShowFriendsList(!showFriendsList);
