@@ -42,7 +42,7 @@ export const EventModal = ({ selectedEvent, onClose }: EventModalProps) => {
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 border-white text-white hover:bg-white/20"
+                className="flex-1 bg-white/50 text-black border-white hover:bg-white/40"
                 onClick={onClose}
               >
                 Cancel
