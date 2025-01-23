@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { animated, useSpring } from '@react-spring/web';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useDrag } from '@use-gesture/react';
 
 interface ClubDetailsPanelProps {
   selectedClub: Club | null;
@@ -48,39 +49,70 @@ export const ClubDetailsPanel = ({
 }: ClubDetailsPanelProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
-  // Animation for the specials card
-  const [specialsSpring, specialsApi] = useSpring(() => ({
-    from: { x: 1000, opacity: 0 },
-    to: { x: 0, opacity: 1 },
+  // Reset visibility when a new club is selected
+  useEffect(() => {
+    if (selectedClub) {
+      setIsVisible(true);
+    }
+  }, [selectedClub]);
+
+  // Animation for the main details card
+  const [{ x: mainX }, mainApi] = useSpring(() => ({
+    x: 0,
     config: { tension: 280, friction: 60 }
   }));
 
-  // Animation for the events card (delayed)
-  const [eventsSpring, eventsApi] = useSpring(() => ({
-    from: { x: 1000, opacity: 0 },
-    to: { x: 0, opacity: 1 },
-    config: { tension: 280, friction: 60 },
-    delay: 150 // Slight delay after specials card
+  // Animation for the specials card
+  const [{ x: specialsX }, specialsApi] = useSpring(() => ({
+    x: 0,
+    config: { tension: 280, friction: 60 }
   }));
 
-  // Reset and trigger animations when selected club changes
-  useEffect(() => {
-    if (selectedClub) {
-      specialsApi.start({
-        from: { x: 1000, opacity: 0 },
-        to: { x: 0, opacity: 1 }
-      });
-      eventsApi.start({
-        from: { x: 1000, opacity: 0 },
-        to: { x: 0, opacity: 1 },
-        delay: 150
-      });
-    }
-  }, [selectedClub, specialsApi, eventsApi]);
+  // Animation for the events card
+  const [{ x: eventsX }, eventsApi] = useSpring(() => ({
+    x: 0,
+    config: { tension: 280, friction: 60 }
+  }));
 
-  if (!selectedClub) return null;
+  // Gesture bindings for swipe
+  const bindMain = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
+    if (!active && Math.abs(mx) > 100) {
+      setIsVisible(false);
+    }
+    mainApi.start({ x: active ? mx : 0, immediate: active });
+  }, { axis: 'x' });
+
+  const bindSpecials = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
+    if (!active && Math.abs(mx) > 100) {
+      setIsVisible(false);
+    }
+    specialsApi.start({ x: active ? mx : 0, immediate: active });
+  }, { axis: 'x' });
+
+  const bindEvents = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
+    if (!active && Math.abs(mx) > 100) {
+      setIsVisible(false);
+    }
+    eventsApi.start({ x: active ? mx : 0, immediate: active });
+  }, { axis: 'x' });
+
+  // Reset animations when visibility changes
+  useEffect(() => {
+    if (isVisible) {
+      mainApi.start({ x: 0 });
+      specialsApi.start({ x: 0 });
+      eventsApi.start({ x: 0 });
+    } else {
+      mainApi.start({ x: 1000 });
+      specialsApi.start({ x: 1000 });
+      eventsApi.start({ x: 1000 });
+    }
+  }, [isVisible, mainApi, specialsApi, eventsApi]);
+
+  if (!selectedClub || !isVisible) return null;
 
   const handleShare = async () => {
     setIsContactModalOpen(true);
@@ -124,7 +156,11 @@ export const ClubDetailsPanel = ({
 
   return (
     <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
-      <div className="bg-white p-2 rounded-lg shadow-md">
+      <animated.div 
+        {...bindMain()}
+        style={{ x: mainX }}
+        className="bg-white p-2 rounded-lg shadow-md cursor-grab active:cursor-grabbing"
+      >
         <div className="flex items-center justify-between w-full">
           <h3 className="text-base font-semibold">{selectedClub.name}</h3>
           <div className="flex items-center gap-2">
@@ -167,23 +203,24 @@ export const ClubDetailsPanel = ({
           </p>
         </div>
       </div>
+      </animated.div>
 
-      {/* Specials Card */}
       <animated.div
+        {...bindSpecials()}
         style={{
-          ...specialsSpring,
+          x: specialsX,
           background: 'linear-gradient(to right, #ee9ca7, #ffdde1)',
         }}
-        className="p-4 rounded-lg shadow-md text-white"
+        className="p-4 rounded-lg shadow-md text-white cursor-grab active:cursor-grabbing"
       >
         <h4 className="font-semibold mb-2">Today's Special</h4>
         <p className="text-sm">2 for 1 on all cocktails before 11 PM!</p>
       </animated.div>
 
-      {/* Events Card */}
       <animated.div
-        style={eventsSpring}
-        className="rounded-lg shadow-md overflow-hidden"
+        {...bindEvents()}
+        style={{ x: eventsX }}
+        className="rounded-lg shadow-md overflow-hidden cursor-grab active:cursor-grabbing"
       >
         <div className="relative aspect-[3/2] w-full">
           <img 
