@@ -1,25 +1,15 @@
-import { animated } from '@react-spring/web';
+interface SpecialsCardProps {}
 
-interface SpecialsCardProps {
-  bindSpecials: () => any;
-  specialsX: any;
-}
-
-export const SpecialsCard = ({
-  bindSpecials,
-  specialsX,
-}: SpecialsCardProps) => {
+export const SpecialsCard = () => {
   return (
-    <animated.div
-      {...bindSpecials()}
+    <div
       style={{
-        x: specialsX,
         background: 'linear-gradient(to right, #ee9ca7, #ffdde1)',
       }}
-      className="p-4 rounded-lg shadow-md text-white cursor-grab active:cursor-grabbing"
+      className="p-4 rounded-lg shadow-md text-white"
     >
       <h4 className="font-semibold mb-2">Today's Special</h4>
       <p className="text-sm">2 for 1 on all cocktails before 11 PM!</p>
-    </animated.div>
+    </div>
   );
 };

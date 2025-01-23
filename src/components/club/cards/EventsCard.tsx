@@ -1,27 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Ticket } from 'lucide-react';
-import { Event } from '@/types/club';
-import { animated } from '@react-spring/web';
+
+interface Event {
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  date: string;
+  price: string;
+}
 
 interface EventsCardProps {
-  bindEvents: () => any;
-  eventsX: any;
   randomEvent: Event;
   onEventSelect: (event: Event) => void;
 }
 
 export const EventsCard = ({
-  bindEvents,
-  eventsX,
   randomEvent,
   onEventSelect
 }: EventsCardProps) => {
   return (
-    <animated.div
-      {...bindEvents()}
-      style={{ x: eventsX }}
-      className="rounded-lg shadow-md overflow-hidden cursor-grab active:cursor-grabbing"
-    >
+    <div className="rounded-lg shadow-md overflow-hidden">
       <div className="relative aspect-[3/2] w-full">
         <img 
           src={randomEvent.image} 
@@ -41,6 +40,6 @@ export const EventsCard = ({
           </Button>
         </div>
       </div>
-    </animated.div>
+    </div>
   );
 };

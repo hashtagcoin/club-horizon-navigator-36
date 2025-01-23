@@ -1,31 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { MapPin, User, Share2, Clock } from 'lucide-react';
 import { Club } from '@/types/club';
-import { animated } from '@react-spring/web';
 
 interface MainDetailsCardProps {
   selectedClub: Club;
   selectedDay: string;
   setSelectedDay: (day: string) => void;
   onShare: () => void;
-  bindMain: () => any;
-  mainX: any;
 }
 
 export const MainDetailsCard = ({
   selectedClub,
   selectedDay,
   setSelectedDay,
-  onShare,
-  bindMain,
-  mainX
+  onShare
 }: MainDetailsCardProps) => {
   return (
-    <animated.div 
-      {...bindMain()}
-      style={{ x: mainX }}
-      className="bg-white p-2 rounded-lg shadow-md cursor-grab active:cursor-grabbing"
-    >
+    <div className="bg-white p-2 rounded-lg shadow-md">
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-semibold">{selectedClub.name}</h3>
         <div className="flex items-center gap-2">
@@ -67,6 +58,6 @@ export const MainDetailsCard = ({
           {selectedClub.openingHours[selectedDay]}
         </p>
       </div>
-    </animated.div>
+    </div>
   );
 };
