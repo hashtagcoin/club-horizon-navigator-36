@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Ticket } from 'lucide-react';
 import { Event } from '@/types/club';
+import { animated } from '@react-spring/web';
 
 interface EventsCardProps {
   bindEvents: () => any;

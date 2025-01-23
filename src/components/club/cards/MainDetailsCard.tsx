@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { MapPin, User, Share2, Clock } from 'lucide-react';
 import { Club } from '@/types/club';
+import { animated } from '@react-spring/web';
 
 interface MainDetailsCardProps {
   selectedClub: Club;

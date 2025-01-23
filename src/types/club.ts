@@ -18,6 +18,15 @@ export interface Club {
   isUserAdded?: boolean;
 }
 
+export interface Event {
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  date: string;
+  price: string;
+}
+
 export interface ChatMessage {
   sender: string;
   text: string;
