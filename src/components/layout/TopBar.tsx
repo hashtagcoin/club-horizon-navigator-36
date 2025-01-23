@@ -63,12 +63,17 @@ export const TopBar: FC<TopBarProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-primary-foreground"
+                className="text-primary-foreground relative"
               >
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-primary text-primary-foreground p-0">
+            <DropdownMenuContent 
+              align="end" 
+              className="w-48 bg-primary text-primary-foreground p-0"
+              style={{ position: 'absolute', top: '100%', right: 0 }}
+              sideOffset={5}
+            >
               <DropdownMenuItem onClick={() => {
                 setShowProfile(true);
                 setDropdownOpen(false);
