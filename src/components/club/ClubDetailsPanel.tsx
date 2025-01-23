@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { MapPin, User, Share2, Gift, Clock, Ticket } from 'lucide-react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { animated, useSpring } from '@react-spring/web';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useSpring } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
+import { MainDetailsCard } from './cards/MainDetailsCard';
+import { SpecialsCard } from './cards/SpecialsCard';
+import { EventsCard } from './cards/EventsCard';
+import { EventModal } from './modals/EventModal';
 
 interface ClubDetailsPanelProps {
   selectedClub: Club | null;
@@ -52,14 +53,6 @@ export const ClubDetailsPanel = ({
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
-  // Reset visibility when a new club is selected
-  useEffect(() => {
-    if (selectedClub) {
-      setIsVisible(true);
-    }
-  }, [selectedClub]);
-
-  // Animation for the main details card
   const [{ x: mainX }, mainApi] = useSpring(() => ({
     x: 0,
     config: { tension: 280, friction: 60 }
@@ -99,7 +92,6 @@ export const ClubDetailsPanel = ({
     eventsApi.start({ x: active ? mx : 0, immediate: active });
   }, { axis: 'x' });
 
-  // Reset animations when visibility changes
   useEffect(() => {
     if (isVisible) {
       mainApi.start({ x: 0 });
@@ -156,91 +148,26 @@ export const ClubDetailsPanel = ({
 
   return (
     <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
-      <animated.div 
-        {...bindMain()}
-        style={{ x: mainX }}
-        className="bg-white p-2 rounded-lg shadow-md cursor-grab active:cursor-grabbing"
-      >
-        <div className="flex items-center justify-between w-full">
-          <h3 className="text-base font-semibold">{selectedClub.name}</h3>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center space-x-0.5" aria-label={`${selectedClub.traffic} Traffic`}>
-              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' || selectedClub.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 px-2"
-              onClick={handleShare}
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-        <div className="flex items-center space-x-1 mt-1 text-xs text-muted-foreground">
-          <MapPin className="h-3 w-3" />
-          <span>{selectedClub.address}</span>
-        </div>
-        <div className="flex space-x-0.5 mt-1 w-full">
-          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
-            <Button
-              key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
-              variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
-              size="sm"
-              className="h-5 text-[10px] px-1 min-w-0 flex-1"
-              onClick={() => setSelectedDay(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index])}
-            >
-              {day}
-            </Button>
-          ))}
-        </div>
-        <div className="mt-1 flex items-center space-x-1">
-          <Clock className="h-3 w-3 text-muted-foreground" />
-          <p className="text-xs font-medium">
-            {selectedClub.openingHours[selectedDay]}
-          </p>
-        </div>
-      </animated.div>
+      <MainDetailsCard
+        selectedClub={selectedClub}
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        onShare={handleShare}
+        bindMain={bindMain}
+        mainX={mainX}
+      />
 
-      <animated.div
-        {...bindSpecials()}
-        style={{
-          x: specialsX,
-          background: 'linear-gradient(to right, #ee9ca7, #ffdde1)',
-        }}
-        className="p-4 rounded-lg shadow-md text-white cursor-grab active:cursor-grabbing"
-      >
-        <h4 className="font-semibold mb-2">Today's Special</h4>
-        <p className="text-sm">2 for 1 on all cocktails before 11 PM!</p>
-      </animated.div>
+      <SpecialsCard
+        bindSpecials={bindSpecials}
+        specialsX={specialsX}
+      />
 
-      <animated.div
-        {...bindEvents()}
-        style={{ x: eventsX }}
-        className="rounded-lg shadow-md overflow-hidden cursor-grab active:cursor-grabbing"
-      >
-        <div className="relative aspect-[3/2] w-full">
-          <img 
-            src={randomEvent.image} 
-            alt={randomEvent.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <h4 className="font-semibold text-lg mb-1">{randomEvent.title}</h4>
-            <p className="text-sm mb-2">{randomEvent.date}</p>
-            <Button 
-              onClick={() => setSelectedEvent(randomEvent)}
-              className="w-full bg-white/20 backdrop-blur-sm hover:bg-white/30"
-            >
-              <Ticket className="w-4 h-4 mr-2" />
-              Get Tickets
-            </Button>
-          </div>
-        </div>
-      </animated.div>
+      <EventsCard
+        bindEvents={bindEvents}
+        eventsX={eventsX}
+        randomEvent={randomEvent}
+        onEventSelect={setSelectedEvent}
+      />
 
       <ContactSelectionModal
         isOpen={isContactModalOpen}
@@ -248,46 +175,10 @@ export const ClubDetailsPanel = ({
         onShare={handleShareWithContacts}
       />
 
-      <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent className="p-0 max-w-2xl w-[90vw]">
-          {selectedEvent && (
-            <div className="relative">
-              <img 
-                src={selectedEvent.image}
-                alt={selectedEvent.title}
-                className="w-full aspect-[3/2] object-cover"
-              />
-              <div className="absolute inset-0 bg-black/40" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                <h2 className="text-2xl font-bold mb-2">{selectedEvent.title}</h2>
-                <p className="mb-2">{selectedEvent.description}</p>
-                <p className="mb-4">{selectedEvent.date}</p>
-                <div className="flex gap-4">
-                  <Button 
-                    className="flex-1 bg-white text-black hover:bg-white/90"
-                    onClick={() => {
-                      toast({
-                        title: "Success!",
-                        description: `Tickets purchased for ${selectedEvent.title}`,
-                      });
-                      setSelectedEvent(null);
-                    }}
-                  >
-                    Buy Tickets - {selectedEvent.price}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 border-white text-white hover:bg-white/20"
-                    onClick={() => setSelectedEvent(null)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <EventModal
+        selectedEvent={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
     </div>
   );
 };
