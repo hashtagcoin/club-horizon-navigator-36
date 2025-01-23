@@ -53,24 +53,31 @@ export const ClubDetailsPanel = ({
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
+  // Reset visibility when a new club is selected
+  useEffect(() => {
+    if (selectedClub) {
+      setIsVisible(true);
+      mainApi.start({ x: 0 });
+      specialsApi.start({ x: 0 });
+      eventsApi.start({ x: 0 });
+    }
+  }, [selectedClub]);
+
   const [{ x: mainX }, mainApi] = useSpring(() => ({
     x: 0,
     config: { tension: 280, friction: 60 }
   }));
 
-  // Animation for the specials card
   const [{ x: specialsX }, specialsApi] = useSpring(() => ({
     x: 0,
     config: { tension: 280, friction: 60 }
   }));
 
-  // Animation for the events card
   const [{ x: eventsX }, eventsApi] = useSpring(() => ({
     x: 0,
     config: { tension: 280, friction: 60 }
   }));
 
-  // Gesture bindings for swipe
   const bindMain = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
     if (!active && Math.abs(mx) > 100) {
       setIsVisible(false);
