@@ -3,7 +3,7 @@ import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useSpring } from '@react-spring/web';
+import { useSpring, animated } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { MainDetailsCard } from './cards/MainDetailsCard';
 import { SpecialsCard } from './cards/SpecialsCard';
@@ -53,28 +53,52 @@ export const ClubDetailsPanel = ({
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
-  // Reset visibility when a new club is selected
+  // Reset visibility and trigger animation when a new club is selected
   useEffect(() => {
     if (selectedClub) {
       setIsVisible(true);
-      mainApi.start({ x: 0 });
-      specialsApi.start({ x: 0 });
-      eventsApi.start({ x: 0 });
+      mainApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        config: { tension: 280, friction: 60 }
+      });
+      specialsApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        delay: 100
+      });
+      eventsApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        delay: 200
+      });
     }
   }, [selectedClub]);
 
-  const [{ x: mainX }, mainApi] = useSpring(() => ({
+  const [{ x: mainX, y: mainY, opacity: mainOpacity }, mainApi] = useSpring(() => ({
     x: 0,
+    y: 0,
+    opacity: 1,
     config: { tension: 280, friction: 60 }
   }));
 
-  const [{ x: specialsX }, specialsApi] = useSpring(() => ({
+  const [{ x: specialsX, y: specialsY, opacity: specialsOpacity }, specialsApi] = useSpring(() => ({
     x: 0,
+    y: 0,
+    opacity: 1,
     config: { tension: 280, friction: 60 }
   }));
 
-  const [{ x: eventsX }, eventsApi] = useSpring(() => ({
+  const [{ x: eventsX, y: eventsY, opacity: eventsOpacity }, eventsApi] = useSpring(() => ({
     x: 0,
+    y: 0,
+    opacity: 1,
     config: { tension: 280, friction: 60 }
   }));
 
@@ -98,20 +122,6 @@ export const ClubDetailsPanel = ({
     }
     eventsApi.start({ x: active ? mx : 0, immediate: active });
   }, { axis: 'x' });
-
-  useEffect(() => {
-    if (isVisible) {
-      mainApi.start({ x: 0 });
-      specialsApi.start({ x: 0 });
-      eventsApi.start({ x: 0 });
-    } else {
-      mainApi.start({ x: 1000 });
-      specialsApi.start({ x: 1000 });
-      eventsApi.start({ x: 1000 });
-    }
-  }, [isVisible, mainApi, specialsApi, eventsApi]);
-
-  if (!selectedClub || !isVisible) return null;
 
   const handleShare = async () => {
     setIsContactModalOpen(true);
@@ -151,30 +161,55 @@ export const ClubDetailsPanel = ({
     }
   };
 
+  if (!selectedClub || !isVisible) return null;
+
   const randomEvent = events[Math.floor(Math.random() * events.length)];
 
   return (
     <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
-      <MainDetailsCard
-        selectedClub={selectedClub}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        onShare={handleShare}
-        bindMain={bindMain}
-        mainX={mainX}
-      />
+      <animated.div
+        style={{
+          x: mainX,
+          y: mainY,
+          opacity: mainOpacity
+        }}
+        {...bindMain()}
+        className="cursor-grab active:cursor-grabbing"
+      >
+        <MainDetailsCard
+          selectedClub={selectedClub}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          onShare={handleShare}
+        />
+      </animated.div>
 
-      <SpecialsCard
-        bindSpecials={bindSpecials}
-        specialsX={specialsX}
-      />
+      <animated.div
+        style={{
+          x: specialsX,
+          y: specialsY,
+          opacity: specialsOpacity
+        }}
+        {...bindSpecials()}
+        className="cursor-grab active:cursor-grabbing"
+      >
+        <SpecialsCard />
+      </animated.div>
 
-      <EventsCard
-        bindEvents={bindEvents}
-        eventsX={eventsX}
-        randomEvent={randomEvent}
-        onEventSelect={setSelectedEvent}
-      />
+      <animated.div
+        style={{
+          x: eventsX,
+          y: eventsY,
+          opacity: eventsOpacity
+        }}
+        {...bindEvents()}
+        className="cursor-grab active:cursor-grabbing"
+      >
+        <EventsCard
+          randomEvent={randomEvent}
+          onEventSelect={setSelectedEvent}
+        />
+      </animated.div>
 
       <ContactSelectionModal
         isOpen={isContactModalOpen}
