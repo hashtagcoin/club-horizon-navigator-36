@@ -24,6 +24,7 @@ export const TopBar: FC<TopBarProps> = ({
 }) => {
   const [showProfile, setShowProfile] = useState(false);
   const [showAddVenue, setShowAddVenue] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <>
@@ -57,7 +58,7 @@ export const TopBar: FC<TopBarProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -68,11 +69,17 @@ export const TopBar: FC<TopBarProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => setShowProfile(true)}>
+              <DropdownMenuItem onClick={() => {
+                setShowProfile(true);
+                setDropdownOpen(false);
+              }}>
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowAddVenue(true)}>
+              <DropdownMenuItem onClick={() => {
+                setShowAddVenue(true);
+                setDropdownOpen(false);
+              }}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add New Club
               </DropdownMenuItem>
