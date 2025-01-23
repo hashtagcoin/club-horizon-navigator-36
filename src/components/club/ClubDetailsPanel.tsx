@@ -202,7 +202,6 @@ export const ClubDetailsPanel = ({
             {selectedClub.openingHours[selectedDay]}
           </p>
         </div>
-      </div>
       </animated.div>
 
       <animated.div
@@ -249,7 +248,6 @@ export const ClubDetailsPanel = ({
         onShare={handleShareWithContacts}
       />
 
-      {/* Event Details Modal */}
       <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
         <DialogContent className="p-0 max-w-2xl w-[90vw]">
           {selectedEvent && (
