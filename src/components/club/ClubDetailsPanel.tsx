@@ -5,6 +5,7 @@ import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { animated, useSpring } from '@react-spring/web';
 
 interface ClubDetailsPanelProps {
   selectedClub: Club | null;
@@ -20,11 +21,22 @@ export const ClubDetailsPanel = ({
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const { toast } = useToast();
 
+  // Animation for the swooping card
+  const [springs, api] = useSpring(() => ({
+    from: { x: 1000, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+    config: { tension: 280, friction: 60 }
+  }));
+
+  // Reset and trigger animation when selected club changes
   useEffect(() => {
-    // Set the initial day to today when the component mounts
-    const today = new Date().toLocaleString('en-us', { weekday: 'long' });
-    setSelectedDay(today);
-  }, []); // Empty dependency array means this runs once when component mounts
+    if (selectedClub) {
+      api.start({
+        from: { x: 1000, opacity: 0 },
+        to: { x: 0, opacity: 1 }
+      });
+    }
+  }, [selectedClub, api]);
 
   if (!selectedClub) return null;
 
@@ -67,49 +79,63 @@ export const ClubDetailsPanel = ({
   };
 
   return (
-    <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] bg-white p-2 rounded-lg shadow-md">
-      <div className="flex items-center justify-between w-full">
-        <h3 className="text-base font-semibold">{selectedClub.name}</h3>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center space-x-0.5" aria-label={`${selectedClub.traffic} Traffic`}>
-            <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' || selectedClub.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-            <User className={`h-4 w-4 ${selectedClub.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+    <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
+      <div className="bg-white p-2 rounded-lg shadow-md">
+        <div className="flex items-center justify-between w-full">
+          <h3 className="text-base font-semibold">{selectedClub.name}</h3>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-0.5" aria-label={`${selectedClub.traffic} Traffic`}>
+              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' || selectedClub.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' || selectedClub.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+              <User className={`h-4 w-4 ${selectedClub.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-8 px-2"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="h-8 px-2"
-            onClick={handleShare}
-          >
-            <Share2 className="h-4 w-4" />
-          </Button>
+        </div>
+        <div className="flex items-center space-x-1 mt-1 text-xs text-muted-foreground">
+          <MapPin className="h-3 w-3" />
+          <span>{selectedClub.address}</span>
+        </div>
+        <div className="flex space-x-0.5 mt-1 w-full">
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+            <Button
+              key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
+              variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
+              size="sm"
+              className="h-5 text-[10px] px-1 min-w-0 flex-1"
+              onClick={() => setSelectedDay(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index])}
+            >
+              {day}
+            </Button>
+          ))}
+        </div>
+        <div className="mt-1 flex items-center space-x-1">
+          <Clock className="h-3 w-3 text-muted-foreground" />
+          <p className="text-xs font-medium">
+            {selectedClub.openingHours[selectedDay]}
+          </p>
         </div>
       </div>
-      <div className="flex items-center space-x-1 mt-1 text-xs text-muted-foreground">
-        <MapPin className="h-3 w-3" />
-        <span>{selectedClub.address}</span>
-      </div>
-      <div className="flex space-x-0.5 mt-1 w-full">
-        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
-          <Button
-            key={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]}
-            variant={selectedDay === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index] ? "default" : "outline"}
-            size="sm"
-            className="h-5 text-[10px] px-1 min-w-0 flex-1"
-            onClick={() => setSelectedDay(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index])}
-          >
-            {day}
-          </Button>
-        ))}
-      </div>
-      <div className="mt-1 flex items-center space-x-1">
-        <Clock className="h-3 w-3 text-muted-foreground" />
-        <p className="text-xs font-medium">
-          {selectedClub.openingHours[selectedDay]}
-        </p>
-      </div>
-      
+
+      {/* Animated card that swoops in */}
+      <animated.div
+        style={{
+          ...springs,
+          background: 'linear-gradient(to right, #ee9ca7, #ffdde1)',
+        }}
+        className="p-4 rounded-lg shadow-md text-white"
+      >
+        <h4 className="font-semibold mb-2">Today's Special</h4>
+        <p className="text-sm">2 for 1 on all cocktails before 11 PM!</p>
+      </animated.div>
+
       {selectedClub.hasSpecial && (
         <div className="mt-2 bg-yellow-50 p-2 rounded-md border border-yellow-200">
           <div className="flex items-center gap-1 text-yellow-700">

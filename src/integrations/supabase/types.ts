@@ -391,6 +391,7 @@ export type Database = {
           favorite_club: string | null
           id: string
           last_seen: string | null
+          loged_in: boolean | null
           user_id: string
           username: string | null
         }
@@ -400,6 +401,7 @@ export type Database = {
           favorite_club?: string | null
           id?: string
           last_seen?: string | null
+          loged_in?: boolean | null
           user_id: string
           username?: string | null
         }
@@ -409,6 +411,7 @@ export type Database = {
           favorite_club?: string | null
           id?: string
           last_seen?: string | null
+          loged_in?: boolean | null
           user_id?: string
           username?: string | null
         }
@@ -507,6 +510,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"] | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"] | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"] | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_settings: {
         Row: {
           created_at: string | null
@@ -545,6 +569,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "user"
       continents:
         | "Africa"
         | "Antarctica"
