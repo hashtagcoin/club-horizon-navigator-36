@@ -5,7 +5,10 @@ interface SpecialsCardProps {
   specialsX: any;
 }
 
-export const SpecialsCard = ({ bindSpecials, specialsX }: SpecialsCardProps) => {
+export const SpecialsCard = ({
+  bindSpecials,
+  specialsX,
+}: SpecialsCardProps) => {
   return (
     <animated.div
       {...bindSpecials()}
