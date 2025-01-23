@@ -18,38 +18,6 @@ export const MainDetailsCard = ({
 }: MainDetailsCardProps) => {
   const { toast } = useToast();
 
-  const handleShare = async () => {
-    const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\nhttps://clubpilot.lovable.dev`;
-
-    // Try using the Web Share API first
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: selectedClub.name,
-          text: shareText,
-        });
-        toast({
-          title: "Success",
-          description: "Club details shared successfully",
-        });
-      } catch (error) {
-        if (error instanceof Error && error.name !== "AbortError") {
-          // Only show error if it's not a user cancellation
-          toast({
-            title: "Error",
-            description: "Failed to share club details",
-            variant: "destructive"
-          });
-        }
-      }
-    } else {
-      // Fallback to SMS link
-      const encodedMessage = encodeURIComponent(shareText);
-      const smsLink = `sms:?body=${encodedMessage}`;
-      window.open(smsLink, '_blank');
-    }
-  };
-
   return (
     <div className="bg-white p-2 rounded-lg shadow-md">
       <div className="flex items-center justify-between w-full">
@@ -64,7 +32,7 @@ export const MainDetailsCard = ({
             variant="outline" 
             size="sm" 
             className="h-8 px-2"
-            onClick={handleShare}
+            onClick={onShare}
           >
             <Share2 className="h-4 w-4" />
           </Button>

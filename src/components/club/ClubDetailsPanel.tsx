@@ -124,7 +124,16 @@ export const ClubDetailsPanel = ({
   }, { axis: 'x' });
 
   const handleShare = async () => {
-    setIsContactModalOpen(true);
+    try {
+      setIsContactModalOpen(true);
+    } catch (error) {
+      console.error('Error opening contact modal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to open contact selection",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleShareWithContacts = async (selectedContacts: { name: string, tel: string }[]) => {
@@ -133,19 +142,24 @@ export const ClubDetailsPanel = ({
         .from('app_settings')
         .select('value')
         .eq('key', 'website_url')
-        .single();
+        .maybeSingle();
 
       if (settingsError) throw settingsError;
 
       const websiteUrl = settings?.value || 'https://clubpilot.lovable.dev';
-      const shareText = `Check out ${selectedClub.name}!\n${selectedClub.address}\nHours: ${selectedClub.openingHours[selectedDay]}\n${websiteUrl}`;
+      const shareText = `Check out ${selectedClub?.name}!\n${selectedClub?.address}\nHours: ${selectedClub?.openingHours[selectedDay]}\n${websiteUrl}`;
       
       const smsLinks = selectedContacts.map(contact => {
         const encodedMessage = encodeURIComponent(shareText);
-        return `sms:${contact.tel}?body=${encodedMessage}`;
+        return `sms:${contact.tel}?&body=${encodedMessage}`;
       });
 
-      smsLinks.forEach(link => window.open(link, '_blank'));
+      // Open SMS links one by one
+      for (const link of smsLinks) {
+        window.open(link, '_blank');
+        // Add a small delay between opening multiple SMS windows
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
 
       toast({
         title: "Success",
@@ -158,6 +172,8 @@ export const ClubDetailsPanel = ({
         description: "Failed to share. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsContactModalOpen(false);
     }
   };
 
@@ -174,7 +190,7 @@ export const ClubDetailsPanel = ({
           opacity: mainOpacity
         }}
         {...bindMain()}
-        className="cursor-grab active:cursor-grabbing"
+        className="cursor-grab active:cursor-grabbing touch-none"
       >
         <MainDetailsCard
           selectedClub={selectedClub}
@@ -191,7 +207,7 @@ export const ClubDetailsPanel = ({
           opacity: specialsOpacity
         }}
         {...bindSpecials()}
-        className="cursor-grab active:cursor-grabbing"
+        className="cursor-grab active:cursor-grabbing touch-none"
       >
         <SpecialsCard />
       </animated.div>
@@ -203,7 +219,7 @@ export const ClubDetailsPanel = ({
           opacity: eventsOpacity
         }}
         {...bindEvents()}
-        className="cursor-grab active:cursor-grabbing"
+        className="cursor-grab active:cursor-grabbing touch-none"
       >
         <EventsCard
           randomEvent={randomEvent}
