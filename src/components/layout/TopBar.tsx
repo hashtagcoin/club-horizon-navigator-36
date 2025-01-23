@@ -63,7 +63,7 @@ export const TopBar: FC<TopBarProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-primary-foreground relative"
+                className="text-primary-foreground"
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -71,11 +71,6 @@ export const TopBar: FC<TopBarProps> = ({
             <DropdownMenuContent 
               align="end" 
               className="w-48 bg-primary text-primary-foreground"
-              style={{
-                position: 'absolute',
-                zIndex: 100,
-                marginTop: '4px'
-              }}
               sideOffset={5}
             >
               <DropdownMenuItem onClick={() => {
