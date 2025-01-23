@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, User, Share2, Gift, Clock, Ticket } from 'lucide-react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { animated, useSpring } from '@react-spring/web';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
