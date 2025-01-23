@@ -15,7 +15,7 @@ export const EventModal = ({ selectedEvent, onClose }: EventModalProps) => {
 
   return (
     <Dialog open={!!selectedEvent} onOpenChange={onClose}>
-      <DialogContent className="p-0 max-w-2xl w-[90vw]">
+      <DialogContent className="p-0 max-w-2xl w-[90vw] rounded-xl overflow-hidden">
         <div className="relative">
           <img 
             src={selectedEvent.image}
