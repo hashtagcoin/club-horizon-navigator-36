@@ -58,7 +58,7 @@ export const TopBar: FC<TopBarProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={true}>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -68,11 +68,7 @@ export const TopBar: FC<TopBarProps> = ({
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              align="end" 
-              className="w-48 bg-primary text-primary-foreground"
-              style={{ position: 'fixed' }}
-            >
+            <DropdownMenuContent align="end" className="w-48 bg-primary text-primary-foreground">
               <DropdownMenuItem onClick={() => {
                 setShowProfile(true);
                 setDropdownOpen(false);
