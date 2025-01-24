@@ -28,9 +28,16 @@ export function LocationControls({
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [suburbs, setSuburbs] = useState<string[]>([])
+  const [watchId, setWatchId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchSuburbs()
+    return () => {
+      // Cleanup location watching when component unmounts
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    }
   }, [])
 
   const fetchSuburbs = async () => {
@@ -45,11 +52,9 @@ export function LocationControls({
         return
       }
 
-      // Extract unique suburbs and remove nulls
       const uniqueSuburbs = Array.from(new Set(data.map(item => item.area).filter(Boolean)))
       setSuburbs(uniqueSuburbs)
       
-      // If no suburb is selected and we have suburbs, select the first one
       if (!currentSuburb && uniqueSuburbs.length > 0) {
         onSuburbChange(uniqueSuburbs[0])
       }
@@ -58,15 +63,15 @@ export function LocationControls({
     }
   }
 
-  const getCurrentLocation = () => {
-    setIsLoadingLocation(true)
+  const startWatchingLocation = () => {
     if (!navigator.geolocation) {
       toast.error("Geolocation is not supported by your browser")
-      setIsLoadingLocation(false)
       return
     }
 
-    navigator.geolocation.getCurrentPosition(
+    setIsLoadingLocation(true)
+
+    const id = navigator.geolocation.watchPosition(
       async (position) => {
         try {
           const response = await fetch(
@@ -75,7 +80,6 @@ export function LocationControls({
           const data = await response.json()
           
           if (data.results && data.results.length > 0) {
-            // Find the suburb from address components
             const addressComponents = data.results[0].address_components
             let suburb = '', state = '', country = ''
             
@@ -89,14 +93,11 @@ export function LocationControls({
               }
             }
 
-            // Update location if we found valid data
             if (suburb && state && country) {
               onCountryChange(country)
               onStateChange(state)
               onSuburbChange(suburb)
-              toast.success(`Location updated to ${suburb}`)
-            } else {
-              toast.error("Couldn't determine your exact location")
+              console.log(`Location updated to ${suburb}`)
             }
           }
         } catch (error) {
@@ -110,8 +111,26 @@ export function LocationControls({
         console.error('Error getting location:', error)
         toast.error("Error accessing your location")
         setIsLoadingLocation(false)
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
       }
     )
+
+    setWatchId(id)
+  }
+
+  const getCurrentLocation = () => {
+    // Clear any existing watch
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId)
+      setWatchId(null)
+    }
+    
+    // Start new location watch
+    startWatchingLocation()
   }
 
   useEffect(() => {
