@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useSpring, animated } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { MainDetailsCard } from './cards/MainDetailsCard';
 import { SpecialsCard } from './cards/SpecialsCard';
@@ -15,6 +16,33 @@ interface ClubDetailsPanelProps {
   setSelectedDay: (day: string) => void;
 }
 
+const events = [
+  {
+    id: 1,
+    title: "Fabric Australia",
+    image: "/lovable-uploads/8e626242-82d7-4562-8bb0-396927ae8c8b.png",
+    description: "Day & Night featuring Raresh, tINI, Harry McCanna, Jacob Husley",
+    date: "26th January 2025",
+    price: "$60"
+  },
+  {
+    id: 2,
+    title: "Morning Glory",
+    image: "/lovable-uploads/4528f68a-ff9d-439d-8b66-d5594bbe9d82.png",
+    description: "Sunday Sessions with Line Up TBC",
+    date: "25th January",
+    price: "$40"
+  },
+  {
+    id: 3,
+    title: "ELL BROWN",
+    image: "/lovable-uploads/89f6190f-9f8d-4aa0-a8a6-e6ea56cee9e0.png",
+    description: "HIJCKD with Steve Play, Anderson & Mara",
+    date: "24th January",
+    price: "$45"
+  }
+];
+
 export const ClubDetailsPanel = ({
   selectedClub,
   selectedDay,
@@ -25,22 +53,74 @@ export const ClubDetailsPanel = ({
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
-  const bindMain = useDrag(({ movement: [mx], active }) => {
+  // Reset visibility and trigger animation when a new club is selected
+  useEffect(() => {
+    if (selectedClub) {
+      setIsVisible(true);
+      mainApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        config: { tension: 280, friction: 60 }
+      });
+      specialsApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        delay: 100
+      });
+      eventsApi.start({ 
+        x: 0,
+        y: 0,
+        opacity: 1,
+        from: { x: 100, y: -50, opacity: 0 },
+        delay: 200
+      });
+    }
+  }, [selectedClub]);
+
+  const [{ x: mainX, y: mainY, opacity: mainOpacity }, mainApi] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    opacity: 1,
+    config: { tension: 280, friction: 60 }
+  }));
+
+  const [{ x: specialsX, y: specialsY, opacity: specialsOpacity }, specialsApi] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    opacity: 1,
+    config: { tension: 280, friction: 60 }
+  }));
+
+  const [{ x: eventsX, y: eventsY, opacity: eventsOpacity }, eventsApi] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    opacity: 1,
+    config: { tension: 280, friction: 60 }
+  }));
+
+  const bindMain = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
     if (!active && Math.abs(mx) > 100) {
       setIsVisible(false);
     }
+    mainApi.start({ x: active ? mx : 0, immediate: active });
   }, { axis: 'x' });
 
-  const bindSpecials = useDrag(({ movement: [mx], active }) => {
+  const bindSpecials = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
     if (!active && Math.abs(mx) > 100) {
       setIsVisible(false);
     }
+    specialsApi.start({ x: active ? mx : 0, immediate: active });
   }, { axis: 'x' });
 
-  const bindEvents = useDrag(({ movement: [mx], active }) => {
+  const bindEvents = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
     if (!active && Math.abs(mx) > 100) {
       setIsVisible(false);
     }
+    eventsApi.start({ x: active ? mx : 0, immediate: active });
   }, { axis: 'x' });
 
   const handleShare = async () => {
@@ -74,8 +154,10 @@ export const ClubDetailsPanel = ({
         return `sms:${contact.tel}?&body=${encodedMessage}`;
       });
 
+      // Open SMS links one by one
       for (const link of smsLinks) {
         window.open(link, '_blank');
+        // Add a small delay between opening multiple SMS windows
         await new Promise(resolve => setTimeout(resolve, 500));
       }
 
@@ -101,25 +183,49 @@ export const ClubDetailsPanel = ({
 
   return (
     <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
-      <div {...bindMain()} className="cursor-grab active:cursor-grabbing touch-none">
+      <animated.div
+        style={{
+          x: mainX,
+          y: mainY,
+          opacity: mainOpacity
+        }}
+        {...bindMain()}
+        className="cursor-grab active:cursor-grabbing touch-none"
+      >
         <MainDetailsCard
           selectedClub={selectedClub}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
           onShare={handleShare}
         />
-      </div>
+      </animated.div>
 
-      <div {...bindSpecials()} className="cursor-grab active:cursor-grabbing touch-none">
+      <animated.div
+        style={{
+          x: specialsX,
+          y: specialsY,
+          opacity: specialsOpacity
+        }}
+        {...bindSpecials()}
+        className="cursor-grab active:cursor-grabbing touch-none"
+      >
         <SpecialsCard />
-      </div>
+      </animated.div>
 
-      <div {...bindEvents()} className="cursor-grab active:cursor-grabbing touch-none">
+      <animated.div
+        style={{
+          x: eventsX,
+          y: eventsY,
+          opacity: eventsOpacity
+        }}
+        {...bindEvents()}
+        className="cursor-grab active:cursor-grabbing touch-none"
+      >
         <EventsCard
           randomEvent={randomEvent}
           onEventSelect={setSelectedEvent}
         />
-      </div>
+      </animated.div>
 
       <ContactSelectionModal
         isOpen={isContactModalOpen}
@@ -134,30 +240,3 @@ export const ClubDetailsPanel = ({
     </div>
   );
 };
-
-const events = [
-  {
-    id: 1,
-    title: "Fabric Australia",
-    image: "/lovable-uploads/8e626242-82d7-4562-8bb0-396927ae8c8b.png",
-    description: "Day & Night featuring Raresh, tINI, Harry McCanna, Jacob Husley",
-    date: "26th January 2025",
-    price: "$60"
-  },
-  {
-    id: 2,
-    title: "Morning Glory",
-    image: "/lovable-uploads/4528f68a-ff9d-439d-8b66-d5594bbe9d82.png",
-    description: "Sunday Sessions with Line Up TBC",
-    date: "25th January",
-    price: "$40"
-  },
-  {
-    id: 3,
-    title: "ELL BROWN",
-    image: "/lovable-uploads/89f6190f-9f8d-4aa0-a8a6-e6ea56cee9e0.png",
-    description: "HIJCKD with Steve Play, Anderson & Mara",
-    date: "24th January",
-    price: "$45"
-  }
-];
