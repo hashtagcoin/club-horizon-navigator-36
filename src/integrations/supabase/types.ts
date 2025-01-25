@@ -695,6 +695,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      get_unique_cities: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          city: string
+        }[]
+      }
       random_traffic: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["traffic_level"]

@@ -14,6 +14,9 @@ interface ClubFiltersProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   genres: string[];
+  selectedCity: string;
+  setSelectedCity: (city: string) => void;
+  cities: string[];
 }
 
 const formatGenre = (genre: string) => {
@@ -39,14 +42,32 @@ export function ClubFilters({
   setFilterGenre,
   searchQuery,
   setSearchQuery,
-  genres
+  genres,
+  selectedCity,
+  setSelectedCity,
+  cities
 }: ClubFiltersProps) {
-  // Sort genres alphabetically and add "all" option at the beginning
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
     <div className="p-2">
       <div className="flex gap-2 items-center">
+        <Select 
+          value={selectedCity} 
+          onValueChange={setSelectedCity}
+        >
+          <SelectTrigger className="w-[130px] h-8 text-sm">
+            <SelectValue placeholder="Select city" />
+          </SelectTrigger>
+          <SelectContent>
+            {cities.map((city) => (
+              <SelectItem key={city} value={city}>
+                {city}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}

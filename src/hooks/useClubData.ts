@@ -7,7 +7,7 @@ const transformClubData = (data: any[]): Club[] => {
   
   const transformed = data.map((club) => {
     const transformedClub = {
-      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
+      id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
       traffic: club.traffic || 'Low',
@@ -38,8 +38,8 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
-      hasSpecial: Math.random() < 0.3, // 30% chance of special
+      usersAtClub: Math.floor(Math.random() * 100),
+      hasSpecial: Math.random() < 0.3,
       genre: club.venue_type || 'Various'
     };
     console.log('Transformed club:', transformedClub);
@@ -50,55 +50,29 @@ const transformClubData = (data: any[]): Club[] => {
   return transformed;
 };
 
-export const useClubData = () => {
+export const useClubData = (selectedCity?: string) => {
   return useQuery({
-    queryKey: ['clubs'],
+    queryKey: ['clubs', selectedCity],
     queryFn: async () => {
       console.log('Fetching clubs from Supabase...');
       
-      let { count } = await supabase
+      let query = supabase
         .from('Clublist_Australia')
-        .select('*', { count: 'exact', head: true });
+        .select('*');
       
-      console.log('Total number of clubs:', count);
-      
-      // If there are more than 1000 records, we need to paginate
-      if (count && count > 1000) {
-        const pages = Math.ceil(count / 1000);
-        let allData: any[] = [];
-        
-        for (let i = 0; i < pages; i++) {
-          const { data, error } = await supabase
-            .from('Clublist_Australia')
-            .select('*')
-            .range(i * 1000, (i + 1) * 1000 - 1);
-          
-          if (error) {
-            console.error('Supabase error:', error);
-            throw error;
-          }
-          
-          if (data) {
-            allData = [...allData, ...data];
-          }
-        }
-        
-        console.log(`Fetched ${allData.length} clubs in total`);
-        return transformClubData(allData);
-      } else {
-        // If less than 1000 records, fetch them all at once
-        const { data, error } = await supabase
-          .from('Clublist_Australia')
-          .select('*');
-        
-        if (error) {
-          console.error('Supabase error:', error);
-          throw error;
-        }
-        
-        console.log('Supabase response:', data);
-        return transformClubData(data || []);
+      if (selectedCity) {
+        query = query.eq('city', selectedCity);
       }
+      
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Supabase response:', data);
+      return transformClubData(data || []);
     }
   });
 };

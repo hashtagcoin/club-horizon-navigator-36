@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
+import { useClubCities } from '@/hooks/useClubCities';
 
 interface ClubListProps {
   clubs: Club[];
@@ -18,6 +19,8 @@ interface ClubListProps {
   onOpenChat: (club: Club) => void;
   newMessageCounts: Record<number, number>;
   isLoading: boolean;
+  selectedCity: string;
+  setSelectedCity: (city: string) => void;
 }
 
 export const ClubList: FC<ClubListProps> = ({
@@ -33,15 +36,17 @@ export const ClubList: FC<ClubListProps> = ({
   onSelectClub,
   onOpenChat,
   newMessageCounts,
-  isLoading
+  isLoading,
+  selectedCity,
+  setSelectedCity
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { data: cities = [] } = useClubCities();
 
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      // Add a small delay to ensure the DOM has updated
       setTimeout(() => {
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
         if (!scrollContainer) return;
@@ -60,7 +65,6 @@ export const ClubList: FC<ClubListProps> = ({
     }
   }, [selectedClub]);
 
-  // Reset scroll position when club list changes
   useEffect(() => {
     const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
     if (scrollContainer) {
@@ -91,6 +95,9 @@ export const ClubList: FC<ClubListProps> = ({
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         genres={genres}
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
+        cities={cities}
       />
       <ScrollArea 
         className="flex-grow" 
