@@ -100,9 +100,9 @@ export const ClubList: FC<ClubListProps> = ({
           {isLoading ? (
             <div>Loading venues...</div>
           ) : (
-            clubs.map(club => (
+            clubs.map((club, index) => (
               <div 
-                key={club.id} 
+                key={`${club.id}-${index}`}
                 ref={selectedClub?.id === club.id ? selectedClubRef : null}
               >
                 <ClubCard
