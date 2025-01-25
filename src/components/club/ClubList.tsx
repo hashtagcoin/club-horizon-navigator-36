@@ -51,22 +51,22 @@ export const ClubList: FC<ClubListProps> = ({
   // Function to calculate item height based on content
   const getItemHeight = (index: number) => {
     const club = clubs[index];
-    let height = 120; // Increased base height
-
+    const BASE_HEIGHT = 140; // Base height for all cards
+    const PADDING = 16; // Consistent padding (8px top + 8px bottom)
+    
+    let additionalHeight = 0;
+    
     // Add height for long venue names
     if (club.name.length > 25) {
-      height += 24; // Increased padding for long names
+      additionalHeight += 24;
     }
 
-    // Add height for additional icons
-    const hasSpecial = club.hasSpecial;
-    const isUserAdded = club.isUserAdded;
-    if (hasSpecial || isUserAdded) {
-      height += 16; // Increased padding for icons
+    // Add height for icons
+    if (club.hasSpecial || club.isUserAdded) {
+      additionalHeight += 16;
     }
 
-    // Add extra padding for safety
-    return height + 8; // Increased gap between cards
+    return BASE_HEIGHT + additionalHeight + PADDING;
   };
 
   // Memoize item heights for performance
@@ -97,11 +97,9 @@ export const ClubList: FC<ClubListProps> = ({
       <div 
         style={{
           ...style,
-          paddingLeft: '8px',
-          paddingRight: '8px',
-          paddingBottom: '8px',
-          paddingTop: '8px'
+          padding: '8px'
         }}
+        className="box-border"
       >
         <ClubCard
           club={club}
