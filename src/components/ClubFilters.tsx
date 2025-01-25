@@ -43,31 +43,12 @@ export function ClubFilters({
   searchQuery,
   setSearchQuery,
   genres,
-  selectedCity,
-  setSelectedCity,
-  cities
 }: ClubFiltersProps) {
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
     <div className="p-2">
       <div className="flex gap-2 items-center">
-        <Select 
-          value={selectedCity} 
-          onValueChange={setSelectedCity}
-        >
-          <SelectTrigger className="w-[130px] h-8 text-sm">
-            <SelectValue placeholder="Select city" />
-          </SelectTrigger>
-          <SelectContent>
-            {cities.map((city) => (
-              <SelectItem key={city} value={city}>
-                {city}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}
