@@ -26,7 +26,7 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [cities] = useState<string[]>([])
+  const [cities] = useState<string[]>([]) // Empty array, no hardcoded data
 
   const getCurrentLocation = () => {
     setIsLoadingLocation(true)
