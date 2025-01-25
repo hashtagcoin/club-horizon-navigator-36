@@ -42,7 +42,7 @@ export const ClubList: FC<ClubListProps> = ({
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const listHeight = typeof window !== 'undefined' ? 
-    window.innerHeight - (isMobile ? 240 : 180) : // Account for headers and padding
+    window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
@@ -50,7 +50,7 @@ export const ClubList: FC<ClubListProps> = ({
     return (
       <div style={{
         ...style,
-        paddingBottom: '16px',
+        paddingBottom: '2px',
       }}>
         <ClubCard
           club={club}
@@ -68,11 +68,10 @@ export const ClubList: FC<ClubListProps> = ({
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
       const index = clubs.findIndex(club => club.id === selectedClub.id);
       if (index !== -1) {
-        // Scroll to the selected club's position
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollContainer) {
           scrollContainer.scrollTo({
-            top: index * 180, // Card height (164px) + padding (16px)
+            top: index * 166, // Card height (164px) + gap (2px)
             behavior: 'smooth'
           });
         }
@@ -109,7 +108,7 @@ export const ClubList: FC<ClubListProps> = ({
             height={listHeight}
             width="100%"
             itemCount={clubs.length}
-            itemSize={180} // Card height (164px) + padding (16px)
+            itemSize={166} // Card height (164px) + gap (2px)
             overscanCount={5}
             className="react-window-list"
           >
