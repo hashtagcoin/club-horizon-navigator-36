@@ -14,6 +14,7 @@ interface MapSectionProps {
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
+  showClubDetails: boolean;
 }
 
 export const MapSection = ({
@@ -29,6 +30,7 @@ export const MapSection = ({
   directions,
   onClubSelect,
   locationManagement,
+  showClubDetails,
 }: MapSectionProps) => {
   return (
     <div 
@@ -48,6 +50,7 @@ export const MapSection = ({
         directions={directions}
         onClubSelect={onClubSelect}
         locationManagement={locationManagement}
+        showClubDetails={showClubDetails}
       />
     </div>
   );
