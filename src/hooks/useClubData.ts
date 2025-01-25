@@ -2,26 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Club } from "@/types/club";
 
-const getDaySpecificMusic = (club: any, day: string) => {
-  const musicMap: { [key: string]: string } = {
-    'Monday': club.music_Mon,
-    'Tuesday': club.music_Tues,
-    'Wednesday': club.music_Wed,
-    'Thursday': club.music_Thurs,
-    'Friday': club.music_Fri,
-    'Saturday': club.music_Sat,
-    'Sunday': club.music_Sun
-  };
-
-  return musicMap[day] || club.music_type || 'Various';
-};
-
 const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
     const transformedClub = {
-      id: club.id || Math.random(),
+      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
       traffic: club.traffic || 'Low',
@@ -52,17 +38,9 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100),
-      hasSpecial: Math.random() < 0.3,
-      genre: {
-        Monday: getDaySpecificMusic(club, 'Monday'),
-        Tuesday: getDaySpecificMusic(club, 'Tuesday'),
-        Wednesday: getDaySpecificMusic(club, 'Wednesday'),
-        Thursday: getDaySpecificMusic(club, 'Thursday'),
-        Friday: getDaySpecificMusic(club, 'Friday'),
-        Saturday: getDaySpecificMusic(club, 'Saturday'),
-        Sunday: getDaySpecificMusic(club, 'Sunday')
-      }
+      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
+      hasSpecial: Math.random() < 0.3, // 30% chance of special
+      genre: club.venue_type || 'Various'
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
@@ -72,21 +50,14 @@ const transformClubData = (data: any[]): Club[] => {
   return transformed;
 };
 
-export const useClubData = (selectedCity?: string) => {
+export const useClubData = () => {
   return useQuery({
-    queryKey: ['clubs', selectedCity],
+    queryKey: ['clubs'],
     queryFn: async () => {
       console.log('Fetching clubs from Supabase...');
-      
-      let query = supabase
+      const { data, error } = await supabase
         .from('Clublist_Australia')
         .select('*');
-      
-      if (selectedCity) {
-        query = query.eq('city', selectedCity);
-      }
-      
-      const { data, error } = await query;
       
       if (error) {
         console.error('Supabase error:', error);

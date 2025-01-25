@@ -16,18 +16,10 @@ export interface Club {
     Saturday: string;
     Sunday: string;
   };
-  genre: {
-    Monday: string;
-    Tuesday: string;
-    Wednesday: string;
-    Thursday: string;
-    Friday: string;
-    Saturday: string;
-    Sunday: string;
-  };
+  genre: string;
   usersAtClub: number;
   hasSpecial: boolean;
-  isUserAdded?: boolean;
+  isUserAdded: boolean;
 }
 
 export interface Event {

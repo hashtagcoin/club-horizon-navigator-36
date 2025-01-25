@@ -14,9 +14,6 @@ interface ClubFiltersProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   genres: string[];
-  selectedCity: string;
-  setSelectedCity: (city: string) => void;
-  cities: string[];
 }
 
 const formatGenre = (genre: string) => {
@@ -42,8 +39,9 @@ export function ClubFilters({
   setFilterGenre,
   searchQuery,
   setSearchQuery,
-  genres,
+  genres
 }: ClubFiltersProps) {
+  // Sort genres alphabetically and add "all" option at the beginning
   const sortedGenres = ["all", ...genres.sort()];
 
   return (

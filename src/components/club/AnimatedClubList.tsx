@@ -22,8 +22,6 @@ interface AnimatedClubListProps {
   onOpenChat: (club: Club) => void;
   newMessageCounts: Record<number, number>;
   isLoading: boolean;
-  selectedCity: string;
-  setSelectedCity: (city: string) => void;
 }
 
 export const AnimatedClubList = ({
@@ -51,12 +49,13 @@ export const AnimatedClubList = ({
         <ClubList {...clubListProps} />
       </animated.div>
 
+      {/* Toggle button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',
           top: '50%',
           left: isCollapsed ? 0 : '50%',
-          transform: 'translateY(-50%)',
+          transform: 'translateY(-50%)', // Center vertically
           zIndex: 25,
           transition: 'left 0.3s ease-in-out',
         }}

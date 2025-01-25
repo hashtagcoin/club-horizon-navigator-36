@@ -13,16 +13,16 @@ import { MapSection } from './map/MapSection';
 import { ChatWindow } from './chat/ChatWindow';
 import { useToast } from "@/hooks/use-toast";
 
+// Define the libraries we need for Google Maps
 const libraries: Libraries = ['places', 'geometry'];
 
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
-  const [selectedCity, setSelectedCity] = useState("Sydney");
   const { toast } = useToast();
 
   const locationManagement = useLocationManagement();
-  const { data: clubs = [], isLoading: isLoadingClubs, refetch } = useClubData(selectedCity);
+  const { data: clubs = [], isLoading: isLoadingClubs, refetch } = useClubData();
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0",
@@ -55,6 +55,7 @@ export default function ClubPilot() {
   const handleVenueAdded = async (venue: any) => {
     await refetch();
     
+    // Create a club object from the venue
     const newClub = {
       id: venue.id,
       name: venue.name,
@@ -63,7 +64,7 @@ export default function ClubPilot() {
         lat: venue.latitude,
         lng: venue.longitude
       },
-      traffic: "Low" as const,
+      traffic: "Low" as const, // Type assertion to match the Club type
       openingHours: {
         Monday: `${venue.monday_hours_open || 'Closed'} - ${venue.monday_hours_close || 'Closed'}`,
         Tuesday: `${venue.tuesday_hours_open || 'Closed'} - ${venue.tuesday_hours_close || 'Closed'}`,
@@ -79,6 +80,7 @@ export default function ClubPilot() {
       isUserAdded: true
     };
 
+    // Select the new club and center the map on it
     mapControls.handleClubSelect(newClub);
     locationManagement.setMapCenter(newClub.position);
     locationManagement.setMapZoom(16);
@@ -124,8 +126,6 @@ export default function ClubPilot() {
         setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
         onSelectClub={(club) => {
           mapControls.handleClubSelect(club);
           locationManagement.setMapCenter(club.position);
