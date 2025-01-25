@@ -50,8 +50,6 @@ export const ClubList: FC<ClubListProps> = ({
     return (
       <div style={{
         ...style,
-        paddingLeft: '16px',
-        paddingRight: '16px',
         paddingBottom: '16px',
       }}>
         <ClubCard
