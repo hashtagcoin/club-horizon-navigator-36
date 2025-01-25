@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from "sonner"
 import { LocationButton } from "./location/LocationButton"
 import { LocationModalContent } from "./location/LocationModalContent"
@@ -26,7 +26,12 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [cities] = useState<string[]>([]) // Empty array, no hardcoded data
+  const [cities] = useState<string[]>([])
+
+  useEffect(() => {
+    // Get user's location when component mounts
+    getCurrentLocation()
+  }, [])
 
   const getCurrentLocation = () => {
     setIsLoadingLocation(true)
