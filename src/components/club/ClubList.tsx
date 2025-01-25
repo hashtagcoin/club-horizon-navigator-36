@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { FixedSizeList as List } from 'react-window';
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
@@ -39,37 +39,41 @@ export const ClubList: FC<ClubListProps> = ({
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Row renderer for the virtualized list
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+    const club = clubs[index];
+    return (
+      <div 
+        style={style} 
+        ref={selectedClub?.id === club.id ? selectedClubRef : null}
+        className="px-2"
+      >
+        <ClubCard
+          club={club}
+          selectedDay={selectedDay}
+          isSelected={selectedClub?.id === club.id}
+          onSelect={onSelectClub}
+          onOpenChat={onOpenChat}
+          newMessageCount={newMessageCounts[club.id] || 0}
+        />
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      // Add a small delay to ensure the DOM has updated
-      setTimeout(() => {
-        const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-        if (!scrollContainer) return;
+      const listElement = scrollAreaRef.current.querySelector('.react-window-list');
+      if (!listElement) return;
 
-        const clubElement = selectedClubRef.current;
-        if (!clubElement) return;
-
-        const cardHeight = clubElement.offsetHeight;
-        const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
-        
-        scrollContainer.scrollTo({
-          top: scrollTop,
-          behavior: 'smooth'
-        });
-      }, 100);
-    }
-  }, [selectedClub]);
-
-  // Reset scroll position when club list changes
-  useEffect(() => {
-    const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: 0,
+      const clubElement = selectedClubRef.current;
+      const scrollTop = clubElement.offsetTop - 100; // Offset to show some context
+      
+      listElement.scrollTo({
+        top: scrollTop,
         behavior: 'smooth'
       });
     }
-  }, [clubs]);
+  }, [selectedClub]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -92,32 +96,21 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea 
-        className="flex-grow" 
-        ref={scrollAreaRef}
-      >
-        <div className="space-y-2 pr-2">
-          {isLoading ? (
-            <div>Loading venues...</div>
-          ) : (
-            clubs.map(club => (
-              <div 
-                key={club.id} 
-                ref={selectedClub?.id === club.id ? selectedClubRef : null}
-              >
-                <ClubCard
-                  club={club}
-                  selectedDay={selectedDay}
-                  isSelected={selectedClub?.id === club.id}
-                  onSelect={onSelectClub}
-                  onOpenChat={onOpenChat}
-                  newMessageCount={newMessageCounts[club.id] || 0}
-                />
-              </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+      <div ref={scrollAreaRef} className="flex-grow">
+        {isLoading ? (
+          <div className="p-4">Loading venues...</div>
+        ) : (
+          <List
+            className="react-window-list"
+            height={window.innerHeight - 300} // Adjust based on your layout
+            itemCount={clubs.length}
+            itemSize={150} // Adjust based on your card height
+            width="100%"
+          >
+            {Row}
+          </List>
+        )}
+      </div>
     </div>
   );
 };
