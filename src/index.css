@@ -62,6 +62,8 @@
 
 .club-card {
   @apply bg-white hover:bg-secondary;
+  height: 120px;
+  margin: 8px;
   transition-property: background-color, border-color;
   transition-duration: 300ms;
 }

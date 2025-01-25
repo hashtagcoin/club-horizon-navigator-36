@@ -26,7 +26,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Configuration
-  const itemHeight = 140; // Fixed height for each club card including padding
+  const itemHeight = 136; // 120px card height + 16px total margin
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 180 : 800;
   const overscanCount = 5;
 
@@ -59,13 +59,12 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   }
 
   const { items: visibleClubs, startIndex } = getItemsToRender();
-
   const totalHeight = clubs.length * itemHeight;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" ref={containerRef}>
+    <div className="h-full" ref={containerRef}>
       <ScrollArea 
-        className="h-full flex-1"
+        className="h-full"
         onScroll={handleScroll}
       >
         <div
@@ -84,7 +83,6 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
                 left: 0,
                 right: 0,
                 height: itemHeight,
-                padding: '0.5rem'
               }}
             >
               <ClubCard
