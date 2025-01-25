@@ -140,7 +140,7 @@ export const ClubList: FC<ClubListProps> = ({
             className="react-window-list"
           >
             {Row}
-          </div>
+          </VariableSizeList>
         )}
       </div>
     </div>
