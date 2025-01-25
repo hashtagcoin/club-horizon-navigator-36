@@ -1,9 +1,9 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useMemo } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
-import { FixedSizeList } from 'react-window';
+import { VariableSizeList } from 'react-window';
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ClubListProps {
@@ -40,6 +40,7 @@ export const ClubList: FC<ClubListProps> = ({
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<VariableSizeList>(null);
   const isMobile = useIsMobile();
   
   // Adjusted height calculation
@@ -47,10 +48,47 @@ export const ClubList: FC<ClubListProps> = ({
     window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
-  // Card dimensions
-  const CARD_HEIGHT = 110; // Adjusted to match original card height
-  const GAP = 2; // 2px gap as requested
-  const TOTAL_ITEM_SIZE = CARD_HEIGHT + GAP;
+  // Function to calculate item height based on content
+  const getItemHeight = (index: number) => {
+    const club = clubs[index];
+    let height = 110; // Base height
+
+    // Add height for long venue names (assuming they wrap)
+    if (club.name.length > 25) {
+      height += 20;
+    }
+
+    // Add height for additional icons (traffic, specials, user-added)
+    const hasSpecial = club.hasSpecial;
+    const isUserAdded = club.isUserAdded;
+    if (hasSpecial || isUserAdded) {
+      height += 10;
+    }
+
+    return height + 2; // Add 2px for gap
+  };
+
+  // Memoize item heights for performance
+  const itemHeights = useMemo(() => {
+    return clubs.map((_, index) => getItemHeight(index));
+  }, [clubs]);
+
+  // Reset cache when clubs change
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.resetAfterIndex(0);
+    }
+  }, [clubs]);
+
+  // Scroll to selected club
+  useEffect(() => {
+    if (selectedClub && listRef.current) {
+      const index = clubs.findIndex(club => club.id === selectedClub.id);
+      if (index !== -1) {
+        listRef.current.scrollToItem(index, 'smart');
+      }
+    }
+  }, [selectedClub, clubs]);
 
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const club = clubs[index];
@@ -60,8 +98,7 @@ export const ClubList: FC<ClubListProps> = ({
           ...style,
           paddingLeft: '4px',
           paddingRight: '4px',
-          height: CARD_HEIGHT,
-          marginBottom: GAP
+          paddingBottom: '2px'
         }}
       >
         <ClubCard
@@ -75,21 +112,6 @@ export const ClubList: FC<ClubListProps> = ({
       </div>
     );
   };
-
-  useEffect(() => {
-    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const index = clubs.findIndex(club => club.id === selectedClub.id);
-      if (index !== -1) {
-        const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-        if (scrollContainer) {
-          scrollContainer.scrollTo({
-            top: index * TOTAL_ITEM_SIZE,
-            behavior: 'smooth'
-          });
-        }
-      }
-    }
-  }, [selectedClub, clubs]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -116,16 +138,17 @@ export const ClubList: FC<ClubListProps> = ({
         {isLoading ? (
           <div>Loading venues...</div>
         ) : (
-          <FixedSizeList
+          <VariableSizeList
+            ref={listRef}
             height={listHeight}
             width="100%"
             itemCount={clubs.length}
-            itemSize={TOTAL_ITEM_SIZE}
+            itemSize={getItemHeight}
             overscanCount={5}
             className="react-window-list"
           >
             {Row}
-          </FixedSizeList>
+          </VariableSizeList>
         )}
       </div>
     </div>
