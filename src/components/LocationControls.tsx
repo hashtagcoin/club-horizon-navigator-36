@@ -37,8 +37,8 @@ export function LocationControls({
     try {
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select('city')
-        .not('city', 'is', null)
+        .select('area')
+        .not('area', 'is', null)
       
       if (error) {
         console.error('Error fetching suburbs:', error)
@@ -46,7 +46,7 @@ export function LocationControls({
       }
 
       // Extract unique suburbs and remove nulls
-      const uniqueSuburbs = Array.from(new Set(data.map(item => item.city).filter(Boolean)))
+      const uniqueSuburbs = Array.from(new Set(data.map(item => item.area).filter(Boolean)))
       setSuburbs(uniqueSuburbs)
       
       // If no suburb is selected and we have suburbs, select the first one

@@ -7,7 +7,7 @@ const transformClubData = (data: any[]): Club[] => {
   
   const transformed = data.map((club) => {
     const transformedClub = {
-      id: club.id || Math.random(),
+      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
       traffic: club.traffic || 'Low',
@@ -38,10 +38,9 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100),
-      hasSpecial: Math.random() < 0.3,
-      genre: club.venue_type || 'Various',
-      isUserAdded: club.isUserAdded || false
+      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
+      hasSpecial: Math.random() < 0.3, // 30% chance of special
+      genre: club.venue_type || 'Various'
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
@@ -51,51 +50,22 @@ const transformClubData = (data: any[]): Club[] => {
   return transformed;
 };
 
-export const useClubData = (currentSuburb: string) => {
+export const useClubData = () => {
   return useQuery({
-    queryKey: ['clubs', currentSuburb],
+    queryKey: ['clubs'],
     queryFn: async () => {
-      console.log('Fetching clubs from Supabase for suburb:', currentSuburb);
-      
-      if (!currentSuburb) {
-        console.log('No suburb selected, returning empty array');
-        return [];
-      }
-
-      // First try to get clubs from Clublist_Australia
-      const { data: australiaData, error: australiaError } = await supabase
+      console.log('Fetching clubs from Supabase...');
+      const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select()
-        .eq('city', currentSuburb);
+        .select('*');
       
-      if (australiaError) {
-        console.error('Supabase error:', australiaError);
-        throw australiaError;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
       }
-
-      // Then get user added venues for the same suburb
-      const { data: userAddedData, error: userAddedError } = await supabase
-        .from('user_added_venues')
-        .select()
-        .eq('city', currentSuburb);
-
-      if (userAddedError) {
-        console.error('Supabase error:', userAddedError);
-        throw userAddedError;
-      }
-
-      // Combine both datasets
-      const combinedData = [
-        ...(australiaData || []),
-        ...(userAddedData || []).map(venue => ({
-          ...venue,
-          isUserAdded: true
-        }))
-      ];
       
-      console.log('Combined Supabase response:', combinedData);
-      return transformClubData(combinedData || []);
-    },
-    enabled: Boolean(currentSuburb)
+      console.log('Supabase response:', data);
+      return transformClubData(data || []);
+    }
   });
 };
