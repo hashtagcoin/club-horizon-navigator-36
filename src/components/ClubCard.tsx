@@ -30,6 +30,10 @@ export const ClubCard = ({
       .join(' ');
   };
 
+  const getDayGenre = (day: string) => {
+    return club.genre[day] || '';
+  };
+
   return (
     <Card
       className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
@@ -56,13 +60,13 @@ export const ClubCard = ({
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
             <span className="text-xs text-black">
-              {formatType(club.genre[selectedDay as keyof typeof club.genre] || '')}
+              {formatType(getDayGenre(selectedDay))}
             </span>
           </div>
         </div>
         <div className="flex items-center space-x-1 mt-1">
           <Clock className="h-3 w-3 text-black" />
-          <span className="text-xs text-black">{club.openingHours[selectedDay as keyof typeof club.openingHours]}</span>
+          <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
         </div>
         <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
           <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
