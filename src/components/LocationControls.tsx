@@ -16,7 +16,7 @@ interface LocationControlsProps {
 }
 
 type CityRecord = {
-  city: string | null
+  city: string
 }
 
 export function LocationControls({
@@ -40,16 +40,17 @@ export function LocationControls({
     try {
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select<string, CityRecord>('city')
+        .select('city')
         .not('city', 'is', null)
         .eq('Country', currentCountry)
+        .distinct()
       
       if (error) {
         console.error('Error fetching cities:', error)
         return
       }
 
-      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean) as string[]))
+      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean))) as string[]
       setCities(uniqueCities)
       
       if (!currentCity && uniqueCities.length > 0) {

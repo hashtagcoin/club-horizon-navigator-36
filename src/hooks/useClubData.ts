@@ -83,10 +83,10 @@ export const useClubData = (currentCity?: string) => {
       console.log('Fetching clubs from Supabase for city:', currentCity);
       let query = supabase
         .from('Clublist_Australia')
-        .select<string, ClubData>('*')
+        .select('*')
       
       if (currentCity) {
-        query = query.eq('city', currentCity)
+        query = query.eq('city', currentCity);
       }
       
       const { data, error } = await query;
