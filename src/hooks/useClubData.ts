@@ -6,10 +6,16 @@ export const useClubData = (currentCity?: string) => {
   return useQuery({
     queryKey: ['clubs', currentCity],
     queryFn: async () => {
-      console.log('Fetching clubs data...');
-      const { data: clubs, error } = await supabase
+      console.log('Fetching clubs data for city:', currentCity);
+      let query = supabase
         .from('Clublist_Australia')
         .select('*');
+      
+      if (currentCity) {
+        query = query.eq('city', currentCity);
+      }
+
+      const { data: clubs, error } = await query;
 
       if (error) {
         console.error('Error fetching clubs:', error);
