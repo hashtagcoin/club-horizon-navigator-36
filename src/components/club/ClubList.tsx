@@ -41,22 +41,29 @@ export const ClubList: FC<ClubListProps> = ({
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  
+  // Adjusted height calculation
   const listHeight = typeof window !== 'undefined' ? 
     window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
-  const CARD_HEIGHT = 164; // Base card height
-  const GAP = 2; // Gap between cards
-  const TOTAL_ITEM_SIZE = CARD_HEIGHT + GAP; // Total height including gap
+  // Card dimensions
+  const CARD_HEIGHT = 110; // Adjusted to match original card height
+  const GAP = 2; // 2px gap as requested
+  const TOTAL_ITEM_SIZE = CARD_HEIGHT + GAP;
 
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const club = clubs[index];
     return (
-      <div style={{
-        ...style,
-        height: CARD_HEIGHT,
-        marginBottom: GAP,
-      }}>
+      <div 
+        style={{
+          ...style,
+          paddingLeft: '4px',
+          paddingRight: '4px',
+          height: CARD_HEIGHT,
+          marginBottom: GAP
+        }}
+      >
         <ClubCard
           club={club}
           selectedDay={selectedDay}
@@ -105,7 +112,7 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <div className="flex-grow overflow-hidden" ref={scrollAreaRef}>
+      <div className="flex-grow overflow-hidden px-1" ref={scrollAreaRef}>
         {isLoading ? (
           <div>Loading venues...</div>
         ) : (
