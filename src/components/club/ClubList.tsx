@@ -34,15 +34,14 @@ export const ClubList: FC<ClubListProps> = ({
   newMessageCounts,
   isLoading
 }) => {
-  // Memoize genres list to prevent recalculation on every render
   const genres = useMemo(() => 
     Array.from(new Set(clubs.map(club => club.genre))).sort(),
     [clubs]
   );
 
   return (
-    <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
-      <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
+    <div className="w-full h-full flex flex-col overflow-hidden bg-white shadow-lg">
+      <div className="flex-shrink-0 justify-between items-center px-4 py-2 bg-gray-50">
         <div className="flex items-center gap-2">
           <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
             {clubs.length}
@@ -52,24 +51,28 @@ export const ClubList: FC<ClubListProps> = ({
           </span>
         </div>
       </div>
-      <ClubFilters
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        filterGenre={filterGenre}
-        setFilterGenre={setFilterGenre}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        genres={genres}
-      />
-      <VirtualizedClubList
-        clubs={clubs}
-        selectedClub={selectedClub}
-        selectedDay={selectedDay}
-        onSelectClub={onSelectClub}
-        onOpenChat={onOpenChat}
-        newMessageCounts={newMessageCounts}
-        isLoading={isLoading}
-      />
+      <div className="flex-shrink-0">
+        <ClubFilters
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          filterGenre={filterGenre}
+          setFilterGenre={setFilterGenre}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          genres={genres}
+        />
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <VirtualizedClubList
+          clubs={clubs}
+          selectedClub={selectedClub}
+          selectedDay={selectedDay}
+          onSelectClub={onSelectClub}
+          onOpenChat={onOpenChat}
+          newMessageCounts={newMessageCounts}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 };

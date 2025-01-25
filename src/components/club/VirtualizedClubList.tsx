@@ -27,8 +27,8 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   
   // Configuration
   const itemHeight = 140; // Fixed height for each club card including padding
-  const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 180 : 800; // Adjusted for header and filters
-  const overscanCount = 5; // Increased for smoother scrolling
+  const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 180 : 800;
+  const overscanCount = 5;
 
   const getItemsToRender = useCallback(() => {
     const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscanCount);
@@ -49,20 +49,19 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   };
 
   useEffect(() => {
-    // Reset scroll position when clubs list changes
     setScrollTop(0);
   }, [clubs.length]);
-
-  const { items: visibleClubs, startIndex } = getItemsToRender();
 
   if (isLoading) {
     return <div className="p-4 text-center">Loading venues...</div>;
   }
 
+  const { items: visibleClubs, startIndex } = getItemsToRender();
+
   return (
-    <div className="club-list-container" ref={containerRef}>
+    <div className="h-full overflow-hidden" ref={containerRef}>
       <ScrollArea 
-        className="h-full w-full"
+        className="h-full"
         onScroll={handleScroll}
       >
         <div
