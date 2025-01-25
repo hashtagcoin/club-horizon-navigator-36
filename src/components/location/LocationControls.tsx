@@ -60,20 +60,19 @@ export function LocationControls({
     setCities(uniqueCities.sort())
   }
 
-  const fetchStates = async () => {
-    const { data, error } = await supabase
-      .from('Clublist_Australia')
-      .select('State')
-      .not('State', 'is', null)
-    
-    if (error) {
-      console.error('Error fetching states:', error)
-      return
-    }
-
-    // Extract unique states and remove nulls
-    const uniqueStates = Array.from(new Set(data.map(row => row.State).filter(Boolean)))
-    setStates(uniqueStates.sort())
+  // For now, we'll use a static list of Australian states since they're not in the DB
+  const fetchStates = () => {
+    const australianStates = [
+      'NSW',
+      'VIC',
+      'QLD',
+      'WA',
+      'SA',
+      'TAS',
+      'ACT',
+      'NT'
+    ]
+    setStates(australianStates)
   }
 
   const setDefaultSydneyLocation = () => {
@@ -193,14 +192,19 @@ export function LocationControls({
           <DialogHeader>
             <DialogTitle>Change Location</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <CitySelect
-              currentCity={currentCity}
-              cities={cities}
-              onCityChange={onCityChange}
-            />
-          </div>
-          <Button onClick={handleCloseModals}>Close</Button>
+          <LocationModalContent
+            currentCountry={currentCountry}
+            currentState={currentState}
+            currentCity={currentCity}
+            states={states}
+            cities={cities}
+            onStateChange={onStateChange}
+            onCityChange={onCityChange}
+            onClose={handleCloseModals}
+            onLocationUpdate={getCurrentLocation}
+            onGlobalLocationOpen={() => setShowGlobalLocationModal(true)}
+            isLoadingLocation={isLoadingLocation}
+          />
         </DialogContent>
       </Dialog>
     </div>
