@@ -2,6 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Club } from "@/types/club";
 
+const getDaySpecificMusic = (club: any, day: string) => {
+  const musicMap: { [key: string]: string } = {
+    'Monday': club.music_Mon,
+    'Tuesday': club.music_Tues,
+    'Wednesday': club.music_Wed,
+    'Thursday': club.music_Thurs,
+    'Friday': club.music_Fri,
+    'Saturday': club.music_Sat,
+    'Sunday': club.music_Sun
+  };
+
+  return musicMap[day] || club.music_type || 'Various';
+};
+
 const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
@@ -40,7 +54,15 @@ const transformClubData = (data: any[]): Club[] => {
       },
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,
-      genre: club.venue_type || 'Various'
+      genre: {
+        Monday: getDaySpecificMusic(club, 'Monday'),
+        Tuesday: getDaySpecificMusic(club, 'Tuesday'),
+        Wednesday: getDaySpecificMusic(club, 'Wednesday'),
+        Thursday: getDaySpecificMusic(club, 'Thursday'),
+        Friday: getDaySpecificMusic(club, 'Friday'),
+        Saturday: getDaySpecificMusic(club, 'Saturday'),
+        Sunday: getDaySpecificMusic(club, 'Sunday')
+      }
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
