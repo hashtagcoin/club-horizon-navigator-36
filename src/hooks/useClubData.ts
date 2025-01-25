@@ -24,7 +24,7 @@ interface ClubData {
   sunday_hours_open: string | null;
   sunday_hours_close: string | null;
   venue_type: string | null;
-  location: string | null;
+  city: string | null;
 }
 
 const transformClubData = (data: ClubData[]): Club[] => {
@@ -66,7 +66,7 @@ const transformClubData = (data: ClubData[]): Club[] => {
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,
       genre: club.venue_type || 'Various',
-      location: club.location || 'Unknown Location'
+      isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
@@ -76,17 +76,17 @@ const transformClubData = (data: ClubData[]): Club[] => {
   return transformed;
 };
 
-export const useClubData = (selectedLocation?: string) => {
+export const useClubData = (currentCity?: string) => {
   return useQuery({
-    queryKey: ['clubs', selectedLocation],
+    queryKey: ['clubs', currentCity],
     queryFn: async () => {
-      console.log('Fetching clubs from Supabase for location:', selectedLocation);
+      console.log('Fetching clubs from Supabase for city:', currentCity);
       let query = supabase
         .from('Clublist_Australia')
         .select<string, ClubData>('*')
       
-      if (selectedLocation) {
-        query = query.eq('location', selectedLocation)
+      if (currentCity) {
+        query = query.eq('city', currentCity)
       }
       
       const { data, error } = await query;
