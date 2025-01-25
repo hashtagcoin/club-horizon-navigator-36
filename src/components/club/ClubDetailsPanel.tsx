@@ -3,8 +3,8 @@ import { Club } from '@/types/club';
 import { ContactSelectionModal } from '../contact/ContactSelectionModal';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useSpring, animated } from '@react-spring/web';
-import { useDrag } from '@use-gesture/react';
+import { animated } from '@react-spring/web';
+import { useDragToggle } from '@/hooks/useDragToggle';
 import { MainDetailsCard } from './cards/MainDetailsCard';
 import { SpecialsCard } from './cards/SpecialsCard';
 import { EventsCard } from './cards/EventsCard';
@@ -53,75 +53,15 @@ export const ClubDetailsPanel = ({
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
 
-  // Reset visibility and trigger animation when a new club is selected
+  const mainDrag = useDragToggle(() => setIsVisible(false));
+  const specialsDrag = useDragToggle(() => setIsVisible(false));
+  const eventsDrag = useDragToggle(() => setIsVisible(false));
+
   useEffect(() => {
     if (selectedClub) {
       setIsVisible(true);
-      mainApi.start({ 
-        x: 0,
-        y: 0,
-        opacity: 1,
-        from: { x: 100, y: -50, opacity: 0 },
-        config: { tension: 280, friction: 60 }
-      });
-      specialsApi.start({ 
-        x: 0,
-        y: 0,
-        opacity: 1,
-        from: { x: 100, y: -50, opacity: 0 },
-        delay: 100
-      });
-      eventsApi.start({ 
-        x: 0,
-        y: 0,
-        opacity: 1,
-        from: { x: 100, y: -50, opacity: 0 },
-        delay: 200
-      });
     }
   }, [selectedClub]);
-
-  const [{ x: mainX, y: mainY, opacity: mainOpacity }, mainApi] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    opacity: 1,
-    config: { tension: 280, friction: 60 }
-  }));
-
-  const [{ x: specialsX, y: specialsY, opacity: specialsOpacity }, specialsApi] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    opacity: 1,
-    config: { tension: 280, friction: 60 }
-  }));
-
-  const [{ x: eventsX, y: eventsY, opacity: eventsOpacity }, eventsApi] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    opacity: 1,
-    config: { tension: 280, friction: 60 }
-  }));
-
-  const bindMain = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
-    if (!active && Math.abs(mx) > 100) {
-      setIsVisible(false);
-    }
-    mainApi.start({ x: active ? mx : 0, immediate: active });
-  }, { axis: 'x' });
-
-  const bindSpecials = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
-    if (!active && Math.abs(mx) > 100) {
-      setIsVisible(false);
-    }
-    specialsApi.start({ x: active ? mx : 0, immediate: active });
-  }, { axis: 'x' });
-
-  const bindEvents = useDrag(({ movement: [mx], velocity: [vx], direction: [dx], cancel, active }) => {
-    if (!active && Math.abs(mx) > 100) {
-      setIsVisible(false);
-    }
-    eventsApi.start({ x: active ? mx : 0, immediate: active });
-  }, { axis: 'x' });
 
   const handleShare = async () => {
     try {
@@ -154,10 +94,8 @@ export const ClubDetailsPanel = ({
         return `sms:${contact.tel}?&body=${encodedMessage}`;
       });
 
-      // Open SMS links one by one
       for (const link of smsLinks) {
         window.open(link, '_blank');
-        // Add a small delay between opening multiple SMS windows
         await new Promise(resolve => setTimeout(resolve, 500));
       }
 
@@ -185,11 +123,11 @@ export const ClubDetailsPanel = ({
     <div className="fixed right-2 top-[7rem] w-[calc(50%-1rem)] lg:w-[calc(50%-2rem)] max-w-md z-[1000] space-y-2">
       <animated.div
         style={{
-          x: mainX,
-          y: mainY,
-          opacity: mainOpacity
+          x: mainDrag.x,
+          y: mainDrag.y,
+          opacity: mainDrag.opacity
         }}
-        {...bindMain()}
+        {...mainDrag.bind()}
         className="cursor-grab active:cursor-grabbing touch-none"
       >
         <MainDetailsCard
@@ -202,11 +140,11 @@ export const ClubDetailsPanel = ({
 
       <animated.div
         style={{
-          x: specialsX,
-          y: specialsY,
-          opacity: specialsOpacity
+          x: specialsDrag.x,
+          y: specialsDrag.y,
+          opacity: specialsDrag.opacity
         }}
-        {...bindSpecials()}
+        {...specialsDrag.bind()}
         className="cursor-grab active:cursor-grabbing touch-none"
       >
         <SpecialsCard />
@@ -214,11 +152,11 @@ export const ClubDetailsPanel = ({
 
       <animated.div
         style={{
-          x: eventsX,
-          y: eventsY,
-          opacity: eventsOpacity
+          x: eventsDrag.x,
+          y: eventsDrag.y,
+          opacity: eventsDrag.opacity
         }}
-        {...bindEvents()}
+        {...eventsDrag.bind()}
         className="cursor-grab active:cursor-grabbing touch-none"
       >
         <EventsCard
