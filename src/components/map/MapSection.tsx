@@ -1,25 +1,29 @@
+import { FC } from 'react';
 import { Club } from '@/types/club';
-import { MapView } from './MapView';
+import { ClubMap } from './ClubMap';
+import { ChatWindow } from '../chat/ChatWindow';
+import { LocationModals } from '../location/LocationModals';
+import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
 
 interface MapSectionProps {
-  isListCollapsed: boolean;
   isLoaded: boolean;
-  filteredClubs: Club[];
+  clubs: Club[];
   selectedClub: Club | null;
   selectedDay: string;
   setSelectedDay: (day: string) => void;
   mapCenter: google.maps.LatLngLiteral;
   mapZoom: number;
-  userLocation: google.maps.LatLngLiteral;
+  userLocation: google.maps.LatLngLiteral | null;
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
+  isListCollapsed: boolean;
+  showClubDetails?: boolean;
 }
 
-export const MapSection = ({
-  isListCollapsed,
+export const MapSection: FC<MapSectionProps> = ({
   isLoaded,
-  filteredClubs,
+  clubs,
   selectedClub,
   selectedDay,
   setSelectedDay,
@@ -29,26 +33,35 @@ export const MapSection = ({
   directions,
   onClubSelect,
   locationManagement,
-}: MapSectionProps) => {
+  isListCollapsed,
+  showClubDetails = true
+}) => {
   return (
-    <div 
-      className={`transition-all duration-300 ease-in-out h-[75vh] ${
-        isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
-      }`}
-    >
-      <MapView
-        isLoaded={isLoaded}
-        clubs={filteredClubs}
-        selectedClub={selectedClub}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        mapCenter={mapCenter}
-        mapZoom={mapZoom}
-        userLocation={userLocation}
-        directions={directions}
-        onClubSelect={onClubSelect}
-        locationManagement={locationManagement}
-      />
+    <div className="h-full flex flex-col overflow-hidden relative z-0">
+      <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
+        <LocationModals {...locationManagement} />
+        {selectedClub && showClubDetails && (
+          <ClubDetailsPanel
+            selectedClub={selectedClub}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+          />
+        )}
+      </div>
+      
+      <div className="flex-grow h-full">
+        <ClubMap
+          isLoaded={isLoaded}
+          clubs={clubs}
+          selectedClub={selectedClub}
+          mapCenter={mapCenter}
+          mapZoom={mapZoom}
+          userLocation={userLocation}
+          directions={directions}
+          onClubSelect={onClubSelect}
+          calculatedBounds={null}
+        />
+      </div>
     </div>
   );
 };
