@@ -8,7 +8,8 @@ interface ClubData {
   address: string | null;
   latitude: number | null;
   longitude: number | null;
-  traffic: TrafficLevel | null;
+  traffic: TrafficLevel;
+  venue_type: string | null;
   monday_hours_open: string | null;
   monday_hours_close: string | null;
   tuesday_hours_open: string | null;
@@ -23,7 +24,7 @@ interface ClubData {
   saturday_hours_close: string | null;
   sunday_hours_open: string | null;
   sunday_hours_close: string | null;
-  venue_type: string | null;
+  venue_type_simple: string | null;
   city: string | null;
 }
 
@@ -35,7 +36,7 @@ const transformClubData = (data: ClubData[]): Club[] => {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: (club.traffic || 'Low') as TrafficLevel,
+      traffic: club.traffic || 'Low',
       openingHours: {
         Monday: club.monday_hours_open && club.monday_hours_close 
           ? `${club.monday_hours_open} - ${club.monday_hours_close}`
@@ -65,7 +66,7 @@ const transformClubData = (data: ClubData[]): Club[] => {
       },
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,
-      genre: club.venue_type || 'Various',
+      genre: club.venue_type_simple || 'Various',
       isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
