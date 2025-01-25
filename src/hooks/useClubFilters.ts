@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Club } from '@/types/club';
-import { sortClubs } from '@/utils/sortClubs';
+import debounce from 'lodash/debounce';
 
 const calculateDistance = (
   lat1: number,
@@ -8,7 +8,7 @@ const calculateDistance = (
   lat2: number,
   lon2: number
 ): number => {
-  const R = 6371; // Earth's radius in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = 
@@ -16,7 +16,7 @@ const calculateDistance = (
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
     Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c; // Distance in km
+  return R * c;
 };
 
 export function useClubFilters() {
@@ -26,28 +26,81 @@ export function useClubFilters() {
   const [showHighTraffic, setShowHighTraffic] = useState(false);
   const [sortByOpenLate, setSortByOpenLate] = useState(false);
   const [showSpecials, setShowSpecials] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('Monday');
+  const [selectedDay, setSelectedDay] = useState(() => {
+    return new Date().toLocaleString('en-us', {weekday: 'long'});
+  });
 
-  useEffect(() => {
-    const today = new Date().toLocaleString('en-us', {weekday: 'long'});
-    setSelectedDay(today);
-  }, []);
-
-  const getClosingHour = (club: Club, day: string) => {
+  // Memoize the closing hour calculation
+  const getClosingHour = useMemo(() => (club: Club, day: string) => {
     const hours = club.openingHours[day];
     if (!hours || hours === "Closed") return -1;
     const closingTime = hours.split(" - ")[1];
     if (!closingTime) return -1;
     const [hourStr] = closingTime.split(":");
     const hour = parseInt(hourStr);
-    // Convert early morning hours (1am-6am) to 25-30 for proper sorting
     return hour < 6 ? hour + 24 : hour;
-  };
+  }, []);
+
+  // Debounced filter function
+  const debouncedFilter = useMemo(
+    () => debounce((clubs: Club[], query: string) => {
+      return clubs.filter(club => 
+        club.name.toLowerCase().includes(query.toLowerCase())
+      );
+    }, 300),
+    []
+  );
+
+  // Memoized sorting function
+  const sortClubs = useMemo(() => {
+    return (clubs: Club[], sortType: string, userLocation?: { lat: number; lng: number }) => {
+      const clubsCopy = [...clubs];
+
+      switch (sortType) {
+        case 'closest':
+          if (!userLocation) return clubsCopy;
+          return clubsCopy.sort((a, b) => {
+            const distanceA = calculateDistance(
+              userLocation.lat,
+              userLocation.lng,
+              a.position.lat,
+              a.position.lng
+            );
+            const distanceB = calculateDistance(
+              userLocation.lat,
+              userLocation.lng,
+              b.position.lat,
+              b.position.lng
+            );
+            return distanceA - distanceB;
+          });
+
+        case 'alphabetical':
+          return clubsCopy.sort((a, b) => a.name.localeCompare(b.name));
+        
+        case 'traffic':
+          const trafficOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+          return clubsCopy.sort((a, b) => 
+            (trafficOrder[b.traffic as keyof typeof trafficOrder] || 0) - 
+            (trafficOrder[a.traffic as keyof typeof trafficOrder] || 0)
+          );
+        
+        case 'usersAtClub':
+          return clubsCopy.sort((a, b) => b.usersAtClub - a.usersAtClub);
+        
+        case 'genre':
+          return clubsCopy.sort((a, b) => a.genre.localeCompare(b.genre));
+        
+        default:
+          return clubsCopy;
+      }
+    };
+  }, []);
 
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
     let filtered = [...clubs];
 
-    // Filter by distance if user location is available
+    // Apply distance filter if user location exists
     if (userLocation) {
       filtered = filtered.filter(club => {
         const distance = calculateDistance(
@@ -60,26 +113,18 @@ export function useClubFilters() {
       });
     }
 
-    // Apply other filters
+    // Apply genre filter
     if (filterGenre.length > 0) {
       filtered = filtered.filter(club => filterGenre.includes(club.genre));
     }
     
+    // Apply search filter with debouncing
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(club => 
-        club.name.toLowerCase().includes(query)
-      );
+      filtered = debouncedFilter(filtered, searchQuery);
     }
     
     if (showHighTraffic) {
       filtered = filtered.filter(club => club.traffic === "High");
-      const trafficOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
-      filtered.sort((a, b) => 
-        (trafficOrder[b.traffic as keyof typeof trafficOrder] || 0) - 
-        (trafficOrder[a.traffic as keyof typeof trafficOrder] || 0)
-      );
-      return filtered;
     }
     
     if (showSpecials) {
@@ -97,6 +142,13 @@ export function useClubFilters() {
     
     return sortClubs(filtered, sortBy, userLocation);
   };
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFilter.cancel();
+    };
+  }, [debouncedFilter]);
 
   return {
     sortBy,
