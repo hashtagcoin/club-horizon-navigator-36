@@ -74,7 +74,7 @@ export const ClubList: FC<ClubListProps> = ({
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollContainer) {
           scrollContainer.scrollTo({
-            top: index * 156, // Card height (140px) + padding (16px)
+            top: index * 180, // Card height (164px) + padding (16px)
             behavior: 'smooth'
           });
         }
@@ -111,7 +111,7 @@ export const ClubList: FC<ClubListProps> = ({
             height={listHeight}
             width="100%"
             itemCount={clubs.length}
-            itemSize={156} // Card height (140px) + padding (16px)
+            itemSize={180} // Card height (164px) + padding (16px)
             overscanCount={5}
             className="react-window-list"
           >
