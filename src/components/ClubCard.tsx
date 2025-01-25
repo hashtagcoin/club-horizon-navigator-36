@@ -89,9 +89,9 @@ export const ClubCard = ({
           </span>
           <Button
             size="sm"
-            variant={isSelected ? "outline" : "secondary"}
+            variant="secondary"
             className={`relative h-6 w-6 p-0 ${
-              isSelected ? 'bg-white hover:bg-gray-200' : ''
+              isSelected ? 'bg-white hover:bg-gray-200' : 'bg-black hover:bg-gray-800'
             }`}
             onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
           >
