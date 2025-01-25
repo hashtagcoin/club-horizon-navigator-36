@@ -39,7 +39,7 @@ export const LocationModals = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Select Suburb</DialogTitle>
+            <DialogTitle>Select City</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
