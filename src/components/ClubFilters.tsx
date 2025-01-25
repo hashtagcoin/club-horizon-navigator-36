@@ -20,6 +20,7 @@ interface ClubFiltersProps {
 }
 
 const formatGenre = (genre: string) => {
+  if (typeof genre !== 'string') return '';
   return genre
     .toLowerCase()
     .split(' ')
