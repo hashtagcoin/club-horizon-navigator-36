@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
@@ -120,14 +120,14 @@ export function LocationControls({
   return (
     <div className="space-y-2">
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
-        <Dialog.Trigger asChild>
+        <DialogTrigger asChild>
           <div className="flex items-center gap-2">
             <LocationButton
               isLoadingLocation={isLoadingLocation}
               currentCity={currentCity}
             />
           </div>
-        </Dialog.Trigger>
+        </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Select City</DialogTitle>

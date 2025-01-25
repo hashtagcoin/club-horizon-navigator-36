@@ -28,7 +28,7 @@ interface ClubData {
   city: string | null;
 }
 
-const transformClubData = (data: ClubData[]): Club[] => {
+const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
