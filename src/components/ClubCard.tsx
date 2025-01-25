@@ -31,7 +31,7 @@ export const ClubCard = ({
 
   return (
     <Card
-      className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
+      className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''} club-card`}
       onClick={() => onSelect(club)}
     >
       <CardHeader className="flex justify-between items-start p-2">

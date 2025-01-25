@@ -44,9 +44,13 @@ export const ClubList: FC<ClubListProps> = ({
     const club = clubs[index];
     return (
       <div 
-        style={style} 
+        style={{ 
+          ...style,
+          paddingLeft: '8px',
+          paddingRight: '8px',
+          paddingBottom: '8px'
+        }} 
         ref={selectedClub?.id === club.id ? selectedClubRef : null}
-        className="px-2"
       >
         <ClubCard
           club={club}
@@ -102,10 +106,11 @@ export const ClubList: FC<ClubListProps> = ({
         ) : (
           <List
             className="react-window-list"
-            height={window.innerHeight - 300} // Adjust based on your layout
+            height={window.innerHeight - 300}
             itemCount={clubs.length}
-            itemSize={150} // Adjust based on your card height
+            itemSize={150}
             width="100%"
+            overscanCount={5}
           >
             {Row}
           </List>
