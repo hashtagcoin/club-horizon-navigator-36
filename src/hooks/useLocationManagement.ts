@@ -3,11 +3,11 @@ import { locations } from '@/data/locations';
 
 export const useLocationManagement = () => {
   const [currentCountry, setCurrentCountry] = useState("Australia");
-  const [currentState, setCurrentState] = useState("New South Wales");
+  const [currentState, setCurrentState] = useState("NSW");
   const [currentSuburb, setCurrentSuburb] = useState("Sydney");
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false);
-  const [mapCenter, setMapCenter] = useState(locations["Australia"]["New South Wales"]["Sydney"]);
+  const [mapCenter, setMapCenter] = useState(locations["Australia"]["NSW"]["Sydney"]);
   const [mapZoom, setMapZoom] = useState(14);
 
   useEffect(() => {
