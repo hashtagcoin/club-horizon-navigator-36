@@ -174,6 +174,138 @@ export type Database = {
       Clublist_Australia: {
         Row: {
           address: string | null
+          city: string | null
+          friday_hours: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          longitude: number | null
+          monday_hours: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          music_Fri: string | null
+          music_Mon: string | null
+          music_Sat: string | null
+          music_Sun: string | null
+          music_Thurs: string | null
+          music_Tues: string | null
+          music_type: string | null
+          music_Wed: string | null
+          name: string | null
+          phone: string | null
+          place_id: string
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type_Detail: string | null
+          venue_type_simple: string | null
+          website: string | null
+          wednesday_hours: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_Fri?: string | null
+          music_Mon?: string | null
+          music_Sat?: string | null
+          music_Sun?: string | null
+          music_Thurs?: string | null
+          music_Tues?: string | null
+          music_type?: string | null
+          music_Wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_Detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_Fri?: string | null
+          music_Mon?: string | null
+          music_Sat?: string | null
+          music_Sun?: string | null
+          music_Thurs?: string | null
+          music_Tues?: string | null
+          music_type?: string | null
+          music_Wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_Detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
+      Clublist_Australia_old: {
+        Row: {
+          address: string | null
           area: string | null
           Country: string | null
           friday_hours_close: string | null
@@ -259,6 +391,534 @@ export type Database = {
           tuesday_hours_open?: string | null
           venue_type?: string | null
           website?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
+      Clublist_NewZealand: {
+        Row: {
+          address: string | null
+          city: string | null
+          friday_hours: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          longitude: number | null
+          monday_hours: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          music_fri: string | null
+          music_mon: string | null
+          music_sat: string | null
+          music_sun: string | null
+          music_thurs: string | null
+          music_tues: string | null
+          music_type: string | null
+          music_wed: string | null
+          name: string | null
+          phone: string | null
+          place_id: string
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type_detail: string | null
+          venue_type_simple: string | null
+          website: string | null
+          wednesday_hours: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
+      Clublist_Singapore: {
+        Row: {
+          address: string | null
+          city: string | null
+          friday_hours: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          longitude: number | null
+          monday_hours: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          music_fri: string | null
+          music_mon: string | null
+          music_sat: string | null
+          music_sun: string | null
+          music_thurs: string | null
+          music_tues: string | null
+          music_type: string | null
+          music_wed: string | null
+          name: string | null
+          phone: string | null
+          place_id: string
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type_detail: string | null
+          venue_type_simple: string | null
+          website: string | null
+          wednesday_hours: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
+      Clublist_Template: {
+        Row: {
+          address: string | null
+          city: string | null
+          friday_hours: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          longitude: number | null
+          monday_hours: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          music_fri: string | null
+          music_mon: string | null
+          music_sat: string | null
+          music_sun: string | null
+          music_thurs: string | null
+          music_tues: string | null
+          music_type: string | null
+          music_wed: string | null
+          name: string | null
+          phone: string | null
+          place_id: string
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type_detail: string | null
+          venue_type_simple: string | null
+          website: string | null
+          wednesday_hours: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Relationships: []
+      }
+      Clublist_UnitedKingdom: {
+        Row: {
+          address: string | null
+          city: string | null
+          friday_hours: string | null
+          friday_hours_close: string | null
+          friday_hours_open: string | null
+          latitude: number | null
+          longitude: number | null
+          monday_hours: string | null
+          monday_hours_close: string | null
+          monday_hours_open: string | null
+          music_fri: string | null
+          music_mon: string | null
+          music_sat: string | null
+          music_sun: string | null
+          music_thurs: string | null
+          music_tues: string | null
+          music_type: string | null
+          music_wed: string | null
+          name: string | null
+          phone: string | null
+          place_id: string
+          price_level: string | null
+          rating: number | null
+          saturday_hours: string | null
+          saturday_hours_close: string | null
+          saturday_hours_open: string | null
+          sunday_hours: string | null
+          sunday_hours_close: string | null
+          sunday_hours_open: string | null
+          thursday_hours: string | null
+          thursday_hours_close: string | null
+          thursday_hours_open: string | null
+          tuesday_hours: string | null
+          tuesday_hours_close: string | null
+          tuesday_hours_open: string | null
+          venue_type_detail: string | null
+          venue_type_simple: string | null
+          website: string | null
+          wednesday_hours: string | null
+          wednesday_hours_close: string | null
+          wednesday_hours_open: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
+          wednesday_hours_close?: string | null
+          wednesday_hours_open?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          friday_hours?: string | null
+          friday_hours_close?: string | null
+          friday_hours_open?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          monday_hours?: string | null
+          monday_hours_close?: string | null
+          monday_hours_open?: string | null
+          music_fri?: string | null
+          music_mon?: string | null
+          music_sat?: string | null
+          music_sun?: string | null
+          music_thurs?: string | null
+          music_tues?: string | null
+          music_type?: string | null
+          music_wed?: string | null
+          name?: string | null
+          phone?: string | null
+          place_id?: string
+          price_level?: string | null
+          rating?: number | null
+          saturday_hours?: string | null
+          saturday_hours_close?: string | null
+          saturday_hours_open?: string | null
+          sunday_hours?: string | null
+          sunday_hours_close?: string | null
+          sunday_hours_open?: string | null
+          thursday_hours?: string | null
+          thursday_hours_close?: string | null
+          thursday_hours_open?: string | null
+          tuesday_hours?: string | null
+          tuesday_hours_close?: string | null
+          tuesday_hours_open?: string | null
+          venue_type_detail?: string | null
+          venue_type_simple?: string | null
+          website?: string | null
+          wednesday_hours?: string | null
           wednesday_hours_close?: string | null
           wednesday_hours_open?: string | null
         }
@@ -562,6 +1222,12 @@ export type Database = {
           club_name: string
         }
         Returns: boolean
+      }
+      get_unique_cities: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          city: string
+        }[]
       }
       random_traffic: {
         Args: Record<PropertyKey, never>

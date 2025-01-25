@@ -3,6 +3,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
+import { FixedSizeList } from 'react-window';
+import { useMediaQuery } from "@/hooks/use-mobile";
 
 interface ClubListProps {
   clubs: Club[];
@@ -38,38 +40,46 @@ export const ClubList: FC<ClubListProps> = ({
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const listHeight = typeof window !== 'undefined' ? 
+    window.innerHeight - (isMobile ? 240 : 180) : // Account for headers and padding
+    600;
+
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+    const club = clubs[index];
+    return (
+      <div style={{
+        ...style,
+        paddingRight: '16px',
+        paddingBottom: '8px',
+      }}>
+        <ClubCard
+          club={club}
+          selectedDay={selectedDay}
+          isSelected={selectedClub?.id === club.id}
+          onSelect={onSelectClub}
+          onOpenChat={onOpenChat}
+          newMessageCount={newMessageCounts[club.id] || 0}
+        />
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      // Add a small delay to ensure the DOM has updated
-      setTimeout(() => {
+      const index = clubs.findIndex(club => club.id === selectedClub.id);
+      if (index !== -1) {
+        // Scroll to the selected club's position
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-        if (!scrollContainer) return;
-
-        const clubElement = selectedClubRef.current;
-        if (!clubElement) return;
-
-        const cardHeight = clubElement.offsetHeight;
-        const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
-        
-        scrollContainer.scrollTo({
-          top: scrollTop,
-          behavior: 'smooth'
-        });
-      }, 100);
+        if (scrollContainer) {
+          scrollContainer.scrollTo({
+            top: index * 140, // Approximate height of each card
+            behavior: 'smooth'
+          });
+        }
+      }
     }
-  }, [selectedClub]);
-
-  // Reset scroll position when club list changes
-  useEffect(() => {
-    const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-  }, [clubs]);
+  }, [selectedClub, clubs]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -92,32 +102,21 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea 
-        className="flex-grow" 
-        ref={scrollAreaRef}
-      >
-        <div className="space-y-2 pr-2">
-          {isLoading ? (
-            <div>Loading venues...</div>
-          ) : (
-            clubs.map(club => (
-              <div 
-                key={club.id} 
-                ref={selectedClub?.id === club.id ? selectedClubRef : null}
-              >
-                <ClubCard
-                  club={club}
-                  selectedDay={selectedDay}
-                  isSelected={selectedClub?.id === club.id}
-                  onSelect={onSelectClub}
-                  onOpenChat={onOpenChat}
-                  newMessageCount={newMessageCounts[club.id] || 0}
-                />
-              </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+      <div className="flex-grow overflow-hidden" ref={scrollAreaRef}>
+        {isLoading ? (
+          <div>Loading venues...</div>
+        ) : (
+          <FixedSizeList
+            height={listHeight}
+            width="100%"
+            itemCount={clubs.length}
+            itemSize={140} // Height of each card + margin
+            overscanCount={5}
+          >
+            {Row}
+          </FixedSizeList>
+        )}
+      </div>
     </div>
   );
 };
