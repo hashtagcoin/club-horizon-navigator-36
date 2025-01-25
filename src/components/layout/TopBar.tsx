@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Search, User, LogOut, Settings, Plus } from "lucide-react";
 import { UserProfile } from '../user-profile';
 import { AddVenueModal } from '../venue/AddVenueModal';
-import { LocationControls } from '../location/LocationControls';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,15 +68,6 @@ export const TopBar: FC<TopBarProps> = ({
           />
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary-foreground/50" />
         </div>
-
-        <LocationControls
-          currentCountry={currentCountry}
-          currentState={currentState}
-          currentCity={currentCity}
-          onCountryChange={onCountryChange}
-          onStateChange={onStateChange}
-          onCityChange={onCityChange}
-        />
 
         <div className="flex items-center space-x-2">
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
