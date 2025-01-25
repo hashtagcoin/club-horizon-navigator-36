@@ -40,7 +40,8 @@ const transformClubData = (data: any[]): Club[] => {
       },
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,
-      genre: club.venue_type || 'Various'
+      genre: club.venue_type || 'Various',
+      isUserAdded: club.isUserAdded || false
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
@@ -56,10 +57,15 @@ export const useClubData = (currentSuburb: string) => {
     queryFn: async () => {
       console.log('Fetching clubs from Supabase for suburb:', currentSuburb);
       
+      if (!currentSuburb) {
+        console.log('No suburb selected, returning empty array');
+        return [];
+      }
+
       // First try to get clubs from Clublist_Australia
-      let { data: australiaData, error: australiaError } = await supabase
+      const { data: australiaData, error: australiaError } = await supabase
         .from('Clublist_Australia')
-        .select('*')
+        .select()
         .eq('city', currentSuburb);
       
       if (australiaError) {
@@ -70,7 +76,7 @@ export const useClubData = (currentSuburb: string) => {
       // Then get user added venues for the same suburb
       const { data: userAddedData, error: userAddedError } = await supabase
         .from('user_added_venues')
-        .select('*')
+        .select()
         .eq('city', currentSuburb);
 
       if (userAddedError) {
@@ -89,6 +95,7 @@ export const useClubData = (currentSuburb: string) => {
       
       console.log('Combined Supabase response:', combinedData);
       return transformClubData(combinedData || []);
-    }
+    },
+    enabled: Boolean(currentSuburb)
   });
 };
