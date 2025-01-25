@@ -44,7 +44,7 @@ export const LocationModals = ({
           <div className="grid gap-4 py-4">
             <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select suburb" />
+                <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
                 {locations[currentCountry] && locations[currentCountry][currentState] && 
@@ -93,7 +93,7 @@ export const LocationModals = ({
             </Select>
             <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select suburb" />
+                <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
                 {locations[currentCountry] && locations[currentCountry][currentState] && 
