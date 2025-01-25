@@ -13,6 +13,7 @@ interface ClubCardProps {
   newMessageCount: number;
 }
 
+// Move formatType outside component to prevent recreation
 const formatType = (type: string) => {
   return type
     .toLowerCase()
@@ -81,9 +82,16 @@ export const ClubCard = memo(({
     </Card>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison function to prevent unnecessary re-renders
+  // Deep comparison for club properties that affect rendering
   return (
     prevProps.club.id === nextProps.club.id &&
+    prevProps.club.name === nextProps.club.name &&
+    prevProps.club.traffic === nextProps.club.traffic &&
+    prevProps.club.hasSpecial === nextProps.club.hasSpecial &&
+    prevProps.club.isUserAdded === nextProps.club.isUserAdded &&
+    prevProps.club.genre === nextProps.club.genre &&
+    prevProps.club.openingHours[prevProps.selectedDay] === nextProps.club.openingHours[nextProps.selectedDay] &&
+    prevProps.club.usersAtClub === nextProps.club.usersAtClub &&
     prevProps.selectedDay === nextProps.selectedDay &&
     prevProps.isSelected === nextProps.isSelected &&
     prevProps.newMessageCount === nextProps.newMessageCount

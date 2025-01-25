@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useCallback } from 'react';
+import { FC, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
@@ -35,9 +35,14 @@ export const ClubList: FC<ClubListProps> = ({
   newMessageCounts,
   isLoading
 }) => {
-  const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Memoize genres list to prevent recalculation on every render
+  const genres = useMemo(() => 
+    Array.from(new Set(clubs.map(club => club.genre))).sort(),
+    [clubs]
+  );
 
   const handleScroll = useCallback(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
@@ -45,8 +50,6 @@ export const ClubList: FC<ClubListProps> = ({
       if (!scrollContainer) return;
 
       const clubElement = selectedClubRef.current;
-      if (!clubElement) return;
-
       const cardHeight = clubElement.offsetHeight;
       const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
       
@@ -58,7 +61,6 @@ export const ClubList: FC<ClubListProps> = ({
   }, [selectedClub]);
 
   useEffect(() => {
-    // Add a small delay to ensure the DOM has updated
     const timeoutId = setTimeout(handleScroll, 100);
     return () => clearTimeout(timeoutId);
   }, [handleScroll]);
@@ -73,6 +75,25 @@ export const ClubList: FC<ClubListProps> = ({
       });
     }
   }, [clubs]);
+
+  // Memoize the club cards list to prevent unnecessary re-renders
+  const clubCards = useMemo(() => (
+    clubs.map(club => (
+      <div 
+        key={club.id} 
+        ref={selectedClub?.id === club.id ? selectedClubRef : null}
+      >
+        <ClubCard
+          club={club}
+          selectedDay={selectedDay}
+          isSelected={selectedClub?.id === club.id}
+          onSelect={onSelectClub}
+          onOpenChat={onOpenChat}
+          newMessageCount={newMessageCounts[club.id] || 0}
+        />
+      </div>
+    ))
+  ), [clubs, selectedClub, selectedDay, onSelectClub, onOpenChat, newMessageCounts]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -102,23 +123,7 @@ export const ClubList: FC<ClubListProps> = ({
         <div className="space-y-2 pr-2">
           {isLoading ? (
             <div>Loading venues...</div>
-          ) : (
-            clubs.map(club => (
-              <div 
-                key={club.id} 
-                ref={selectedClub?.id === club.id ? selectedClubRef : null}
-              >
-                <ClubCard
-                  club={club}
-                  selectedDay={selectedDay}
-                  isSelected={selectedClub?.id === club.id}
-                  onSelect={onSelectClub}
-                  onOpenChat={onOpenChat}
-                  newMessageCount={newMessageCounts[club.id] || 0}
-                />
-              </div>
-            ))
-          )}
+          ) : clubCards}
         </div>
       </ScrollArea>
     </div>
