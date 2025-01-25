@@ -4,7 +4,7 @@ import { ClubCard } from "@/components/ClubCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FixedSizeList as List } from 'react-window';
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMediaQuery } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ClubListProps {
   clubs: Club[];
@@ -24,7 +24,7 @@ export const ClubList = ({
   isLoading = false,
 }: ClubListProps) => {
   const selectedClubRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (selectedClubRef.current) {

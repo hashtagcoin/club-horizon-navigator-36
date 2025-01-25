@@ -23,27 +23,27 @@ export function ClubCard({
       } club-card`}
       onClick={() => onSelect(club)}
     >
-      <div className="flex justify-between items-center p-4">
-        <div>
-          <h3 className="text-lg font-semibold">{club.name}</h3>
-          <p className="text-sm text-gray-500">{club.address}</p>
+      <div className="flex justify-between items-start p-4">
+        <div className="space-y-1">
+          <h3 className="text-lg font-semibold leading-none">{club.name}</h3>
+          <p className="text-sm text-muted-foreground">{club.address}</p>
+          <div className="pt-2">
+            <button
+              className="text-sm text-primary hover:underline"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenChat(club);
+              }}
+            >
+              Open Chat
+            </button>
+          </div>
         </div>
         {newMessageCount > 0 && (
-          <span className="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full px-2">
+          <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1 font-medium">
             {newMessageCount}
           </span>
         )}
-      </div>
-      <div className="p-4">
-        <button
-          className="text-blue-500 hover:underline"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenChat(club);
-          }}
-        >
-          Open Chat
-        </button>
       </div>
     </Card>
   );

@@ -1,9 +1,7 @@
-/* Global styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
 .club-card {
   margin-bottom: 8px;
   transition: all 0.2s ease-in-out;
