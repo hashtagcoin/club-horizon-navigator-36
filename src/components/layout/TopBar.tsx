@@ -41,7 +41,7 @@ export const TopBar: FC<TopBarProps> = ({
 
   return (
     <>
-      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4 fixed top-0 left-0 right-0 z-50">
+      <div className="bg-primary text-primary-foreground p-2 flex items-center gap-4 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center space-x-2">
           <svg
             width="24"
@@ -59,15 +59,6 @@ export const TopBar: FC<TopBarProps> = ({
           <span className="text-base font-bold">CLUB PILOT</span>
         </div>
 
-        <LocationControls
-          currentCountry={currentCountry}
-          currentState={currentState}
-          currentCity={currentCity}
-          onCountryChange={onCountryChange}
-          onStateChange={onStateChange}
-          onCityChange={onCityChange}
-        />
-
         <div className="flex-1 max-w-md relative">
           <Input
             type="text"
@@ -78,6 +69,15 @@ export const TopBar: FC<TopBarProps> = ({
           />
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary-foreground/50" />
         </div>
+
+        <LocationControls
+          currentCountry={currentCountry}
+          currentState={currentState}
+          currentCity={currentCity}
+          onCountryChange={onCountryChange}
+          onStateChange={onStateChange}
+          onCityChange={onCityChange}
+        />
 
         <div className="flex items-center space-x-2">
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
