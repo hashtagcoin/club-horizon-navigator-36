@@ -30,8 +30,10 @@ export function LocationControls({
 
   useEffect(() => {
     // Get user's location when component mounts
-    getCurrentLocation()
-  }, [])
+    if (!currentCity) {
+      getCurrentLocation()
+    }
+  }, [currentCity])
 
   const getCurrentLocation = () => {
     console.log('Getting current location...')
@@ -108,7 +110,7 @@ export function LocationControls({
           <div className="flex items-center gap-2">
             <LocationButton
               isLoadingLocation={isLoadingLocation}
-              currentCity={currentCity}
+              currentCity={currentCity || 'Select Location'}
             />
           </div>
         </DialogTrigger>

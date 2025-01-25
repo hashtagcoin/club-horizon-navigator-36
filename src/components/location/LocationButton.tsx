@@ -14,7 +14,7 @@ export function LocationButton({ isLoadingLocation, currentCity }: LocationButto
           Locating...
         </div>
       ) : (
-        currentCity
+        currentCity || 'Select Location'
       )}
     </h2>
   )
