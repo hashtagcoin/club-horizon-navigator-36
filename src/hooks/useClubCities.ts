@@ -14,8 +14,10 @@ export const useClubCities = () => {
         throw error;
       }
 
-      console.log('Fetched cities:', data);
-      return data || [];
+      // Transform the data to be an array of strings
+      const cities = data.map((item: { city: string }) => item.city);
+      console.log('Fetched cities:', cities);
+      return cities;
     }
   });
 };
