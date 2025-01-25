@@ -1,6 +1,6 @@
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Loader2 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { LocationModal } from './location/LocationModal'
 import { GlobalLocationModal } from './location/GlobalLocationModal'
 import { useLocationData } from '@/hooks/useLocationData'
