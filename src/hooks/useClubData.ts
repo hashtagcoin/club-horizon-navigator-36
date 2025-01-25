@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Club } from "@/types/club";
 
-const getDaySpecificMusic = (club: any, day: string) => {
+const getDaySpecificMusic = (club: any, day: string): string => {
   const musicMap: { [key: string]: string } = {
     'Monday': club.music_Mon,
     'Tuesday': club.music_Tues,
@@ -20,7 +20,7 @@ const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
-    const transformedClub = {
+    const transformedClub: Club = {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
