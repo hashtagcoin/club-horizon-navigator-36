@@ -2,29 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 80%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    height: 100%;
+    width: 100%;
+    padding-top: 56px; /* Add padding for fixed top bar */
+    padding-bottom: 64px; /* Add padding for fixed bottom bar */
+    overflow: hidden;
+    position: fixed;
+  }
+}
+
+.map-container {
+  @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
+  height: calc(100vh - 120px); /* Account for top and bottom bars */
+}
+
+/* Update mobile padding to move map up by 115% of navbar height */
+@media (max-width: 768px) {
+  .map-container {
+    padding-bottom: calc(73.6px); /* 115% of bottom navbar height (64px) */
+    transform: translateY(-9.6px); /* Move up by 15% of navbar height */
+  }
+}
+
 .club-card {
-  margin-bottom: 8px;
-  transition: all 0.2s ease-in-out;
+  @apply bg-white hover:bg-secondary transition-all duration-300;
 }
 
-.club-card:hover {
-  transform: translateY(-2px);
+.chat-message {
+  @apply animate-fade-in;
 }
 
-.react-window-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+.selected-club-card {
+  @apply border-4 border-black rounded-xl;
 }
 
-.react-window-list::-webkit-scrollbar {
-  width: 6px;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.react-window-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.react-window-list::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
+/* Add styles to make bottom navbar always on top */
+.bg-primary.text-primary-foreground.p-2.fixed.bottom-0.left-0.right-0 {
+  @apply z-50;
 }
