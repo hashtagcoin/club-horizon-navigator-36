@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { toast } from "sonner"
-import { supabase } from "@/integrations/supabase/client"
 import { LocationButton } from "./location/LocationButton"
 import { LocationModalContent } from "./location/LocationModalContent"
 import { CitySelect } from "./location/CitySelect"
@@ -27,35 +26,7 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [cities, setCities] = useState<string[]>([])
-
-  useEffect(() => {
-    fetchCities()
-  }, [currentCountry])
-
-  const fetchCities = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('Clublist_Australia')
-        .select('city')
-        .not('city', 'is', null)
-        .eq('Country', currentCountry)
-      
-      if (error) {
-        console.error('Error fetching cities:', error)
-        return
-      }
-
-      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean))) as string[]
-      setCities(uniqueCities)
-      
-      if (!currentCity && uniqueCities.length > 0) {
-        onCityChange(uniqueCities[0])
-      }
-    } catch (error) {
-      console.error('Error processing cities:', error)
-    }
-  }
+  const [cities] = useState<string[]>([])
 
   const getCurrentLocation = () => {
     setIsLoadingLocation(true)
