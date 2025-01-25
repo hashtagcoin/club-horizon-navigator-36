@@ -56,7 +56,7 @@
 }
 
 .club-list-container {
-  height: calc(100vh - 180px); /* Account for header, filters, and padding */
+  height: calc(100vh - 120px);
   overflow: hidden;
 }
 

@@ -31,6 +31,8 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const overscanCount = 5;
 
   const getItemsToRender = useCallback(() => {
+    if (!clubs.length) return { items: [], startIndex: 0 };
+    
     const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscanCount);
     const visibleCount = Math.ceil(containerHeight / itemHeight) + 2 * overscanCount;
     const endIndex = Math.min(clubs.length, startIndex + visibleCount);
@@ -39,7 +41,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
       items: clubs.slice(startIndex, endIndex),
       startIndex,
     };
-  }, [scrollTop, clubs.length, containerHeight]);
+  }, [scrollTop, clubs.length, containerHeight, itemHeight]);
 
   const handleScroll = (e: any) => {
     const scrollContainer = e.target.querySelector('[data-radix-scroll-area-viewport]');
@@ -58,15 +60,17 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 
   const { items: visibleClubs, startIndex } = getItemsToRender();
 
+  const totalHeight = clubs.length * itemHeight;
+
   return (
-    <div className="h-full overflow-hidden" ref={containerRef}>
+    <div className="h-full flex flex-col overflow-hidden" ref={containerRef}>
       <ScrollArea 
-        className="h-full"
+        className="h-full flex-1"
         onScroll={handleScroll}
       >
         <div
           style={{
-            height: clubs.length * itemHeight,
+            height: totalHeight,
             position: 'relative',
             width: '100%'
           }}
