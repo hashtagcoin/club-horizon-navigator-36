@@ -1,6 +1,6 @@
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { GlobalLocationModal } from './location/GlobalLocationModal'
 import { useLocationData } from '@/hooks/useLocationData'
 
@@ -22,17 +22,7 @@ export function LocationControls({
   onSuburbChange
 }: LocationControlsProps) {
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
-  const { suburbs, isLoadingLocation, getCurrentLocation } = useLocationData()
-
-  useEffect(() => {
-    if (!currentSuburb && suburbs.length > 0) {
-      onSuburbChange(suburbs[0])
-    }
-  }, [suburbs, currentSuburb, onSuburbChange])
-
-  const handleGetCurrentLocation = () => {
-    getCurrentLocation(onCountryChange, onStateChange, onSuburbChange)
-  }
+  const { isLoadingLocation } = useLocationData()
 
   return (
     <div className="space-y-2">
@@ -51,19 +41,19 @@ export function LocationControls({
             </h2>
           </div>
         </DialogTrigger>
-      </Dialog>
 
-      <GlobalLocationModal
-        showGlobalLocationModal={showGlobalLocationModal}
-        setShowGlobalLocationModal={setShowGlobalLocationModal}
-        currentCountry={currentCountry}
-        setCurrentCountry={onCountryChange}
-        currentState={currentState}
-        setCurrentState={onStateChange}
-        currentSuburb={currentSuburb}
-        setCurrentSuburb={onSuburbChange}
-        suburbs={suburbs}
-      />
+        <GlobalLocationModal
+          showGlobalLocationModal={showGlobalLocationModal}
+          setShowGlobalLocationModal={setShowGlobalLocationModal}
+          currentCountry={currentCountry}
+          setCurrentCountry={onCountryChange}
+          currentState={currentState}
+          setCurrentState={onStateChange}
+          currentSuburb={currentSuburb}
+          setCurrentSuburb={onSuburbChange}
+          suburbs={[]}
+        />
+      </Dialog>
     </div>
   )
 }
