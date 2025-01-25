@@ -41,32 +41,11 @@ export const ClubList: FC<ClubListProps> = ({
   const listRef = useRef<VariableSizeList>(null);
   const isMobile = useIsMobile();
   
-  // Calculate available height for the list
   const listHeight = typeof window !== 'undefined' ? 
     window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
-  const getItemHeight = (index: number) => {
-    const club = clubs[index];
-    const BASE_HEIGHT = 140;
-    const PADDING = 16;
-    
-    let additionalHeight = 0;
-    
-    if (club.name.length > 25) {
-      additionalHeight += 24;
-    }
-
-    if (club.hasSpecial || club.isUserAdded) {
-      additionalHeight += 16;
-    }
-
-    return BASE_HEIGHT + additionalHeight + PADDING;
-  };
-
-  const itemHeights = useMemo(() => {
-    return clubs.map((_, index) => getItemHeight(index));
-  }, [clubs]);
+  const getItemHeight = () => 160; // Fixed height for all items
 
   useEffect(() => {
     if (listRef.current) {
@@ -86,13 +65,7 @@ export const ClubList: FC<ClubListProps> = ({
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const club = clubs[index];
     return (
-      <div 
-        style={{
-          ...style,
-          padding: '8px',
-          boxSizing: 'border-box'
-        }}
-      >
+      <div className="p-2">
         <ClubCard
           club={club}
           selectedDay={selectedDay}
