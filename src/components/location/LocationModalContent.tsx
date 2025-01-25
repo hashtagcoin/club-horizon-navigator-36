@@ -10,7 +10,6 @@ interface LocationModalContentProps {
   onStateChange: (value: string) => void
   onCityChange: (value: string) => void
   onClose: () => void
-  isLoadingLocation: boolean
 }
 
 export function LocationModalContent({

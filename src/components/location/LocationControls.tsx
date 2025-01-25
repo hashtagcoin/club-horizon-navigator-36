@@ -93,7 +93,6 @@ export function LocationControls({
             onStateChange={onStateChange}
             onCityChange={onCityChange}
             onClose={() => setShowLocationModal(false)}
-            isLoadingLocation={false}
           />
         </DialogContent>
       </Dialog>
