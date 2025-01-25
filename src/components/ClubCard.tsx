@@ -54,7 +54,9 @@ export const ClubCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
-            <span className="text-xs text-black">{formatType(club.genre[selectedDay as keyof typeof club.genre])}</span>
+            <span className="text-xs text-black">
+              {formatType(club.genre[selectedDay as keyof typeof club.genre])}
+            </span>
           </div>
         </div>
         <div className="flex items-center space-x-1 mt-1">
