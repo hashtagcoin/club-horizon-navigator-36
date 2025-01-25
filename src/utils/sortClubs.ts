@@ -66,8 +66,8 @@ export const sortClubs = (
     
     case 'openingHours':
       return clubsCopy.sort((a, b) => {
-        const aHours = a.openingHours[Object.keys(a.openingHours)[0]] || '';
-        const bHours = b.openingHours[Object.keys(b.openingHours)[0]] || '';
+        const aHours = a.openingHours[selectedDay as keyof typeof a.openingHours] || '';
+        const bHours = b.openingHours[selectedDay as keyof typeof b.openingHours] || '';
         return aHours.localeCompare(bHours);
       });
     

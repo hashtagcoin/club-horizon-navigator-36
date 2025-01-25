@@ -32,9 +32,10 @@ export function useClubFilters() {
 
     // Apply filters
     if (filterGenre.length > 0) {
-      filtered = filtered.filter(club => 
-        filterGenre.includes(club.genre[selectedDay as keyof typeof club.genre])
-      );
+      filtered = filtered.filter(club => {
+        const clubGenre = club.genre[selectedDay as keyof typeof club.genre];
+        return filterGenre.includes(clubGenre);
+      });
     }
     
     if (searchQuery) {
