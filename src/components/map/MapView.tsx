@@ -3,8 +3,6 @@ import { Club } from '@/types/club';
 import { ClubMap } from './ClubMap';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
-import { Switch } from "@/components/ui/switch";
-import { Eye, EyeOff } from "lucide-react";
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MapViewProps {
@@ -35,10 +33,7 @@ export function MapView({
   locationManagement,
 }: MapViewProps) {
   const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
-  const [showAllClubs, setShowAllClubs] = useState(false);
   const isMobile = useIsMobile();
-
-  const visibleClubs = showAllClubs ? clubs : (selectedClub ? [selectedClub] : []);
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden relative z-0">
@@ -51,25 +46,10 @@ export function MapView({
         />
       </div>
       
-      <div className={`absolute z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md ${
-        isMobile ? 'bottom-[200px] right-4' : 'bottom-[140px] left-4'
-      }`}>
-        {showAllClubs ? (
-          <Eye className="h-4 w-4 text-primary" />
-        ) : (
-          <EyeOff className="h-4 w-4 text-muted-foreground" />
-        )}
-        <Switch
-          checked={showAllClubs}
-          onCheckedChange={setShowAllClubs}
-          aria-label="Toggle all clubs visibility"
-        />
-      </div>
-      
       <div className="flex-grow h-full relative pb-14">
         <ClubMap
           isLoaded={isLoaded}
-          clubs={visibleClubs}
+          clubs={selectedClub ? [selectedClub] : clubs}
           selectedClub={selectedClub}
           mapCenter={mapCenter}
           mapZoom={mapZoom}
