@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Globe, Loader2 } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface LocationModalContentProps {
@@ -11,8 +10,6 @@ interface LocationModalContentProps {
   onStateChange: (value: string) => void
   onCityChange: (value: string) => void
   onClose: () => void
-  onLocationUpdate: () => void
-  onGlobalLocationOpen: () => void
   isLoadingLocation: boolean
 }
 
@@ -24,10 +21,7 @@ export function LocationModalContent({
   cities,
   onStateChange,
   onCityChange,
-  onClose,
-  onLocationUpdate,
-  onGlobalLocationOpen,
-  isLoadingLocation
+  onClose
 }: LocationModalContentProps) {
   return (
     <div>
@@ -75,22 +69,8 @@ export function LocationModalContent({
           </Select>
         </div>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-end">
         <Button onClick={onClose}>Close</Button>
-        <div className="flex gap-2">
-          <Button 
-            onClick={onLocationUpdate} 
-            variant="outline"
-            disabled={isLoadingLocation}
-          >
-            {isLoadingLocation && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Update Location
-          </Button>
-          <Button onClick={onGlobalLocationOpen} variant="outline">
-            <Globe className="h-4 w-4 mr-2" />
-            Change Location
-          </Button>
-        </div>
       </div>
     </div>
   )
