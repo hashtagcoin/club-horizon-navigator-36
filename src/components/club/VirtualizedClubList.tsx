@@ -25,28 +25,30 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Configuration
-  const itemHeight = 136; // 120px card height + 16px total margin
+  // Fixed measurements
+  const ITEM_HEIGHT = 136; // 120px card + 16px total margin
+  const OVERSCAN_COUNT = 5;
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 180 : 800;
-  const overscanCount = 5;
 
   const getItemsToRender = useCallback(() => {
     if (!clubs.length) return { items: [], startIndex: 0 };
     
-    const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscanCount);
-    const visibleCount = Math.ceil(containerHeight / itemHeight) + 2 * overscanCount;
-    const endIndex = Math.min(clubs.length, startIndex + visibleCount);
+    const startIndex = Math.max(0, Math.floor(scrollTop / ITEM_HEIGHT) - OVERSCAN_COUNT);
+    const endIndex = Math.min(
+      clubs.length,
+      Math.ceil((scrollTop + containerHeight) / ITEM_HEIGHT) + OVERSCAN_COUNT
+    );
 
     return {
       items: clubs.slice(startIndex, endIndex),
       startIndex,
     };
-  }, [scrollTop, clubs.length, containerHeight, itemHeight]);
+  }, [scrollTop, clubs.length, containerHeight]);
 
   const handleScroll = (e: any) => {
-    const scrollContainer = e.target.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      setScrollTop(scrollContainer.scrollTop);
+    const viewport = e.target.querySelector('[data-radix-scroll-area-viewport]');
+    if (viewport) {
+      setScrollTop(viewport.scrollTop);
     }
   };
 
@@ -59,12 +61,15 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   }
 
   const { items: visibleClubs, startIndex } = getItemsToRender();
-  const totalHeight = clubs.length * itemHeight;
+  const totalHeight = clubs.length * ITEM_HEIGHT;
 
   return (
-    <div className="h-full" ref={containerRef}>
+    <div 
+      ref={containerRef}
+      style={{ height: `calc(100vh - 180px)`, position: 'relative' }}
+    >
       <ScrollArea 
-        className="h-full"
+        className="h-full w-full"
         onScroll={handleScroll}
       >
         <div
@@ -79,10 +84,11 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
               key={club.id}
               style={{
                 position: 'absolute',
-                top: (startIndex + index) * itemHeight,
+                top: (startIndex + index) * ITEM_HEIGHT,
                 left: 0,
                 right: 0,
-                height: itemHeight,
+                height: ITEM_HEIGHT,
+                padding: '8px'
               }}
             >
               <ClubCard

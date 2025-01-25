@@ -56,14 +56,13 @@
 }
 
 .club-list-container {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 180px);
   overflow: hidden;
 }
 
 .club-card {
-  @apply bg-white hover:bg-secondary;
+  @apply bg-white hover:bg-secondary rounded-xl;
   height: 120px;
-  margin: 8px;
   transition-property: background-color, border-color;
   transition-duration: 300ms;
 }
