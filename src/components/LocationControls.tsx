@@ -6,7 +6,6 @@ import { locations } from '@/data/locations'
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
 interface LocationControlsProps {
   currentCountry: string
@@ -29,12 +28,10 @@ export function LocationControls({
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [suburbs, setSuburbs] = useState<string[]>([])
-  const [showNoVenuesAlert, setShowNoVenuesAlert] = useState(false)
 
   useEffect(() => {
     fetchSuburbs()
-    getCurrentLocation()
-  }, [currentCountry])
+  }, [])
 
   const fetchSuburbs = async () => {
     try {
@@ -52,11 +49,6 @@ export function LocationControls({
       const uniqueSuburbs = Array.from(new Set(data.map(item => item.area).filter(Boolean)))
       setSuburbs(uniqueSuburbs)
       
-      if (uniqueSuburbs.length === 0) {
-        setShowNoVenuesAlert(true)
-        return
-      }
-
       // If no suburb is selected and we have suburbs, select the first one
       if (!currentSuburb && uniqueSuburbs.length > 0) {
         onSuburbChange(uniqueSuburbs[0])
@@ -121,6 +113,10 @@ export function LocationControls({
       }
     )
   }
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
 
   return (
     <div className="space-y-2">
@@ -215,16 +211,6 @@ export function LocationControls({
           <Button onClick={() => setShowGlobalLocationModal(false)}>Close</Button>
         </DialogContent>
       </Dialog>
-
-      <AlertDialog open={showNoVenuesAlert} onOpenChange={setShowNoVenuesAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Coming Soon!</AlertDialogTitle>
-            <p>Venues for {currentCountry} are not available yet. Stay tuned for updates!</p>
-          </AlertDialogHeader>
-          <Button onClick={() => setShowNoVenuesAlert(false)}>Close</Button>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   )
 }
