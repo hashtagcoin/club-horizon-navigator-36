@@ -15,6 +15,10 @@ interface LocationControlsProps {
   onCityChange: (value: string) => void
 }
 
+interface CityData {
+  city: string | null
+}
+
 export function LocationControls({
   currentCountry,
   currentState,
@@ -36,7 +40,7 @@ export function LocationControls({
     try {
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select('city')
+        .select<'city', CityData>('city')
         .not('city', 'is', null)
         .eq('Country', currentCountry)
       
@@ -46,7 +50,7 @@ export function LocationControls({
       }
 
       // Extract unique cities and remove nulls
-      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean)))
+      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean) as string[]))
       setCities(uniqueCities)
       
       // If no city is selected and we have cities, select the first one

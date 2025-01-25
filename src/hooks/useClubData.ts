@@ -2,7 +2,32 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Club } from "@/types/club";
 
-const transformClubData = (data: any[]): Club[] => {
+interface ClubData {
+  id: number;
+  name: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  traffic: string | null;
+  monday_hours_open: string | null;
+  monday_hours_close: string | null;
+  tuesday_hours_open: string | null;
+  tuesday_hours_close: string | null;
+  wednesday_hours_open: string | null;
+  wednesday_hours_close: string | null;
+  thursday_hours_open: string | null;
+  thursday_hours_close: string | null;
+  friday_hours_open: string | null;
+  friday_hours_close: string | null;
+  saturday_hours_open: string | null;
+  saturday_hours_close: string | null;
+  sunday_hours_open: string | null;
+  sunday_hours_close: string | null;
+  venue_type: string | null;
+  location: string | null;
+}
+
+const transformClubData = (data: ClubData[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
@@ -58,7 +83,7 @@ export const useClubData = (selectedLocation?: string) => {
       console.log('Fetching clubs from Supabase for location:', selectedLocation);
       let query = supabase
         .from('Clublist_Australia')
-        .select('*')
+        .select<'*', ClubData>('*')
       
       if (selectedLocation) {
         query = query.eq('location', selectedLocation)
