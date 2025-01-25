@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { Club } from '@/types/club';
 import { sortClubs } from '@/utils/sortClubs';
 
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // Distance in km
+};
+
 export function useClubFilters() {
   const [sortBy, setSortBy] = useState("closest");
   const [filterGenre, setFilterGenre] = useState<string[]>([]);
@@ -30,7 +47,20 @@ export function useClubFilters() {
   const filterAndSortClubs = (clubs: Club[], userLocation?: { lat: number; lng: number }) => {
     let filtered = [...clubs];
 
-    // Apply filters
+    // Filter by distance if user location is available
+    if (userLocation) {
+      filtered = filtered.filter(club => {
+        const distance = calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          club.position.lat,
+          club.position.lng
+        );
+        return distance <= 40; // Only show clubs within 40km
+      });
+    }
+
+    // Apply other filters
     if (filterGenre.length > 0) {
       filtered = filtered.filter(club => filterGenre.includes(club.genre));
     }
@@ -43,10 +73,7 @@ export function useClubFilters() {
     }
     
     if (showHighTraffic) {
-      // First filter to only show high traffic clubs
       filtered = filtered.filter(club => club.traffic === "High");
-      
-      // Then sort remaining clubs by traffic level
       const trafficOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
       filtered.sort((a, b) => 
         (trafficOrder[b.traffic as keyof typeof trafficOrder] || 0) - 
@@ -59,17 +86,15 @@ export function useClubFilters() {
       filtered = filtered.filter(club => club.hasSpecial);
     }
 
-    // Sort by closing time if sortByOpenLate is true
     if (sortByOpenLate) {
       filtered.sort((a, b) => {
         const aClosingHour = getClosingHour(a, selectedDay);
         const bClosingHour = getClosingHour(b, selectedDay);
-        return bClosingHour - aClosingHour; // Sort in descending order
+        return bClosingHour - aClosingHour;
       });
       return filtered;
     }
     
-    // Apply other sorting if not sorting by closing time
     return sortClubs(filtered, sortBy, userLocation);
   };
 
