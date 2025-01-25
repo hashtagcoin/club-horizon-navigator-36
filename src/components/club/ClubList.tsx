@@ -40,7 +40,11 @@ export const ClubList: FC<ClubListProps> = ({
   selectedCity,
   setSelectedCity
 }) => {
-  const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
+  // Extract unique genres for the selected day
+  const genres = Array.from(new Set(
+    clubs.map(club => club.genre[selectedDay as keyof typeof club.genre])
+  )).filter(Boolean);
+  
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { data: cities = [] } = useClubCities();
