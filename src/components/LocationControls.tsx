@@ -27,34 +27,34 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [suburbs, setSuburbs] = useState<string[]>([])
+  const [cities, setCities] = useState<string[]>([])
 
   useEffect(() => {
-    fetchSuburbs()
-  }, [])
+    fetchCities()
+  }, [currentCountry, currentState])
 
-  const fetchSuburbs = async () => {
+  const fetchCities = async () => {
     try {
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select('area')
-        .not('area', 'is', null)
+        .select('location')
+        .not('location', 'is', null)
       
       if (error) {
-        console.error('Error fetching suburbs:', error)
+        console.error('Error fetching cities:', error)
         return
       }
 
-      // Extract unique suburbs and remove nulls
-      const uniqueSuburbs = Array.from(new Set(data.map(item => item.area).filter(Boolean)))
-      setSuburbs(uniqueSuburbs)
+      // Extract unique cities and remove nulls
+      const uniqueCities = Array.from(new Set(data.map(item => item.location).filter(Boolean)))
+      setCities(uniqueCities)
       
-      // If no suburb is selected and we have suburbs, select the first one
-      if (!currentSuburb && uniqueSuburbs.length > 0) {
-        onSuburbChange(uniqueSuburbs[0])
+      // If no city is selected and we have cities, select the first one
+      if (!currentSuburb && uniqueCities.length > 0) {
+        onSuburbChange(uniqueCities[0])
       }
     } catch (error) {
-      console.error('Error processing suburbs:', error)
+      console.error('Error processing cities:', error)
     }
   }
 
@@ -75,13 +75,13 @@ export function LocationControls({
           const data = await response.json()
           
           if (data.results && data.results.length > 0) {
-            // Find the suburb from address components
+            // Find the city from address components
             const addressComponents = data.results[0].address_components
-            let suburb = '', state = '', country = ''
+            let city = '', state = '', country = ''
             
             for (const component of addressComponents) {
               if (component.types.includes('locality') || component.types.includes('sublocality')) {
-                suburb = component.long_name
+                city = component.long_name
               } else if (component.types.includes('administrative_area_level_1')) {
                 state = component.long_name
               } else if (component.types.includes('country')) {
@@ -90,11 +90,12 @@ export function LocationControls({
             }
 
             // Update location if we found valid data
-            if (suburb && state && country) {
+            if (city && state && country) {
               onCountryChange(country)
               onStateChange(state)
-              onSuburbChange(suburb)
-              toast.success(`Location updated to ${suburb}`)
+              onSuburbChange(city)
+              toast.success(`Location updated to ${city}`)
+              handleCloseModals()
             } else {
               toast.error("Couldn't determine your exact location")
             }
@@ -112,6 +113,11 @@ export function LocationControls({
         setIsLoadingLocation(false)
       }
     )
+  }
+
+  const handleCloseModals = () => {
+    setShowLocationModal(false)
+    setShowGlobalLocationModal(false)
   }
 
   useEffect(() => {
@@ -137,22 +143,22 @@ export function LocationControls({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Select Suburb</DialogTitle>
+            <DialogTitle>Select City</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Select value={currentSuburb} onValueChange={onSuburbChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select suburb" />
+                <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
-                {suburbs.map((suburb) => (
-                  <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="flex justify-between items-center">
-            <Button onClick={() => setShowLocationModal(false)}>Close</Button>
+            <Button onClick={handleCloseModals}>Close</Button>
             <div className="flex gap-2">
               <Button 
                 onClick={getCurrentLocation} 
@@ -199,16 +205,16 @@ export function LocationControls({
             </Select>
             <Select value={currentSuburb} onValueChange={onSuburbChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select suburb" />
+                <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
-                {suburbs.map((suburb) => (
-                  <SelectItem key={suburb} value={suburb}>{suburb}</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => setShowGlobalLocationModal(false)}>Close</Button>
+          <Button onClick={handleCloseModals}>Close</Button>
         </DialogContent>
       </Dialog>
     </div>

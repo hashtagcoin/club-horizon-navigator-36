@@ -7,7 +7,7 @@ const transformClubData = (data: any[]): Club[] => {
   
   const transformed = data.map((club) => {
     const transformedClub = {
-      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
+      id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
       traffic: club.traffic || 'Low',
@@ -38,9 +38,10 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
-      hasSpecial: Math.random() < 0.3, // 30% chance of special
-      genre: club.venue_type || 'Various'
+      usersAtClub: Math.floor(Math.random() * 100),
+      hasSpecial: Math.random() < 0.3,
+      genre: club.venue_type || 'Various',
+      location: club.location || 'Unknown Location'
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
@@ -50,14 +51,20 @@ const transformClubData = (data: any[]): Club[] => {
   return transformed;
 };
 
-export const useClubData = () => {
+export const useClubData = (selectedLocation?: string) => {
   return useQuery({
-    queryKey: ['clubs'],
+    queryKey: ['clubs', selectedLocation],
     queryFn: async () => {
-      console.log('Fetching clubs from Supabase...');
-      const { data, error } = await supabase
+      console.log('Fetching clubs from Supabase for location:', selectedLocation);
+      let query = supabase
         .from('Clublist_Australia')
-        .select('*');
+        .select('*')
+      
+      if (selectedLocation) {
+        query = query.eq('location', selectedLocation)
+      }
+      
+      const { data, error } = await query;
       
       if (error) {
         console.error('Supabase error:', error);
