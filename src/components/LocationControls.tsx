@@ -2,9 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
-import { LocationButton } from "./location/LocationButton"
-import { LocationModalContent } from "./location/LocationModalContent"
-import { CitySelect } from "./location/CitySelect"
+import { LocationButton } from "@/components/location/LocationButton"
+import { LocationModalContent } from "@/components/location/LocationModalContent"
+import { CitySelect } from "@/components/location/CitySelect"
 
 interface LocationControlsProps {
   currentCountry: string
@@ -29,23 +29,39 @@ export function LocationControls({
   const [cities] = useState<string[]>([])
 
   useEffect(() => {
-    // Get user's location when component mounts
+    // Set default location to Sydney if no city is set
     if (!currentCity) {
-      getCurrentLocation()
+      if (navigator.geolocation) {
+        getCurrentLocation()
+      } else {
+        // Set to Sydney if geolocation is not available
+        setDefaultSydneyLocation()
+      }
     }
-  }, [currentCity])
+  }, [])
+
+  const setDefaultSydneyLocation = () => {
+    console.log('Setting default location to Sydney')
+    onCountryChange('Australia')
+    onStateChange('NSW')
+    onCityChange('Sydney')
+    toast.success('Location set to Sydney')
+  }
 
   const getCurrentLocation = () => {
     console.log('Getting current location...')
     setIsLoadingLocation(true)
-    if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by your browser")
+    
+    // Set a timeout for geolocation
+    const timeoutId = setTimeout(() => {
+      console.log('Geolocation timed out, defaulting to Sydney')
       setIsLoadingLocation(false)
-      return
-    }
+      setDefaultSydneyLocation()
+    }, 10000) // 10 second timeout
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        clearTimeout(timeoutId)
         console.log('Got coordinates:', position.coords.latitude, position.coords.longitude)
         try {
           const response = await fetch(
@@ -77,20 +93,24 @@ export function LocationControls({
               toast.success(`Location updated to ${city}`)
               handleCloseModals()
             } else {
-              console.log('Could not determine exact location')
-              toast.error("Couldn't determine your exact location")
+              console.log('Could not determine exact location, defaulting to Sydney')
+              setDefaultSydneyLocation()
             }
+          } else {
+            console.log('No results from geocoding, defaulting to Sydney')
+            setDefaultSydneyLocation()
           }
         } catch (error) {
           console.error('Error fetching location details:', error)
-          toast.error("Error determining your location")
+          setDefaultSydneyLocation()
         } finally {
           setIsLoadingLocation(false)
         }
       },
       (error) => {
+        clearTimeout(timeoutId)
         console.error('Error getting location:', error)
-        toast.error("Error accessing your location")
+        setDefaultSydneyLocation()
         setIsLoadingLocation(false)
       }
     )
