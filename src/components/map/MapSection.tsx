@@ -1,29 +1,25 @@
-import { FC } from 'react';
 import { Club } from '@/types/club';
-import { ClubMap } from './ClubMap';
-import { ChatWindow } from '../chat/ChatWindow';
-import { LocationModals } from '../location/LocationModals';
-import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
+import { MapView } from './MapView';
 
 interface MapSectionProps {
+  isListCollapsed: boolean;
   isLoaded: boolean;
-  clubs: Club[];
+  filteredClubs: Club[];
   selectedClub: Club | null;
   selectedDay: string;
   setSelectedDay: (day: string) => void;
   mapCenter: google.maps.LatLngLiteral;
   mapZoom: number;
-  userLocation: google.maps.LatLngLiteral | null;
+  userLocation: google.maps.LatLngLiteral;
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
-  isListCollapsed: boolean;
-  showClubDetails?: boolean;
 }
 
-export const MapSection: FC<MapSectionProps> = ({
+export const MapSection = ({
+  isListCollapsed,
   isLoaded,
-  clubs,
+  filteredClubs,
   selectedClub,
   selectedDay,
   setSelectedDay,
@@ -33,35 +29,26 @@ export const MapSection: FC<MapSectionProps> = ({
   directions,
   onClubSelect,
   locationManagement,
-  isListCollapsed,
-  showClubDetails = true
-}) => {
+}: MapSectionProps) => {
   return (
-    <div className="h-full flex flex-col overflow-hidden relative z-0">
-      <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
-        <LocationModals {...locationManagement} />
-        {selectedClub && showClubDetails && (
-          <ClubDetailsPanel
-            selectedClub={selectedClub}
-            selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
-          />
-        )}
-      </div>
-      
-      <div className="flex-grow h-full">
-        <ClubMap
-          isLoaded={isLoaded}
-          clubs={clubs}
-          selectedClub={selectedClub}
-          mapCenter={mapCenter}
-          mapZoom={mapZoom}
-          userLocation={userLocation}
-          directions={directions}
-          onClubSelect={onClubSelect}
-          calculatedBounds={null}
-        />
-      </div>
+    <div 
+      className={`transition-all duration-300 ease-in-out h-[75vh] ${
+        isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
+      }`}
+    >
+      <MapView
+        isLoaded={isLoaded}
+        clubs={filteredClubs}
+        selectedClub={selectedClub}
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        mapCenter={mapCenter}
+        mapZoom={mapZoom}
+        userLocation={userLocation}
+        directions={directions}
+        onClubSelect={onClubSelect}
+        locationManagement={locationManagement}
+      />
     </div>
   );
 };

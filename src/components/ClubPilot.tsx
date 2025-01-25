@@ -19,7 +19,6 @@ const libraries: Libraries = ['places', 'geometry'];
 export default function ClubPilot() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: -33.8688, lng: 151.2093 });
-  const [showClubDetails, setShowClubDetails] = useState(true);
   const { toast } = useToast();
 
   const locationManagement = useLocationManagement();
@@ -53,20 +52,10 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(mapControls.selectedClub);
 
-  const handleClubSelect = (club: any) => {
-    if (mapControls.selectedClub?.id === club.id) {
-      setShowClubDetails(!showClubDetails);
-    } else {
-      mapControls.handleClubSelect(club);
-      locationManagement.setMapCenter(club.position);
-      locationManagement.setMapZoom(16);
-      setShowClubDetails(true);
-    }
-  };
-
   const handleVenueAdded = async (venue: any) => {
     await refetch();
     
+    // Create a club object from the venue
     const newClub = {
       id: venue.id,
       name: venue.name,
@@ -75,7 +64,7 @@ export default function ClubPilot() {
         lat: venue.latitude,
         lng: venue.longitude
       },
-      traffic: "Low" as const,
+      traffic: "Low" as const, // Type assertion to match the Club type
       openingHours: {
         Monday: `${venue.monday_hours_open || 'Closed'} - ${venue.monday_hours_close || 'Closed'}`,
         Tuesday: `${venue.tuesday_hours_open || 'Closed'} - ${venue.tuesday_hours_close || 'Closed'}`,
@@ -91,7 +80,11 @@ export default function ClubPilot() {
       isUserAdded: true
     };
 
-    handleClubSelect(newClub);
+    // Select the new club and center the map on it
+    mapControls.handleClubSelect(newClub);
+    locationManagement.setMapCenter(newClub.position);
+    locationManagement.setMapZoom(16);
+
     toast({
       title: "New Venue Added",
       description: `${venue.name} has been added to the map`
@@ -133,7 +126,11 @@ export default function ClubPilot() {
         setFilterGenre={setFilterGenre}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        onSelectClub={handleClubSelect}
+        onSelectClub={(club) => {
+          mapControls.handleClubSelect(club);
+          locationManagement.setMapCenter(club.position);
+          locationManagement.setMapZoom(16);
+        }}
         onOpenChat={chatManager.openChat}
         newMessageCounts={chatManager.newMessageCounts}
         isLoading={isLoadingClubs}
@@ -150,9 +147,12 @@ export default function ClubPilot() {
         mapZoom={locationManagement.mapZoom}
         userLocation={userLocation}
         directions={mapControls.directions}
-        onClubSelect={handleClubSelect}
+        onClubSelect={(club) => {
+          mapControls.handleClubSelect(club);
+          locationManagement.setMapCenter(club.position);
+          locationManagement.setMapZoom(16);
+        }}
         locationManagement={locationManagement}
-        showClubDetails={showClubDetails}
       />
 
       {chatManager.chatOpen && (
