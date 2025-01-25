@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ClubCard } from '@/components/ClubCard';
 import { Club } from '@/types/club';
+import { ClubCard } from '@/components/ClubCard';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface VirtualizedClubListProps {
   clubs: Club[];
@@ -24,8 +24,8 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 }) => {
   const [scrollTop, setScrollTop] = useState(0);
   
-  // Configuration
-  const itemHeight = 140; // Measured height of ClubCard + margin
+  // Configuration - adjusted for actual card heights
+  const itemHeight = 140; // Measured ClubCard height including margins
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight - 200 : 800; // Adjust for header/footer
   const overscanCount = 3;
 
