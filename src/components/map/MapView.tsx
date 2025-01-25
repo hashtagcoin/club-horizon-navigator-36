@@ -19,23 +19,22 @@ interface MapViewProps {
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
-  showClubDetails: boolean;
 }
 
 export function MapView({
   isLoaded,
   clubs,
   selectedClub,
-  selectedDay,
-  setSelectedDay,
+  selectedDay: listSelectedDay,
+  setSelectedDay: setListSelectedDay,
   mapCenter,
   mapZoom,
   userLocation,
   directions,
   onClubSelect,
   locationManagement,
-  showClubDetails,
 }: MapViewProps) {
+  const [detailsSelectedDay, setDetailsSelectedDay] = useState(listSelectedDay);
   const [showAllClubs, setShowAllClubs] = useState(false);
   const isMobile = useIsMobile();
 
@@ -45,13 +44,11 @@ export function MapView({
     <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden relative z-0">
       <div className="absolute top-2 right-2 z-50 flex flex-col items-end space-y-2">
         <LocationModals {...locationManagement} />
-        {showClubDetails && selectedClub && (
-          <ClubDetailsPanel
-            selectedClub={selectedClub}
-            selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
-          />
-        )}
+        <ClubDetailsPanel
+          selectedClub={selectedClub}
+          selectedDay={detailsSelectedDay}
+          setSelectedDay={setDetailsSelectedDay}
+        />
       </div>
       
       <div className={`absolute z-50 flex items-center gap-2 bg-white/90 p-2 rounded-lg shadow-md ${

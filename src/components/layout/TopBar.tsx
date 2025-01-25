@@ -15,24 +15,12 @@ interface TopBarProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   onVenueAdded?: (venue: any) => void;
-  currentCountry: string;
-  currentState: string;
-  currentCity: string;
-  onCountryChange: (value: string) => void;
-  onStateChange: (value: string) => void;
-  onCityChange: (value: string) => void;
 }
 
 export const TopBar: FC<TopBarProps> = ({ 
   searchQuery = "", 
   setSearchQuery,
-  onVenueAdded,
-  currentCountry,
-  currentState,
-  currentCity,
-  onCountryChange,
-  onStateChange,
-  onCityChange
+  onVenueAdded 
 }) => {
   const [showProfile, setShowProfile] = useState(false);
   const [showAddVenue, setShowAddVenue] = useState(false);
@@ -40,7 +28,7 @@ export const TopBar: FC<TopBarProps> = ({
 
   return (
     <>
-      <div className="bg-primary text-primary-foreground p-2 flex items-center gap-4 fixed top-0 left-0 right-0 z-50">
+      <div className="bg-primary text-primary-foreground p-2 flex justify-between items-center gap-4 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center space-x-2">
           <svg
             width="24"
@@ -70,7 +58,7 @@ export const TopBar: FC<TopBarProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"

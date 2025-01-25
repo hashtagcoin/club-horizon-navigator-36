@@ -31,71 +31,45 @@ export const ClubCard = ({
 
   return (
     <Card
-      className={`cursor-pointer relative ${
-        isSelected 
-          ? 'bg-black text-white selected-club-card' 
-          : 'bg-white text-black'
-      }`}
+      className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
       onClick={() => onSelect(club)}
     >
       <CardHeader className="flex justify-between items-start p-2">
-        <CardTitle className={`text-left text-base ${isSelected ? 'text-white' : 'text-black'}`}>
-          {club.name}
-        </CardTitle>
+        <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex items-center gap-2">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
-            <User className={`h-4 w-4 ${
-              club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' 
-                ? `${isSelected ? 'fill-white text-white' : 'fill-black text-black'}` 
-                : 'text-muted-foreground'
-            }`} />
-            <User className={`h-4 w-4 ${
-              club.traffic === 'High' || club.traffic === 'Medium' 
-                ? `${isSelected ? 'fill-white text-white' : 'fill-black text-black'}` 
-                : 'text-muted-foreground'
-            }`} />
-            <User className={`h-4 w-4 ${
-              club.traffic === 'High' 
-                ? `${isSelected ? 'fill-white text-white' : 'fill-black text-black'}` 
-                : 'text-muted-foreground'
-            }`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+            <User className={`h-4 w-4 ${club.traffic === 'High' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
           </div>
           {club.hasSpecial && (
-            <Smile className={`h-4 w-4 ${isSelected ? 'text-yellow-300' : 'text-yellow-500'}`} />
+            <Smile className="h-4 w-4 text-yellow-500" />
           )}
           {club.isUserAdded && (
-            <Plus className={`h-4 w-4 ${isSelected ? 'text-blue-300' : 'text-blue-500'}`} />
+            <Plus className="h-4 w-4 text-blue-500" />
           )}
         </div>
       </CardHeader>
       <CardContent className="pt-0 px-2 pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
-            <Music className={`h-3 w-3 ${isSelected ? 'text-white' : 'text-black'}`} />
-            <span className={`text-xs ${isSelected ? 'text-white' : 'text-black'}`}>
-              {formatType(club.genre)}
-            </span>
+            <Music className="h-3 w-3 text-black" />
+            <span className="text-xs text-black">{formatType(club.genre)}</span>
           </div>
         </div>
         <div className="flex items-center space-x-1 mt-1">
-          <Clock className={`h-3 w-3 ${isSelected ? 'text-white' : 'text-black'}`} />
-          <span className={`text-xs ${isSelected ? 'text-white' : 'text-black'}`}>
-            {club.openingHours[selectedDay]}
-          </span>
+          <Clock className="h-3 w-3 text-black" />
+          <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
         </div>
         <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
-          <span className={`text-xs font-medium ${isSelected ? 'text-white' : 'text-black'}`}>
-            {club.usersAtClub}
-          </span>
+          <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
           <Button
             size="sm"
-            variant="secondary"
-            className={`relative h-6 w-6 p-0 ${
-              isSelected ? 'bg-black hover:bg-gray-800' : 'bg-white hover:bg-gray-200'
-            }`}
+            variant="outline"
+            className="relative h-6 w-6 p-0"
             onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
           >
-            <MessageCircle className={`h-3 w-3 ${isSelected ? 'text-white' : 'text-black'}`} />
+            <MessageCircle className="h-3 w-3" />
             {newMessageCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] rounded-full w-3 h-3 flex items-center justify-center">
                 {newMessageCount}

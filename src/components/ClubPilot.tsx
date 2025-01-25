@@ -13,6 +13,7 @@ import { MapSection } from './map/MapSection';
 import { ChatWindow } from './chat/ChatWindow';
 import { useToast } from "@/hooks/use-toast";
 
+// Define the libraries we need for Google Maps
 const libraries: Libraries = ['places', 'geometry'];
 
 export default function ClubPilot() {
@@ -52,8 +53,20 @@ export default function ClubPilot() {
 
   const chatManager = useChatManager(mapControls.selectedClub);
 
+  const handleClubSelect = (club: any) => {
+    if (mapControls.selectedClub?.id === club.id) {
+      setShowClubDetails(!showClubDetails);
+    } else {
+      mapControls.handleClubSelect(club);
+      locationManagement.setMapCenter(club.position);
+      locationManagement.setMapZoom(16);
+      setShowClubDetails(true);
+    }
+  };
+
   const handleVenueAdded = async (venue: any) => {
     await refetch();
+    
     const newClub = {
       id: venue.id,
       name: venue.name,
@@ -78,26 +91,11 @@ export default function ClubPilot() {
       isUserAdded: true
     };
 
-    mapControls.handleClubSelect(newClub);
-    locationManagement.setMapCenter(newClub.position);
-    locationManagement.setMapZoom(16);
-    setShowClubDetails(true);
-
+    handleClubSelect(newClub);
     toast({
       title: "New Venue Added",
       description: `${venue.name} has been added to the map`
     });
-  };
-
-  const handleClubSelect = (club: any) => {
-    if (mapControls.selectedClub?.id === club.id) {
-      setShowClubDetails(!showClubDetails);
-    } else {
-      mapControls.handleClubSelect(club);
-      locationManagement.setMapCenter(club.position);
-      locationManagement.setMapZoom(16);
-      setShowClubDetails(true);
-    }
   };
 
   if (showUserProfile) {
@@ -120,12 +118,6 @@ export default function ClubPilot() {
       isGeneralChat={chatManager.isGeneralChat}
       toggleGeneralChat={chatManager.toggleGeneralChat}
       onVenueAdded={handleVenueAdded}
-      currentCountry={locationManagement.currentCountry}
-      currentState={locationManagement.currentState}
-      currentCity={locationManagement.currentSuburb}
-      onCountryChange={locationManagement.setCurrentCountry}
-      onStateChange={locationManagement.setCurrentState}
-      onCityChange={locationManagement.setCurrentSuburb}
     >
       <AnimatedClubList
         x={listState.x}
@@ -150,7 +142,7 @@ export default function ClubPilot() {
       <MapSection
         isListCollapsed={listState.isListCollapsed}
         isLoaded={isLoaded}
-        filteredClubs={filteredClubs}
+        clubs={filteredClubs}
         selectedClub={mapControls.selectedClub}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}

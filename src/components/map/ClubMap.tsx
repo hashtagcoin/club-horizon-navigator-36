@@ -1,9 +1,6 @@
-import { GoogleMap } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { Club } from '@/types/club';
 import { useState, useEffect } from 'react';
-import { mapOptions } from './MapStyles';
-import { MapMarkers } from './MapMarkers';
-import { MapDirections } from './MapDirections';
 
 interface ClubMapProps {
   isLoaded: boolean;
@@ -43,16 +40,20 @@ export const ClubMap = ({
         newBounds.extend(userLocation);
       }
       
-      const latPadding = (newBounds.getNorthEast().lat() - newBounds.getSouthWest().lat()) * 0.1;
-      const lngPadding = (newBounds.getNorthEast().lng() - newBounds.getSouthWest().lng()) * 0.1;
+      const padding = { top: 100, right: 50, bottom: 50, left: 400 };
+      const ne = newBounds.getNorthEast();
+      const sw = newBounds.getSouthWest();
+      
+      const latPadding = (ne.lat() - sw.lat()) * 0.1;
+      const lngPadding = (ne.lng() - sw.lng()) * 0.1;
       
       newBounds.extend(new google.maps.LatLng(
-        newBounds.getNorthEast().lat() + latPadding,
-        newBounds.getNorthEast().lng() + lngPadding
+        ne.lat() + latPadding,
+        ne.lng() + lngPadding
       ));
       newBounds.extend(new google.maps.LatLng(
-        newBounds.getSouthWest().lat() - latPadding,
-        newBounds.getSouthWest().lng() - lngPadding
+        sw.lat() - latPadding,
+        sw.lng() - lngPadding
       ));
       
       setBounds(newBounds);
@@ -82,6 +83,109 @@ export const ClubMap = ({
 
   if (!isLoaded) return <div>Loading map...</div>;
 
+  const mapOptions = {
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'greedy',
+    streetViewControl: false,
+    mapTypeControl: false,
+    styles: [
+      { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+      { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+      {
+        featureType: "administrative.locality",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#d59563" }],
+      },
+      {
+        featureType: "administrative.neighborhood",
+        elementType: "labels.text",
+        stylers: [
+          {
+            color: "#ffffff",
+            weight: 0.5,
+          },
+        ],
+      },
+      {
+        featureType: "administrative.neighborhood",
+        elementType: "geometry",
+        stylers: [
+          {
+            color: "#333333",
+            weight: 1,
+          },
+        ],
+      },
+      {
+        featureType: "poi",
+        elementType: "labels",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [{ visibility: "off" }],
+      },
+      {
+        featureType: "transit",
+        elementType: "geometry",
+        stylers: [{ color: "#2f3948" }],
+      },
+      {
+        featureType: "transit.station",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#d59563" }],
+      },
+      {
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [{ color: "#38414e" }],
+      },
+      {
+        featureType: "road",
+        elementType: "geometry.stroke",
+        stylers: [{ color: "#212a37" }],
+      },
+      {
+        featureType: "road",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#9ca5b3" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [{ color: "#746855" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "geometry.stroke",
+        stylers: [{ color: "#1f2835" }],
+      },
+      {
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#f3d19c" }],
+      },
+      {
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [{ color: "#17263c" }],
+      },
+      {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [{ color: "#515c6d" }],
+      },
+      {
+        featureType: "water",
+        elementType: "labels.text.stroke",
+        stylers: [{ color: "#17263c" }],
+      },
+    ],
+  };
+
   return (
     <GoogleMap
       mapContainerStyle={{ width: '100%', height: '100%', touchAction: 'none' }}
@@ -94,14 +198,49 @@ export const ClubMap = ({
         }
       }}
     >
-      <MapMarkers
-        clubs={clubs}
-        selectedClub={selectedClub}
-        userLocation={userLocation}
-        mapCenter={mapCenter}
-        onClubSelect={onClubSelect}
-      />
-      <MapDirections directionsResult={directionsResult} />
+      {clubs?.map((club) => (
+        <Marker
+          key={club.id}
+          position={club.position}
+          onClick={() => onClubSelect(club)}
+          icon={club.position.lat === mapCenter.lat && club.position.lng === mapCenter.lng ? {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: '#FFD700',
+            fillOpacity: 1,
+            strokeColor: '#000000',
+            strokeWeight: 2,
+          } : undefined}
+        />
+      ))}
+
+      {userLocation && (
+        <Marker
+          position={userLocation}
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#4285F4',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          }}
+        />
+      )}
+
+      {directionsResult && (
+        <DirectionsRenderer
+          directions={directionsResult}
+          options={{
+            suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: "#4285F4",
+              strokeOpacity: 0.8,
+              strokeWeight: 4,
+            },
+          }}
+        />
+      )}
     </GoogleMap>
   );
 };

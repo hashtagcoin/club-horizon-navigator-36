@@ -39,12 +39,12 @@ export const LocationModals = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Select City</DialogTitle>
+            <DialogTitle>Select Suburb</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select city" />
+                <SelectValue placeholder="Select suburb" />
               </SelectTrigger>
               <SelectContent>
                 {locations[currentCountry] && locations[currentCountry][currentState] && 
@@ -93,7 +93,7 @@ export const LocationModals = ({
             </Select>
             <Select value={currentSuburb} onValueChange={setCurrentSuburb}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select city" />
+                <SelectValue placeholder="Select suburb" />
               </SelectTrigger>
               <SelectContent>
                 {locations[currentCountry] && locations[currentCountry][currentState] && 

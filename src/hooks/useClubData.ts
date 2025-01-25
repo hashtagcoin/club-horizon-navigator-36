@@ -1,52 +1,71 @@
 import { useQuery } from "@tanstack/react-query";
-import { Club } from "@/types/club";
 import { supabase } from "@/integrations/supabase/client";
+import { Club } from "@/types/club";
 
-export const useClubData = (currentCity?: string) => {
+const transformClubData = (data: any[]): Club[] => {
+  console.log('Raw data from Supabase:', data);
+  
+  const transformed = data.map((club) => {
+    const transformedClub = {
+      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
+      name: club.name || 'Unknown Club',
+      address: club.address || 'Address not available',
+      traffic: club.traffic || 'Low',
+      openingHours: {
+        Monday: club.monday_hours_open && club.monday_hours_close 
+          ? `${club.monday_hours_open} - ${club.monday_hours_close}`
+          : 'Closed',
+        Tuesday: club.tuesday_hours_open && club.tuesday_hours_close
+          ? `${club.tuesday_hours_open} - ${club.tuesday_hours_close}`
+          : 'Closed',
+        Wednesday: club.wednesday_hours_open && club.wednesday_hours_close
+          ? `${club.wednesday_hours_open} - ${club.wednesday_hours_close}`
+          : 'Closed',
+        Thursday: club.thursday_hours_open && club.thursday_hours_close
+          ? `${club.thursday_hours_open} - ${club.thursday_hours_close}`
+          : 'Closed',
+        Friday: club.friday_hours_open && club.friday_hours_close
+          ? `${club.friday_hours_open} - ${club.friday_hours_close}`
+          : 'Closed',
+        Saturday: club.saturday_hours_open && club.saturday_hours_close
+          ? `${club.saturday_hours_open} - ${club.saturday_hours_close}`
+          : 'Closed',
+        Sunday: club.sunday_hours_open && club.sunday_hours_close
+          ? `${club.sunday_hours_open} - ${club.sunday_hours_close}`
+          : 'Closed'
+      },
+      position: {
+        lat: club.latitude || -33.8688,
+        lng: club.longitude || 151.2093
+      },
+      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
+      hasSpecial: Math.random() < 0.3, // 30% chance of special
+      genre: club.venue_type || 'Various'
+    };
+    console.log('Transformed club:', transformedClub);
+    return transformedClub;
+  });
+
+  console.log('Final transformed data:', transformed);
+  return transformed;
+};
+
+export const useClubData = () => {
   return useQuery({
-    queryKey: ['clubs', currentCity],
+    queryKey: ['clubs'],
     queryFn: async () => {
-      console.log('Fetching clubs data for city:', currentCity);
-      let query = supabase
+      console.log('Fetching clubs from Supabase...');
+      const { data, error } = await supabase
         .from('Clublist_Australia')
         .select('*');
       
-      if (currentCity) {
-        query = query.eq('city', currentCity);
-      }
-
-      const { data: clubs, error } = await query;
-
       if (error) {
-        console.error('Error fetching clubs:', error);
+        console.error('Supabase error:', error);
         throw error;
       }
-
-      console.log('Received clubs data:', clubs);
-
-      return clubs.map((club): Club => ({
-        id: parseInt(club.place_id, 36), // Convert place_id to a number
-        name: club.name || 'Unknown Venue',
-        address: club.address || '',
-        position: {
-          lat: club.latitude || -33.8688,
-          lng: club.longitude || 151.2093,
-        },
-        traffic: 'Low',
-        openingHours: {
-          Monday: `${club.monday_hours_open || 'Closed'} - ${club.monday_hours_close || 'Closed'}`,
-          Tuesday: `${club.tuesday_hours_open || 'Closed'} - ${club.tuesday_hours_close || 'Closed'}`,
-          Wednesday: `${club.wednesday_hours_open || 'Closed'} - ${club.wednesday_hours_close || 'Closed'}`,
-          Thursday: `${club.thursday_hours_open || 'Closed'} - ${club.thursday_hours_close || 'Closed'}`,
-          Friday: `${club.friday_hours_open || 'Closed'} - ${club.friday_hours_close || 'Closed'}`,
-          Saturday: `${club.saturday_hours_open || 'Closed'} - ${club.saturday_hours_close || 'Closed'}`,
-          Sunday: `${club.sunday_hours_open || 'Closed'} - ${club.sunday_hours_close || 'Closed'}`
-        },
-        genre: club[`music_${new Date().toLocaleString('en-us', { weekday: 'short' })}` as keyof typeof club] as string || 'Various',
-        usersAtClub: Math.floor(Math.random() * 50),
-        hasSpecial: Math.random() > 0.7,
-        isUserAdded: false
-      }));
+      
+      console.log('Supabase response:', data);
+      return transformClubData(data || []);
     }
   });
 };
