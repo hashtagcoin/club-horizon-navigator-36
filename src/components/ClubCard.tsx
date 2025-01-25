@@ -2,6 +2,7 @@ import { Club } from '@/types/club';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Clock, MessageCircle, User, Smile, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { memo } from 'react';
 
 interface ClubCardProps {
   club: Club;
@@ -12,7 +13,15 @@ interface ClubCardProps {
   newMessageCount: number;
 }
 
-export const ClubCard = ({
+const formatType = (type: string) => {
+  return type
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+export const ClubCard = memo(({
   club,
   selectedDay,
   isSelected,
@@ -20,15 +29,6 @@ export const ClubCard = ({
   onOpenChat,
   newMessageCount
 }: ClubCardProps) => {
-  // Function to format type string
-  const formatType = (type: string) => {
-    return type
-      .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
   return (
     <Card
       className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
@@ -80,4 +80,14 @@ export const ClubCard = ({
       </CardContent>
     </Card>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return (
+    prevProps.club.id === nextProps.club.id &&
+    prevProps.selectedDay === nextProps.selectedDay &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.newMessageCount === nextProps.newMessageCount
+  );
+});
+
+ClubCard.displayName = 'ClubCard';

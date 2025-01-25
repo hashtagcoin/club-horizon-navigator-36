@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useCallback } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
@@ -39,26 +39,29 @@ export const ClubList: FC<ClubListProps> = ({
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const handleScroll = useCallback(() => {
     if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      // Add a small delay to ensure the DOM has updated
-      setTimeout(() => {
-        const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-        if (!scrollContainer) return;
+      const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollContainer) return;
 
-        const clubElement = selectedClubRef.current;
-        if (!clubElement) return;
+      const clubElement = selectedClubRef.current;
+      if (!clubElement) return;
 
-        const cardHeight = clubElement.offsetHeight;
-        const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
-        
-        scrollContainer.scrollTo({
-          top: scrollTop,
-          behavior: 'smooth'
-        });
-      }, 100);
+      const cardHeight = clubElement.offsetHeight;
+      const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
+      
+      scrollContainer.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth'
+      });
     }
   }, [selectedClub]);
+
+  useEffect(() => {
+    // Add a small delay to ensure the DOM has updated
+    const timeoutId = setTimeout(handleScroll, 100);
+    return () => clearTimeout(timeoutId);
+  }, [handleScroll]);
 
   // Reset scroll position when club list changes
   useEffect(() => {
