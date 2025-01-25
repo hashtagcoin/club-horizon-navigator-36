@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef, useMemo } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
@@ -39,29 +38,25 @@ export const ClubList: FC<ClubListProps> = ({
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<VariableSizeList>(null);
   const isMobile = useIsMobile();
   
-  // Adjusted height calculation
+  // Calculate available height for the list
   const listHeight = typeof window !== 'undefined' ? 
     window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
-  // Function to calculate item height based on content
   const getItemHeight = (index: number) => {
     const club = clubs[index];
-    const BASE_HEIGHT = 140; // Base height for all cards
-    const PADDING = 16; // Consistent padding (8px top + 8px bottom)
+    const BASE_HEIGHT = 140;
+    const PADDING = 16;
     
     let additionalHeight = 0;
     
-    // Add height for long venue names
     if (club.name.length > 25) {
       additionalHeight += 24;
     }
 
-    // Add height for icons
     if (club.hasSpecial || club.isUserAdded) {
       additionalHeight += 16;
     }
@@ -69,19 +64,16 @@ export const ClubList: FC<ClubListProps> = ({
     return BASE_HEIGHT + additionalHeight + PADDING;
   };
 
-  // Memoize item heights for performance
   const itemHeights = useMemo(() => {
     return clubs.map((_, index) => getItemHeight(index));
   }, [clubs]);
 
-  // Reset cache when clubs change
   useEffect(() => {
     if (listRef.current) {
       listRef.current.resetAfterIndex(0);
     }
   }, [clubs]);
 
-  // Scroll to selected club
   useEffect(() => {
     if (selectedClub && listRef.current) {
       const index = clubs.findIndex(club => club.id === selectedClub.id);
@@ -97,9 +89,9 @@ export const ClubList: FC<ClubListProps> = ({
       <div 
         style={{
           ...style,
-          padding: '8px'
+          padding: '8px',
+          boxSizing: 'border-box'
         }}
-        className="box-border"
       >
         <ClubCard
           club={club}
@@ -114,7 +106,7 @@ export const ClubList: FC<ClubListProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
+    <div className="w-full h-full flex flex-col bg-white shadow-lg">
       <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
         <div className="flex items-center gap-2">
           <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
@@ -134,9 +126,9 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <div className="flex-grow overflow-hidden px-1" ref={scrollAreaRef}>
+      <div className="flex-grow overflow-hidden">
         {isLoading ? (
-          <div>Loading venues...</div>
+          <div className="p-4">Loading venues...</div>
         ) : (
           <VariableSizeList
             ref={listRef}
@@ -148,7 +140,7 @@ export const ClubList: FC<ClubListProps> = ({
             className="react-window-list"
           >
             {Row}
-          </VariableSizeList>
+          </div>
         )}
       </div>
     </div>
