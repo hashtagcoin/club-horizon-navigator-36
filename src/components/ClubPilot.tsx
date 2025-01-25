@@ -142,7 +142,7 @@ export default function ClubPilot() {
       <MapSection
         isListCollapsed={listState.isListCollapsed}
         isLoaded={isLoaded}
-        filteredClubs={filteredClubs}
+        clubs={filteredClubs}
         selectedClub={mapControls.selectedClub}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
