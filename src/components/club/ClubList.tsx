@@ -1,60 +1,52 @@
-import { FC, useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import { Club } from "@/types/club";
+import { ClubCard } from "@/components/ClubCard";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { FixedSizeList as List } from 'react-window';
-import { ClubCard } from '@/components/ClubCard';
-import { ClubFilters } from '@/components/ClubFilters';
-import { Club } from '@/types/club';
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMediaQuery } from "@/hooks/use-mobile";
 
 interface ClubListProps {
   clubs: Club[];
   selectedClub: Club | null;
-  selectedDay: string;
-  sortBy: string;
-  setSortBy: (value: string) => void;
-  filterGenre: string[];
-  setFilterGenre: (value: string[]) => void;
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
   onSelectClub: (club: Club) => void;
   onOpenChat: (club: Club) => void;
-  newMessageCounts: Record<number, number>;
-  isLoading: boolean;
+  newMessageCounts: Record<string, number>;
+  isLoading?: boolean;
 }
 
-export const ClubList: FC<ClubListProps> = ({
+export const ClubList = ({
   clubs,
   selectedClub,
-  selectedDay,
-  sortBy,
-  setSortBy,
-  filterGenre,
-  setFilterGenre,
-  searchQuery,
-  setSearchQuery,
   onSelectClub,
   onOpenChat,
   newMessageCounts,
-  isLoading
-}) => {
-  const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
+  isLoading = false,
+}: ClubListProps) => {
   const selectedClubRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Row renderer for the virtualized list
+  useEffect(() => {
+    if (selectedClubRef.current) {
+      selectedClubRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [selectedClub]);
+
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const club = clubs[index];
     return (
       <div 
         style={{ 
           ...style,
-          paddingLeft: '8px',
-          paddingRight: '8px',
-          paddingBottom: '8px'
+          padding: '8px',
         }} 
         ref={selectedClub?.id === club.id ? selectedClubRef : null}
       >
         <ClubCard
           club={club}
-          selectedDay={selectedDay}
           isSelected={selectedClub?.id === club.id}
           onSelect={onSelectClub}
           onOpenChat={onOpenChat}
@@ -64,51 +56,41 @@ export const ClubList: FC<ClubListProps> = ({
     );
   };
 
-  useEffect(() => {
-    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const listElement = scrollAreaRef.current.querySelector('.react-window-list');
-      if (!listElement) return;
+  if (isLoading) {
+    return (
+      <div className="space-y-4 p-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-1/4" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-      const clubElement = selectedClubRef.current;
-      const scrollTop = clubElement.offsetTop - 100; // Offset to show some context
-      
-      listElement.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
-    }
-  }, [selectedClub]);
+  if (!clubs.length) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+        <p className="text-muted-foreground">No clubs found</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
-      <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
-        <div className="flex items-center gap-2">
-          <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
-            {clubs.length}
+    <ScrollArea className="h-full">
+      <div className="p-2">
+        {clubs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full">
+            <p className="text-muted-foreground">No clubs found</p>
           </div>
-          <span className="text-sm font-medium text-gray-600">
-            {clubs.length === 1 ? 'Venue' : 'Venues'}
-          </span>
-        </div>
-      </div>
-      <ClubFilters
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        filterGenre={filterGenre}
-        setFilterGenre={setFilterGenre}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        genres={genres}
-      />
-      <div ref={scrollAreaRef} className="flex-grow">
-        {isLoading ? (
-          <div className="p-4">Loading venues...</div>
         ) : (
           <List
             className="react-window-list"
             height={window.innerHeight - 300}
             itemCount={clubs.length}
-            itemSize={150}
+            itemSize={180}
             width="100%"
             overscanCount={5}
           >
@@ -116,6 +98,6 @@ export const ClubList: FC<ClubListProps> = ({
           </List>
         )}
       </div>
-    </div>
+    </ScrollArea>
   );
 };
