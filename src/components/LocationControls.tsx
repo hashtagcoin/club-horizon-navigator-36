@@ -1,9 +1,8 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
-import { LocationButton } from "@/components/location/LocationButton"
-import { LocationModalContent } from "@/components/location/LocationModalContent"
+import { LocationButton } from "./LocationButton"
+import { LocationModalContent } from "./LocationModalContent"
 import { supabase } from "@/integrations/supabase/client"
 
 interface LocationControlsProps {
@@ -24,41 +23,35 @@ export function LocationControls({
   onCityChange
 }: LocationControlsProps) {
   const [showLocationModal, setShowLocationModal] = useState(false)
-  const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [cities, setCities] = useState<string[]>([])
   const [states, setStates] = useState<string[]>([])
 
   useEffect(() => {
-    fetchCitiesAndStates()
+    fetchCities()
+    fetchStates()
     // Set default location to Sydney if no city is set
     if (!currentCity) {
-      if (navigator.geolocation) {
-        getCurrentLocation()
-      } else {
-        // Set to Sydney if geolocation is not available
-        setDefaultSydneyLocation()
-      }
+      setDefaultSydneyLocation()
     }
   }, [])
 
-  const fetchCitiesAndStates = async () => {
-    // Fetch cities
-    const { data: citiesData, error: citiesError } = await supabase
+  const fetchCities = async () => {
+    const { data, error } = await supabase
       .from('Clublist_Australia')
       .select('city')
       .not('city', 'is', null)
     
-    if (citiesError) {
-      console.error('Error fetching cities:', citiesError)
+    if (error) {
+      console.error('Error fetching cities:', error)
       return
     }
 
     // Extract unique cities and remove nulls
-    const uniqueCities = Array.from(new Set(citiesData.map(row => row.city).filter(Boolean)))
+    const uniqueCities = Array.from(new Set(data.map(row => row.city).filter(Boolean)))
     setCities(uniqueCities.sort())
+  }
 
-    // For now, we'll use a static list of Australian states since they're not in the DB
+  const fetchStates = () => {
     const australianStates = [
       'NSW',
       'VIC',
@@ -80,111 +73,13 @@ export function LocationControls({
     toast.success('Location set to Sydney')
   }
 
-  const getCurrentLocation = () => {
-    console.log('Getting current location...')
-    setIsLoadingLocation(true)
-    
-    // Set a timeout for geolocation
-    const timeoutId = setTimeout(() => {
-      console.log('Geolocation timed out, defaulting to Sydney')
-      setIsLoadingLocation(false)
-      setDefaultSydneyLocation()
-    }, 10000) // 10 second timeout
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        clearTimeout(timeoutId)
-        console.log('Got coordinates:', position.coords.latitude, position.coords.longitude)
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0`
-          )
-          const data = await response.json()
-          console.log('Geocoding response:', data)
-          
-          if (data.results && data.results.length > 0) {
-            const addressComponents = data.results[0].address_components
-            let city = '', state = '', country = ''
-            
-            for (const component of addressComponents) {
-              if (component.types.includes('locality') || component.types.includes('sublocality')) {
-                city = component.long_name
-              } else if (component.types.includes('administrative_area_level_1')) {
-                state = component.long_name
-              } else if (component.types.includes('country')) {
-                country = component.long_name
-              }
-            }
-
-            console.log('Found location:', { city, state, country })
-
-            if (city && state && country) {
-              onCountryChange(country)
-              onStateChange(state)
-              onCityChange(city)
-              toast.success(`Location updated to ${city}`)
-              handleCloseModals()
-            } else {
-              console.log('Could not determine exact location, defaulting to Sydney')
-              setDefaultSydneyLocation()
-            }
-          } else {
-            console.log('No results from geocoding, defaulting to Sydney')
-            setDefaultSydneyLocation()
-          }
-        } catch (error) {
-          console.error('Error fetching location details:', error)
-          setDefaultSydneyLocation()
-        } finally {
-          setIsLoadingLocation(false)
-        }
-      },
-      (error) => {
-        clearTimeout(timeoutId)
-        console.error('Error getting location:', error)
-        setDefaultSydneyLocation()
-        setIsLoadingLocation(false)
-      }
-    )
-  }
-
-  const handleCloseModals = () => {
-    setShowLocationModal(false)
-    setShowGlobalLocationModal(false)
-  }
-
   return (
     <div className="space-y-2">
-      <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
-        <DialogTrigger asChild>
-          <div className="flex items-center gap-2">
-            <LocationButton
-              isLoadingLocation={isLoadingLocation}
-              currentCity={currentCity || 'Select Location'}
-            />
-          </div>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Select Location</DialogTitle>
-          </DialogHeader>
-          <LocationModalContent
-            currentCountry={currentCountry}
-            currentState={currentState}
-            currentCity={currentCity}
-            states={states}
-            cities={cities}
-            onStateChange={onStateChange}
-            onCityChange={onCityChange}
-            onClose={handleCloseModals}
-            onLocationUpdate={getCurrentLocation}
-            onGlobalLocationOpen={() => setShowGlobalLocationModal(true)}
-            isLoadingLocation={isLoadingLocation}
-          />
-        </DialogContent>
-      </Dialog>
+      <div onClick={() => setShowLocationModal(true)} className="cursor-pointer">
+        <LocationButton currentCity={currentCity || 'Select Location'} />
+      </div>
 
-      <Dialog open={showGlobalLocationModal} onOpenChange={setShowGlobalLocationModal}>
+      <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Change Location</DialogTitle>
@@ -197,10 +92,7 @@ export function LocationControls({
             cities={cities}
             onStateChange={onStateChange}
             onCityChange={onCityChange}
-            onClose={handleCloseModals}
-            onLocationUpdate={getCurrentLocation}
-            onGlobalLocationOpen={() => setShowGlobalLocationModal(true)}
-            isLoadingLocation={isLoadingLocation}
+            onClose={() => setShowLocationModal(false)}
           />
         </DialogContent>
       </Dialog>
