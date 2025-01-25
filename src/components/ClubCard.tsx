@@ -34,7 +34,7 @@ export const ClubCard = ({
       className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
       onClick={() => onSelect(club)}
     >
-      <CardHeader className="flex justify-between items-start p-0 px-2 pt-2">
+      <CardHeader className="flex justify-between items-start p-2">
         <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
         <div className="flex items-center gap-2">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>

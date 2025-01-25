@@ -43,8 +43,8 @@
     @apply bg-background text-foreground;
     height: 100%;
     width: 100%;
-    padding-top: 56px;
-    padding-bottom: 64px;
+    padding-top: 56px; /* Add padding for fixed top bar */
+    padding-bottom: 64px; /* Add padding for fixed bottom bar */
     overflow: hidden;
     position: fixed;
   }
@@ -52,13 +52,14 @@
 
 .map-container {
   @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 120px); /* Account for top and bottom bars */
 }
 
+/* Update mobile padding to move map up by 115% of navbar height */
 @media (max-width: 768px) {
   .map-container {
-    padding-bottom: calc(73.6px);
-    transform: translateY(-9.6px);
+    padding-bottom: calc(73.6px); /* 115% of bottom navbar height (64px) */
+    transform: translateY(-9.6px); /* Move up by 15% of navbar height */
   }
 }
 
@@ -85,25 +86,7 @@
   }
 }
 
+/* Add styles to make bottom navbar always on top */
 .bg-primary.text-primary-foreground.p-2.fixed.bottom-0.left-0.right-0 {
   @apply z-50;
-}
-
-/* Add styles for virtualized list */
-.react-window-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-}
-
-.react-window-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.react-window-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.react-window-list::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
 }

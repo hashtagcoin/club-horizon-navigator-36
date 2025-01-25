@@ -1,9 +1,8 @@
-import { FC, useEffect, useRef, useMemo } from 'react';
+import { FC, useEffect, useRef } from 'react';
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
-import { VariableSizeList } from 'react-window';
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ClubListProps {
   clubs: Club[];
@@ -38,48 +37,42 @@ export const ClubList: FC<ClubListProps> = ({
 }) => {
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<VariableSizeList>(null);
-  const isMobile = useIsMobile();
-  
-  const listHeight = typeof window !== 'undefined' ? 
-    window.innerHeight - (isMobile ? 240 : 180) : 
-    600;
-
-  const getItemHeight = () => 160; // Fixed height for all items
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0);
+    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
+      // Add a small delay to ensure the DOM has updated
+      setTimeout(() => {
+        const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+        if (!scrollContainer) return;
+
+        const clubElement = selectedClubRef.current;
+        if (!clubElement) return;
+
+        const cardHeight = clubElement.offsetHeight;
+        const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  }, [selectedClub]);
+
+  // Reset scroll position when club list changes
+  useEffect(() => {
+    const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   }, [clubs]);
 
-  useEffect(() => {
-    if (selectedClub && listRef.current) {
-      const index = clubs.findIndex(club => club.id === selectedClub.id);
-      if (index !== -1) {
-        listRef.current.scrollToItem(index, 'smart');
-      }
-    }
-  }, [selectedClub, clubs]);
-
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const club = clubs[index];
-    return (
-      <div className="p-2">
-        <ClubCard
-          club={club}
-          selectedDay={selectedDay}
-          isSelected={selectedClub?.id === club.id}
-          onSelect={onSelectClub}
-          onOpenChat={onOpenChat}
-          newMessageCount={newMessageCounts[club.id] || 0}
-        />
-      </div>
-    );
-  };
-
   return (
-    <div className="w-full h-full flex flex-col bg-white shadow-lg">
+    <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
       <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
         <div className="flex items-center gap-2">
           <div className="bg-black text-white px-4 py-1.5 rounded-lg text-xl font-bold">
@@ -99,23 +92,32 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <div className="flex-grow overflow-hidden">
-        {isLoading ? (
-          <div className="p-4">Loading venues...</div>
-        ) : (
-          <VariableSizeList
-            ref={listRef}
-            height={listHeight}
-            width="100%"
-            itemCount={clubs.length}
-            itemSize={getItemHeight}
-            overscanCount={5}
-            className="react-window-list"
-          >
-            {Row}
-          </VariableSizeList>
-        )}
-      </div>
+      <ScrollArea 
+        className="flex-grow" 
+        ref={scrollAreaRef}
+      >
+        <div className="space-y-2 pr-2">
+          {isLoading ? (
+            <div>Loading venues...</div>
+          ) : (
+            clubs.map(club => (
+              <div 
+                key={club.id} 
+                ref={selectedClub?.id === club.id ? selectedClubRef : null}
+              >
+                <ClubCard
+                  club={club}
+                  selectedDay={selectedDay}
+                  isSelected={selectedClub?.id === club.id}
+                  onSelect={onSelectClub}
+                  onOpenChat={onOpenChat}
+                  newMessageCount={newMessageCounts[club.id] || 0}
+                />
+              </div>
+            ))
+          )}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
