@@ -21,7 +21,8 @@ export const ClubCard = ({
   newMessageCount
 }: ClubCardProps) => {
   // Function to format type string
-  const formatType = (type: string) => {
+  const formatType = (type: string | undefined) => {
+    if (!type) return '';
     return type
       .toLowerCase()
       .split(' ')
@@ -55,7 +56,7 @@ export const ClubCard = ({
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
             <span className="text-xs text-black">
-              {formatType(club.genre[selectedDay as keyof typeof club.genre])}
+              {formatType(club.genre[selectedDay as keyof typeof club.genre] || '')}
             </span>
           </div>
         </div>
