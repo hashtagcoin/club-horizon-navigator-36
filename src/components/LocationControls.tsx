@@ -2,7 +2,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Globe, Loader2 } from 'lucide-react'
-import { locations } from '@/data/locations'
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
@@ -10,19 +9,19 @@ import { supabase } from "@/integrations/supabase/client"
 interface LocationControlsProps {
   currentCountry: string
   currentState: string
-  currentSuburb: string
+  currentCity: string
   onCountryChange: (value: string) => void
   onStateChange: (value: string) => void
-  onSuburbChange: (value: string) => void
+  onCityChange: (value: string) => void
 }
 
 export function LocationControls({
   currentCountry,
   currentState,
-  currentSuburb,
+  currentCity,
   onCountryChange,
   onStateChange,
-  onSuburbChange
+  onCityChange
 }: LocationControlsProps) {
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
@@ -37,8 +36,9 @@ export function LocationControls({
     try {
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select('location')
-        .not('location', 'is', null)
+        .select('city')
+        .not('city', 'is', null)
+        .eq('Country', currentCountry)
       
       if (error) {
         console.error('Error fetching cities:', error)
@@ -46,12 +46,12 @@ export function LocationControls({
       }
 
       // Extract unique cities and remove nulls
-      const uniqueCities = Array.from(new Set(data.map(item => item.location).filter(Boolean)))
+      const uniqueCities = Array.from(new Set(data.map(item => item.city).filter(Boolean)))
       setCities(uniqueCities)
       
       // If no city is selected and we have cities, select the first one
-      if (!currentSuburb && uniqueCities.length > 0) {
-        onSuburbChange(uniqueCities[0])
+      if (!currentCity && uniqueCities.length > 0) {
+        onCityChange(uniqueCities[0])
       }
     } catch (error) {
       console.error('Error processing cities:', error)
@@ -93,7 +93,7 @@ export function LocationControls({
             if (city && state && country) {
               onCountryChange(country)
               onStateChange(state)
-              onSuburbChange(city)
+              onCityChange(city)
               toast.success(`Location updated to ${city}`)
               handleCloseModals()
             } else {
@@ -132,7 +132,7 @@ export function LocationControls({
                   Locating...
                 </div>
               ) : (
-                currentSuburb
+                currentCity
               )}
             </h2>
           </div>
@@ -142,7 +142,7 @@ export function LocationControls({
             <DialogTitle>Select City</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <Select value={currentSuburb} onValueChange={onSuburbChange}>
+            <Select value={currentCity} onValueChange={onCityChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>
@@ -179,27 +179,7 @@ export function LocationControls({
             <DialogTitle>Change Location</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <Select value={currentCountry} onValueChange={onCountryChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select country" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(locations).map((country) => (
-                  <SelectItem key={country} value={country}>{country}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={currentState} onValueChange={onStateChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select state" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations[currentCountry] && Object.keys(locations[currentCountry]).map((state) => (
-                  <SelectItem key={state} value={state}>{state}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={currentSuburb} onValueChange={onSuburbChange}>
+            <Select value={currentCity} onValueChange={onCityChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>

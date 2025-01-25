@@ -174,11 +174,11 @@ export type Database = {
       Clublist_Australia: {
         Row: {
           address: string | null
+          city: string | null
           friday_hours: string | null
           friday_hours_close: string | null
           friday_hours_open: string | null
           latitude: number | null
-          location: string | null
           longitude: number | null
           monday_hours: string | null
           monday_hours_close: string | null
@@ -217,11 +217,11 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          city?: string | null
           friday_hours?: string | null
           friday_hours_close?: string | null
           friday_hours_open?: string | null
           latitude?: number | null
-          location?: string | null
           longitude?: number | null
           monday_hours?: string | null
           monday_hours_close?: string | null
@@ -260,11 +260,11 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          city?: string | null
           friday_hours?: string | null
           friday_hours_close?: string | null
           friday_hours_open?: string | null
           latitude?: number | null
-          location?: string | null
           longitude?: number | null
           monday_hours?: string | null
           monday_hours_close?: string | null
