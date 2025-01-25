@@ -2,9 +2,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
-import { LocationButton } from "./location/LocationButton"
-import { LocationModalContent } from "./location/LocationModalContent"
-import { CitySelect } from "./location/CitySelect"
+import { LocationButton } from "./LocationButton"
+import { LocationModalContent } from "./LocationModalContent"
+import { CitySelect } from "./CitySelect"
+import { supabase } from "@/integrations/supabase/client"
 
 interface LocationControlsProps {
   currentCountry: string
@@ -26,9 +27,10 @@ export function LocationControls({
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [cities] = useState<string[]>([])
+  const [cities, setCities] = useState<string[]>([])
 
   useEffect(() => {
+    fetchCities()
     // Set default location to Sydney if no city is set
     if (!currentCity) {
       if (navigator.geolocation) {
@@ -38,7 +40,23 @@ export function LocationControls({
         setDefaultSydneyLocation()
       }
     }
-  }, [currentCity])
+  }, [])
+
+  const fetchCities = async () => {
+    const { data, error } = await supabase
+      .from('Clublist_Australia')
+      .select('city')
+      .not('city', 'is', null)
+    
+    if (error) {
+      console.error('Error fetching cities:', error)
+      return
+    }
+
+    // Extract unique cities and remove nulls
+    const uniqueCities = Array.from(new Set(data.map(row => row.city).filter(Boolean)))
+    setCities(uniqueCities.sort())
+  }
 
   const setDefaultSydneyLocation = () => {
     console.log('Setting default location to Sydney')
