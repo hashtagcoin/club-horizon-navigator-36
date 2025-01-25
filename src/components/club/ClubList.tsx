@@ -4,7 +4,7 @@ import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
 import { FixedSizeList } from 'react-window';
-import { useMediaQuery } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ClubListProps {
   clubs: Club[];
@@ -40,7 +40,7 @@ export const ClubList: FC<ClubListProps> = ({
   const genres = Array.from(new Set(clubs.map(club => club.genre))).sort();
   const selectedClubRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useIsMobile();
   const listHeight = typeof window !== 'undefined' ? 
     window.innerHeight - (isMobile ? 240 : 180) : // Account for headers and padding
     600;
