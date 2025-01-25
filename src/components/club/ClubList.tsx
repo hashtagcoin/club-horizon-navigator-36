@@ -50,8 +50,9 @@ export const ClubList: FC<ClubListProps> = ({
     return (
       <div style={{
         ...style,
+        paddingLeft: '16px',
         paddingRight: '16px',
-        paddingBottom: '8px',
+        paddingBottom: '16px',
       }}>
         <ClubCard
           club={club}
@@ -73,7 +74,7 @@ export const ClubList: FC<ClubListProps> = ({
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollContainer) {
           scrollContainer.scrollTo({
-            top: index * 140, // Approximate height of each card
+            top: index * 156, // Card height (140px) + padding (16px)
             behavior: 'smooth'
           });
         }
@@ -110,8 +111,9 @@ export const ClubList: FC<ClubListProps> = ({
             height={listHeight}
             width="100%"
             itemCount={clubs.length}
-            itemSize={140} // Height of each card + margin
+            itemSize={156} // Card height (140px) + padding (16px)
             overscanCount={5}
+            className="react-window-list"
           >
             {Row}
           </FixedSizeList>
