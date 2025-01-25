@@ -17,7 +17,13 @@ export interface Club {
     Sunday: string;
   };
   genre: {
-    [key: string]: string;
+    Monday: string;
+    Tuesday: string;
+    Wednesday: string;
+    Thursday: string;
+    Friday: string;
+    Saturday: string;
+    Sunday: string;
   };
   usersAtClub: number;
   hasSpecial: boolean;
