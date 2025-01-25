@@ -4,7 +4,6 @@ import { ClubMap } from './ClubMap';
 import { ChatWindow } from '../chat/ChatWindow';
 import { LocationModals } from '../location/LocationModals';
 import { ClubDetailsPanel } from '../club/ClubDetailsPanel';
-import { MapControls } from './MapControls';
 
 interface MapSectionProps {
   isLoaded: boolean;
@@ -61,12 +60,6 @@ export const MapSection: FC<MapSectionProps> = ({
           directions={directions}
           onClubSelect={onClubSelect}
           calculatedBounds={null}
-        />
-        <MapControls
-          showAllClubs={true}
-          toggleShowAllClubs={() => {}}
-          onZoomIn={() => {}}
-          onZoomOut={() => {}}
         />
       </div>
     </div>
