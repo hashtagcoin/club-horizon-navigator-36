@@ -55,17 +55,50 @@ export const useClubData = () => {
     queryKey: ['clubs'],
     queryFn: async () => {
       console.log('Fetching clubs from Supabase...');
-      const { data, error } = await supabase
+      
+      let { count } = await supabase
         .from('Clublist_Australia')
-        .select('*');
+        .select('*', { count: 'exact', head: true });
       
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+      console.log('Total number of clubs:', count);
+      
+      // If there are more than 1000 records, we need to paginate
+      if (count && count > 1000) {
+        const pages = Math.ceil(count / 1000);
+        let allData: any[] = [];
+        
+        for (let i = 0; i < pages; i++) {
+          const { data, error } = await supabase
+            .from('Clublist_Australia')
+            .select('*')
+            .range(i * 1000, (i + 1) * 1000 - 1);
+          
+          if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+          }
+          
+          if (data) {
+            allData = [...allData, ...data];
+          }
+        }
+        
+        console.log(`Fetched ${allData.length} clubs in total`);
+        return transformClubData(allData);
+      } else {
+        // If less than 1000 records, fetch them all at once
+        const { data, error } = await supabase
+          .from('Clublist_Australia')
+          .select('*');
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+        
+        console.log('Supabase response:', data);
+        return transformClubData(data || []);
       }
-      
-      console.log('Supabase response:', data);
-      return transformClubData(data || []);
     }
   });
 };
