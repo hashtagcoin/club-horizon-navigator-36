@@ -13,7 +13,6 @@ interface ClubCardProps {
   newMessageCount: number;
 }
 
-// Move formatType outside component to prevent recreation
 const formatType = (type: string) => {
   return type
     .toLowerCase()
@@ -32,7 +31,7 @@ export const ClubCard = memo(({
 }: ClubCardProps) => {
   return (
     <Card
-      className={`cursor-pointer relative bg-white ${isSelected ? 'selected-club-card' : ''}`}
+      className={`cursor-pointer relative bg-white transition-none ${isSelected ? 'selected-club-card' : ''}`}
       onClick={() => onSelect(club)}
     >
       <CardHeader className="flex justify-between items-start p-2">
@@ -82,7 +81,6 @@ export const ClubCard = memo(({
     </Card>
   );
 }, (prevProps, nextProps) => {
-  // Deep comparison for club properties that affect rendering
   return (
     prevProps.club.id === nextProps.club.id &&
     prevProps.club.name === nextProps.club.name &&
