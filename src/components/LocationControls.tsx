@@ -34,6 +34,7 @@ export function LocationControls({
   }, [])
 
   const getCurrentLocation = () => {
+    console.log('Getting current location...')
     setIsLoadingLocation(true)
     if (!navigator.geolocation) {
       toast.error("Geolocation is not supported by your browser")
@@ -43,11 +44,13 @@ export function LocationControls({
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        console.log('Got coordinates:', position.coords.latitude, position.coords.longitude)
         try {
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyC6Z3hNhhdT0Fqy_AXYl07JBRczMiTg8_0`
           )
           const data = await response.json()
+          console.log('Geocoding response:', data)
           
           if (data.results && data.results.length > 0) {
             const addressComponents = data.results[0].address_components
@@ -63,6 +66,8 @@ export function LocationControls({
               }
             }
 
+            console.log('Found location:', { city, state, country })
+
             if (city && state && country) {
               onCountryChange(country)
               onStateChange(state)
@@ -70,6 +75,7 @@ export function LocationControls({
               toast.success(`Location updated to ${city}`)
               handleCloseModals()
             } else {
+              console.log('Could not determine exact location')
               toast.error("Couldn't determine your exact location")
             }
           }
@@ -92,6 +98,8 @@ export function LocationControls({
     setShowLocationModal(false)
     setShowGlobalLocationModal(false)
   }
+
+  console.log('Current city in LocationControls:', currentCity)
 
   return (
     <div className="space-y-2">
