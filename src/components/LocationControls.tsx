@@ -31,7 +31,7 @@ export function LocationControls({
 
   useEffect(() => {
     fetchCities()
-  }, [currentCountry, currentState])
+  }, [currentCountry])
 
   const fetchCities = async () => {
     try {
@@ -119,10 +119,6 @@ export function LocationControls({
     setShowLocationModal(false)
     setShowGlobalLocationModal(false)
   }
-
-  useEffect(() => {
-    getCurrentLocation()
-  }, [])
 
   return (
     <div className="space-y-2">
