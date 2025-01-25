@@ -85,7 +85,8 @@ export const ClubMap = ({
 
   const mapOptions = {
     disableDefaultUI: true,
-    zoomControl: false,
+    zoomControl: true,
+    gestureHandling: 'greedy',
     streetViewControl: false,
     mapTypeControl: false,
     styles: [
@@ -187,7 +188,7 @@ export const ClubMap = ({
 
   return (
     <GoogleMap
-      mapContainerStyle={{ width: '100%', height: '100%' }}
+      mapContainerStyle={{ width: '100%', height: '100%', touchAction: 'none' }}
       center={mapCenter}
       zoom={mapZoom}
       options={mapOptions}
