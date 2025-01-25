@@ -17,12 +17,7 @@ const calculateDistance = (
   return R * c;
 };
 
-export const sortClubs = (
-  clubs: Club[], 
-  sortBy: string, 
-  userLocation?: { lat: number; lng: number },
-  selectedDay: string = 'Monday'
-) => {
+export const sortClubs = (clubs: Club[], sortBy: string, userLocation?: { lat: number; lng: number }) => {
   const clubsCopy = [...clubs];
 
   switch (sortBy) {
@@ -58,16 +53,12 @@ export const sortClubs = (
       return clubsCopy.sort((a, b) => b.usersAtClub - a.usersAtClub);
     
     case 'genre':
-      return clubsCopy.sort((a, b) => {
-        const genreA = a.genre[selectedDay as keyof typeof a.genre] || '';
-        const genreB = b.genre[selectedDay as keyof typeof b.genre] || '';
-        return genreA.localeCompare(genreB);
-      });
+      return clubsCopy.sort((a, b) => a.genre.localeCompare(b.genre));
     
     case 'openingHours':
       return clubsCopy.sort((a, b) => {
-        const aHours = a.openingHours[selectedDay as keyof typeof a.openingHours] || '';
-        const bHours = b.openingHours[selectedDay as keyof typeof b.openingHours] || '';
+        const aHours = a.openingHours[Object.keys(a.openingHours)[0]] || '';
+        const bHours = b.openingHours[Object.keys(b.openingHours)[0]] || '';
         return aHours.localeCompare(bHours);
       });
     

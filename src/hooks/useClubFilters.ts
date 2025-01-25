@@ -32,10 +32,7 @@ export function useClubFilters() {
 
     // Apply filters
     if (filterGenre.length > 0) {
-      filtered = filtered.filter(club => {
-        const clubGenre = club.genre[selectedDay as keyof typeof club.genre];
-        return filterGenre.includes(clubGenre);
-      });
+      filtered = filtered.filter(club => filterGenre.includes(club.genre));
     }
     
     if (searchQuery) {
@@ -46,7 +43,10 @@ export function useClubFilters() {
     }
     
     if (showHighTraffic) {
+      // First filter to only show high traffic clubs
       filtered = filtered.filter(club => club.traffic === "High");
+      
+      // Then sort remaining clubs by traffic level
       const trafficOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
       filtered.sort((a, b) => 
         (trafficOrder[b.traffic as keyof typeof trafficOrder] || 0) - 
@@ -59,16 +59,18 @@ export function useClubFilters() {
       filtered = filtered.filter(club => club.hasSpecial);
     }
 
+    // Sort by closing time if sortByOpenLate is true
     if (sortByOpenLate) {
       filtered.sort((a, b) => {
         const aClosingHour = getClosingHour(a, selectedDay);
         const bClosingHour = getClosingHour(b, selectedDay);
-        return bClosingHour - aClosingHour;
+        return bClosingHour - aClosingHour; // Sort in descending order
       });
       return filtered;
     }
     
-    return sortClubs(filtered, sortBy, userLocation, selectedDay);
+    // Apply other sorting if not sorting by closing time
+    return sortClubs(filtered, sortBy, userLocation);
   };
 
   return {

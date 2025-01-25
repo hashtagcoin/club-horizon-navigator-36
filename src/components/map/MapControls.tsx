@@ -1,40 +1,74 @@
-import { Button } from "@/components/ui/button"
-import { Compass, Locate } from "lucide-react"
-import { useLocationData } from '@/hooks/useLocationData'
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff, ZoomIn, ZoomOut } from "lucide-react";
 
 interface MapControlsProps {
-  onLocateUser: () => void;
-  onShowGlobalLocationModal: () => void;
+  showAllClubs: boolean;
+  toggleShowAllClubs: () => void;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
 }
 
-export function MapControls({ onLocateUser, onShowGlobalLocationModal }: MapControlsProps) {
-  const { isLoadingLocation } = useLocationData()
+export function MapControls({
+  showAllClubs,
+  toggleShowAllClubs,
+  onZoomIn,
+  onZoomOut,
+}: MapControlsProps) {
+  const isMobile = useIsMobile();
+  const isClubPilotNet = typeof window !== 'undefined' && window.location.hostname === 'clubpilot.net';
 
-  const handleLocationClick = () => {
-    onLocateUser();
-    onShowGlobalLocationModal();
-  };
+  const controlsStyle = isMobile && isClubPilotNet
+    ? {
+        position: 'absolute' as const,
+        right: '10px',
+        // Position at roughly the third card height (assuming each card is about 120px)
+        top: '360px',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        gap: '8px',
+        zIndex: 10,
+      }
+    : {
+        position: 'absolute' as const,
+        right: '10px',
+        top: '10px',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        gap: '8px',
+        zIndex: 10,
+      };
 
   return (
-    <div className="absolute bottom-24 right-4 flex flex-col gap-2">
+    <div style={controlsStyle}>
       <Button
         variant="outline"
         size="icon"
-        className="h-10 w-10 bg-white shadow-md"
-        onClick={handleLocationClick}
-        disabled={isLoadingLocation}
+        className="bg-white shadow-lg hover:bg-gray-50"
+        onClick={toggleShowAllClubs}
       >
-        <Locate className="h-4 w-4" />
+        {showAllClubs ? (
+          <EyeOff className="h-4 w-4" />
+        ) : (
+          <Eye className="h-4 w-4" />
+        )}
       </Button>
       <Button
         variant="outline"
         size="icon"
-        className="h-10 w-10 bg-white shadow-md"
-        onClick={onLocateUser}
-        disabled={isLoadingLocation}
+        className="bg-white shadow-lg hover:bg-gray-50"
+        onClick={onZoomIn}
       >
-        <Compass className="h-4 w-4" />
+        <ZoomIn className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        className="bg-white shadow-lg hover:bg-gray-50"
+        onClick={onZoomOut}
+      >
+        <ZoomOut className="h-4 w-4" />
       </Button>
     </div>
-  )
+  );
 }

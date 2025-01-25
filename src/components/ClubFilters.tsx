@@ -20,7 +20,6 @@ interface ClubFiltersProps {
 }
 
 const formatGenre = (genre: string) => {
-  if (typeof genre !== 'string') return '';
   return genre
     .toLowerCase()
     .split(' ')
@@ -59,7 +58,7 @@ export function ClubFilters({
           </SelectTrigger>
           <SelectContent>
             {sortOptions.map((option) => (
-              <SelectItem key={`sort-${option.value}`} value={option.value}>
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -75,7 +74,7 @@ export function ClubFilters({
           </SelectTrigger>
           <SelectContent>
             {sortedGenres.map((genre) => (
-              <SelectItem key={`genre-${genre}`} value={genre}>
+              <SelectItem key={genre} value={genre}>
                 {genre === "all" ? "All Venues" : formatGenre(genre)}
               </SelectItem>
             ))}
