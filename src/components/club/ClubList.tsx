@@ -1,8 +1,7 @@
 import { FC, useEffect, useRef, useCallback, useMemo } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
 import { Club } from '@/types/club';
+import { VirtualizedClubList } from './VirtualizedClubList';
 
 interface ClubListProps {
   clubs: Club[];
@@ -35,65 +34,11 @@ export const ClubList: FC<ClubListProps> = ({
   newMessageCounts,
   isLoading
 }) => {
-  const selectedClubRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
   // Memoize genres list to prevent recalculation on every render
   const genres = useMemo(() => 
     Array.from(new Set(clubs.map(club => club.genre))).sort(),
     [clubs]
   );
-
-  const handleScroll = useCallback(() => {
-    if (selectedClub && selectedClubRef.current && scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-      if (!scrollContainer) return;
-
-      const clubElement = selectedClubRef.current;
-      const cardHeight = clubElement.offsetHeight;
-      const scrollTop = Math.max(0, clubElement.offsetTop - cardHeight);
-      
-      scrollContainer.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
-    }
-  }, [selectedClub]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(handleScroll, 100);
-    return () => clearTimeout(timeoutId);
-  }, [handleScroll]);
-
-  // Reset scroll position when club list changes
-  useEffect(() => {
-    const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-  }, [clubs]);
-
-  // Memoize the club cards list to prevent unnecessary re-renders
-  const clubCards = useMemo(() => (
-    clubs.map(club => (
-      <div 
-        key={club.id} 
-        ref={selectedClub?.id === club.id ? selectedClubRef : null}
-      >
-        <ClubCard
-          club={club}
-          selectedDay={selectedDay}
-          isSelected={selectedClub?.id === club.id}
-          onSelect={onSelectClub}
-          onOpenChat={onOpenChat}
-          newMessageCount={newMessageCounts[club.id] || 0}
-        />
-      </div>
-    ))
-  ), [clubs, selectedClub, selectedDay, onSelectClub, onOpenChat, newMessageCounts]);
 
   return (
     <div className="w-full h-full flex flex-col p-1 overflow-hidden bg-white shadow-lg">
@@ -116,16 +61,15 @@ export const ClubList: FC<ClubListProps> = ({
         setSearchQuery={setSearchQuery}
         genres={genres}
       />
-      <ScrollArea 
-        className="flex-grow" 
-        ref={scrollAreaRef}
-      >
-        <div className="space-y-2 pr-2">
-          {isLoading ? (
-            <div>Loading venues...</div>
-          ) : clubCards}
-        </div>
-      </ScrollArea>
+      <VirtualizedClubList
+        clubs={clubs}
+        selectedClub={selectedClub}
+        selectedDay={selectedDay}
+        onSelectClub={onSelectClub}
+        onOpenChat={onOpenChat}
+        newMessageCounts={newMessageCounts}
+        isLoading={isLoading}
+      />
     </div>
   );
 };
