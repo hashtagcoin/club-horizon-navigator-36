@@ -91,11 +91,11 @@ export const ClubCard = ({
             size="sm"
             variant="secondary"
             className={`relative h-6 w-6 p-0 ${
-              isSelected ? 'bg-white hover:bg-gray-200' : 'bg-black hover:bg-gray-800'
+              isSelected ? 'bg-black hover:bg-gray-800' : 'bg-white hover:bg-gray-200'
             }`}
             onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
           >
-            <MessageCircle className={`h-3 w-3 ${isSelected ? 'text-black' : 'text-white'}`} />
+            <MessageCircle className={`h-3 w-3 ${isSelected ? 'text-white' : 'text-black'}`} />
             {newMessageCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] rounded-full w-3 h-3 flex items-center justify-center">
                 {newMessageCount}
