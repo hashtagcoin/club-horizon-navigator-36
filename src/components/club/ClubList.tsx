@@ -45,12 +45,17 @@ export const ClubList: FC<ClubListProps> = ({
     window.innerHeight - (isMobile ? 240 : 180) : 
     600;
 
+  const CARD_HEIGHT = 164; // Base card height
+  const GAP = 2; // Gap between cards
+  const TOTAL_ITEM_SIZE = CARD_HEIGHT + GAP; // Total height including gap
+
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const club = clubs[index];
     return (
       <div style={{
         ...style,
-        paddingBottom: '2px',
+        height: CARD_HEIGHT,
+        marginBottom: GAP,
       }}>
         <ClubCard
           club={club}
@@ -71,7 +76,7 @@ export const ClubList: FC<ClubListProps> = ({
         const scrollContainer = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollContainer) {
           scrollContainer.scrollTo({
-            top: index * 166, // Card height (164px) + gap (2px)
+            top: index * TOTAL_ITEM_SIZE,
             behavior: 'smooth'
           });
         }
@@ -108,7 +113,7 @@ export const ClubList: FC<ClubListProps> = ({
             height={listHeight}
             width="100%"
             itemCount={clubs.length}
-            itemSize={166} // Card height (164px) + gap (2px)
+            itemSize={TOTAL_ITEM_SIZE}
             overscanCount={5}
             className="react-window-list"
           >
