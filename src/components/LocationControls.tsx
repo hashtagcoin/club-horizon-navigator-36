@@ -1,10 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Globe, Loader2 } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useState, useEffect } from 'react'
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
+import { LocationButton } from "./location/LocationButton"
+import { LocationModalContent } from "./location/LocationModalContent"
+import { CitySelect } from "./location/CitySelect"
 
 interface LocationControlsProps {
   currentCountry: string
@@ -13,10 +13,6 @@ interface LocationControlsProps {
   onCountryChange: (value: string) => void
   onStateChange: (value: string) => void
   onCityChange: (value: string) => void
-}
-
-type CityRecord = {
-  city: string
 }
 
 export function LocationControls({
@@ -43,7 +39,6 @@ export function LocationControls({
         .select('city')
         .not('city', 'is', null)
         .eq('Country', currentCountry)
-        .distinct()
       
       if (error) {
         console.error('Error fetching cities:', error)
@@ -78,7 +73,6 @@ export function LocationControls({
           const data = await response.json()
           
           if (data.results && data.results.length > 0) {
-            // Find the city from address components
             const addressComponents = data.results[0].address_components
             let city = '', state = '', country = ''
             
@@ -92,7 +86,6 @@ export function LocationControls({
               }
             }
 
-            // Update location if we found valid data
             if (city && state && country) {
               onCountryChange(country)
               onStateChange(state)
@@ -126,53 +119,27 @@ export function LocationControls({
   return (
     <div className="space-y-2">
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
-        <DialogTrigger asChild>
+        <Dialog.Trigger asChild>
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-white bg-black cursor-pointer rounded-lg px-3 py-1 shadow-sm inline-block hover:bg-black/90 transition-colors border-4 border-white">
-              {isLoadingLocation ? (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  Locating...
-                </div>
-              ) : (
-                currentCity
-              )}
-            </h2>
+            <LocationButton
+              isLoadingLocation={isLoadingLocation}
+              currentCity={currentCity}
+            />
           </div>
-        </DialogTrigger>
+        </Dialog.Trigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Select City</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <Select value={currentCity} onValueChange={onCityChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select city" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex justify-between items-center">
-            <Button onClick={handleCloseModals}>Close</Button>
-            <div className="flex gap-2">
-              <Button 
-                onClick={getCurrentLocation} 
-                variant="outline"
-                disabled={isLoadingLocation}
-              >
-                {isLoadingLocation && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                Update Location
-              </Button>
-              <Button onClick={() => setShowGlobalLocationModal(true)} variant="outline">
-                <Globe className="h-4 w-4 mr-2" />
-                Change Location
-              </Button>
-            </div>
-          </div>
+          <LocationModalContent
+            currentCity={currentCity}
+            cities={cities}
+            onCityChange={onCityChange}
+            onClose={handleCloseModals}
+            onLocationUpdate={getCurrentLocation}
+            onGlobalLocationOpen={() => setShowGlobalLocationModal(true)}
+            isLoadingLocation={isLoadingLocation}
+          />
         </DialogContent>
       </Dialog>
 
@@ -182,16 +149,11 @@ export function LocationControls({
             <DialogTitle>Change Location</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <Select value={currentCity} onValueChange={onCityChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select city" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <CitySelect
+              currentCity={currentCity}
+              cities={cities}
+              onCityChange={onCityChange}
+            />
           </div>
           <Button onClick={handleCloseModals}>Close</Button>
         </DialogContent>
