@@ -28,9 +28,11 @@ export function LocationControls({
   const [showGlobalLocationModal, setShowGlobalLocationModal] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [cities, setCities] = useState<string[]>([])
+  const [states, setStates] = useState<string[]>([])
 
   useEffect(() => {
     fetchCities()
+    fetchStates()
     // Set default location to Sydney if no city is set
     if (!currentCity) {
       if (navigator.geolocation) {
@@ -56,6 +58,22 @@ export function LocationControls({
     // Extract unique cities and remove nulls
     const uniqueCities = Array.from(new Set(data.map(row => row.city).filter(Boolean)))
     setCities(uniqueCities.sort())
+  }
+
+  const fetchStates = async () => {
+    const { data, error } = await supabase
+      .from('Clublist_Australia')
+      .select('State')
+      .not('State', 'is', null)
+    
+    if (error) {
+      console.error('Error fetching states:', error)
+      return
+    }
+
+    // Extract unique states and remove nulls
+    const uniqueStates = Array.from(new Set(data.map(row => row.State).filter(Boolean)))
+    setStates(uniqueStates.sort())
   }
 
   const setDefaultSydneyLocation = () => {
@@ -139,8 +157,6 @@ export function LocationControls({
     setShowGlobalLocationModal(false)
   }
 
-  console.log('Current city in LocationControls:', currentCity)
-
   return (
     <div className="space-y-2">
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
@@ -157,8 +173,12 @@ export function LocationControls({
             <DialogTitle>Select City</DialogTitle>
           </DialogHeader>
           <LocationModalContent
+            currentCountry={currentCountry}
+            currentState={currentState}
             currentCity={currentCity}
+            states={states}
             cities={cities}
+            onStateChange={onStateChange}
             onCityChange={onCityChange}
             onClose={handleCloseModals}
             onLocationUpdate={getCurrentLocation}
