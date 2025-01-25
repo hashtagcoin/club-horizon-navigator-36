@@ -1,5 +1,6 @@
-import { Club } from '@/types/club';
 import { MapView } from './MapView';
+import { MapControls } from './MapControls';
+import { Club } from '@/types/club';
 
 interface MapSectionProps {
   isListCollapsed: boolean;
@@ -10,13 +11,13 @@ interface MapSectionProps {
   setSelectedDay: (day: string) => void;
   mapCenter: google.maps.LatLngLiteral;
   mapZoom: number;
-  userLocation: google.maps.LatLngLiteral;
+  userLocation: google.maps.LatLngLiteral | null;
   directions: google.maps.DirectionsResult | null;
   onClubSelect: (club: Club) => void;
   locationManagement: any;
 }
 
-export const MapSection = ({
+export function MapSection({
   isListCollapsed,
   isLoaded,
   filteredClubs,
@@ -29,13 +30,9 @@ export const MapSection = ({
   directions,
   onClubSelect,
   locationManagement,
-}: MapSectionProps) => {
+}: MapSectionProps) {
   return (
-    <div 
-      className={`transition-all duration-300 ease-in-out h-[75vh] ${
-        isListCollapsed ? 'w-full ml-0' : 'w-1/2 ml-[50%]'
-      }`}
-    >
+    <div className={`relative flex-grow transition-all duration-300 ${isListCollapsed ? 'ml-0' : 'ml-[400px]'}`}>
       <MapView
         isLoaded={isLoaded}
         clubs={filteredClubs}
@@ -49,6 +46,10 @@ export const MapSection = ({
         onClubSelect={onClubSelect}
         locationManagement={locationManagement}
       />
+      <MapControls 
+        onLocateUser={locationManagement.getUserLocation} 
+        onShowGlobalLocationModal={() => locationManagement.setShowGlobalLocationModal(true)}
+      />
     </div>
   );
-};
+}
