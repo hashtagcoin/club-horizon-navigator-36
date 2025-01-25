@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Club } from "@/types/club";
+import { Club, TrafficLevel } from "@/types/club";
 
 interface ClubData {
   id: number;
@@ -8,7 +8,7 @@ interface ClubData {
   address: string | null;
   latitude: number | null;
   longitude: number | null;
-  traffic: string | null;
+  traffic: TrafficLevel | null;
   monday_hours_open: string | null;
   monday_hours_close: string | null;
   tuesday_hours_open: string | null;
@@ -31,11 +31,11 @@ const transformClubData = (data: ClubData[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
-    const transformedClub = {
+    const transformedClub: Club = {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: club.traffic || 'Low',
+      traffic: (club.traffic || 'Low') as TrafficLevel,
       openingHours: {
         Monday: club.monday_hours_open && club.monday_hours_close 
           ? `${club.monday_hours_open} - ${club.monday_hours_close}`
@@ -83,7 +83,7 @@ export const useClubData = (selectedLocation?: string) => {
       console.log('Fetching clubs from Supabase for location:', selectedLocation);
       let query = supabase
         .from('Clublist_Australia')
-        .select<'*', ClubData>('*')
+        .select<string, ClubData>('*')
       
       if (selectedLocation) {
         query = query.eq('location', selectedLocation)
