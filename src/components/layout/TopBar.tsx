@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Search, User, LogOut, Settings, Plus } from "lucide-react";
 import { UserProfile } from '../user-profile';
 import { AddVenueModal } from '../venue/AddVenueModal';
+import { LocationControls } from '../location/LocationControls';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +16,24 @@ interface TopBarProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   onVenueAdded?: (venue: any) => void;
+  currentCountry: string;
+  currentState: string;
+  currentCity: string;
+  onCountryChange: (value: string) => void;
+  onStateChange: (value: string) => void;
+  onCityChange: (value: string) => void;
 }
 
 export const TopBar: FC<TopBarProps> = ({ 
   searchQuery = "", 
   setSearchQuery,
-  onVenueAdded 
+  onVenueAdded,
+  currentCountry,
+  currentState,
+  currentCity,
+  onCountryChange,
+  onStateChange,
+  onCityChange
 }) => {
   const [showProfile, setShowProfile] = useState(false);
   const [showAddVenue, setShowAddVenue] = useState(false);
@@ -46,6 +59,15 @@ export const TopBar: FC<TopBarProps> = ({
           <span className="text-base font-bold">CLUB PILOT</span>
         </div>
 
+        <LocationControls
+          currentCountry={currentCountry}
+          currentState={currentState}
+          currentCity={currentCity}
+          onCountryChange={onCountryChange}
+          onStateChange={onStateChange}
+          onCityChange={onCityChange}
+        />
+
         <div className="flex-1 max-w-md relative">
           <Input
             type="text"
@@ -58,7 +80,7 @@ export const TopBar: FC<TopBarProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"

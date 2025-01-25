@@ -120,6 +120,12 @@ export default function ClubPilot() {
       isGeneralChat={chatManager.isGeneralChat}
       toggleGeneralChat={chatManager.toggleGeneralChat}
       onVenueAdded={handleVenueAdded}
+      currentCountry={locationManagement.currentCountry}
+      currentState={locationManagement.currentState}
+      currentCity={locationManagement.currentSuburb}
+      onCountryChange={locationManagement.setCurrentCountry}
+      onStateChange={locationManagement.setCurrentState}
+      onCityChange={locationManagement.setCurrentSuburb}
     >
       <AnimatedClubList
         x={listState.x}

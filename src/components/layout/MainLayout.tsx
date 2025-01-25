@@ -19,6 +19,12 @@ interface MainLayoutProps {
   toggleGeneralChat: () => void;
   onVenueAdded?: (venue: any) => void;
   children?: React.ReactNode;
+  currentCountry: string;
+  currentState: string;
+  currentCity: string;
+  onCountryChange: (value: string) => void;
+  onStateChange: (value: string) => void;
+  onCityChange: (value: string) => void;
 }
 
 export function MainLayout({
@@ -34,7 +40,13 @@ export function MainLayout({
   isGeneralChat,
   toggleGeneralChat,
   onVenueAdded,
-  children
+  children,
+  currentCountry,
+  currentState,
+  currentCity,
+  onCountryChange,
+  onStateChange,
+  onCityChange
 }: MainLayoutProps) {
   const [showFriendsList, setShowFriendsList] = useState(false);
   const [showOffers, setShowOffers] = useState(false);
@@ -68,6 +80,12 @@ export function MainLayout({
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onVenueAdded={onVenueAdded}
+        currentCountry={currentCountry}
+        currentState={currentState}
+        currentCity={currentCity}
+        onCountryChange={onCountryChange}
+        onStateChange={onStateChange}
+        onCityChange={onCityChange}
       />
       
       <div className="flex-1 relative overflow-hidden">
