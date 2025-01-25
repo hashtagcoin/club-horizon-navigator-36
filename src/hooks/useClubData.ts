@@ -60,7 +60,7 @@ export const useClubData = (currentSuburb: string) => {
       let { data: australiaData, error: australiaError } = await supabase
         .from('Clublist_Australia')
         .select('*')
-        .eq('area', currentSuburb);
+        .eq('city', currentSuburb);
       
       if (australiaError) {
         console.error('Supabase error:', australiaError);
@@ -71,7 +71,7 @@ export const useClubData = (currentSuburb: string) => {
       const { data: userAddedData, error: userAddedError } = await supabase
         .from('user_added_venues')
         .select('*')
-        .eq('area', currentSuburb);
+        .eq('city', currentSuburb);
 
       if (userAddedError) {
         console.error('Supabase error:', userAddedError);
