@@ -41,17 +41,16 @@ export function ClubFilters({
   setSearchQuery,
   genres
 }: ClubFiltersProps) {
-  // Sort genres alphabetically and add "all" option at the beginning
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
-    <div className="p-2">
-      <div className="flex gap-2 items-center">
+    <div className="p-0 w-full">
+      <div className="flex gap-2 items-center w-full">
         <Select 
           onValueChange={setSortBy} 
           defaultValue={sortBy}
         >
-          <SelectTrigger className="w-[130px] h-8 text-sm">
+          <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -67,7 +66,7 @@ export function ClubFilters({
           onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
           defaultValue="all"
         >
-          <SelectTrigger className="w-[130px] h-8 text-sm">
+          <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Select venue type" />
           </SelectTrigger>
           <SelectContent>

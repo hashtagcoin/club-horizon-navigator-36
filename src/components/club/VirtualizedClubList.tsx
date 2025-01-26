@@ -73,21 +73,23 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
     <div className="flex flex-col h-full">
       <div className="px-4 py-3 border-b border-gray-200">
         <div className="flex items-center mb-3">
-          <div className="bg-black text-white px-3 py-1 rounded">
+          <div className="bg-black text-white px-4 py-2 rounded text-2xl font-bold">
             {clubs.length}
           </div>
-          <span className="ml-2 text-gray-700">venues</span>
+          <span className="ml-2 text-gray-700 text-xl">venues</span>
         </div>
         
-        <ClubFilters
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          filterGenre={filterGenre}
-          setFilterGenre={setFilterGenre}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          genres={genres}
-        />
+        <div className="px-0">
+          <ClubFilters
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            filterGenre={filterGenre}
+            setFilterGenre={setFilterGenre}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            genres={genres}
+          />
+        </div>
       </div>
 
       <div 
