@@ -34,7 +34,7 @@ export const ClubCard = memo(({
       className={`cursor-pointer relative bg-white transition-none h-[120px] ${isSelected ? 'selected-club-card' : ''}`}
       onClick={() => onSelect(club)}
     >
-      <CardHeader className="flex justify-between items-start p-2 h-12">
+      <CardHeader className="flex justify-between items-start p-4 pb-2 h-12">
         <CardTitle className="text-left text-base text-black truncate max-w-[200px]">{club.name}</CardTitle>
         <div className="flex items-center gap-2">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
@@ -50,7 +50,7 @@ export const ClubCard = memo(({
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-0 px-2 pb-2 h-[72px]">
+      <CardContent className="pt-0 px-4 pb-2 h-[72px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
