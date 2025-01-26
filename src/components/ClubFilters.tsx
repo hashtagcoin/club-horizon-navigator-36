@@ -48,35 +48,12 @@ export function ClubFilters({
 
   return (
     <div className="p-0 w-full relative">
-      <div className="flex gap-2 items-center w-full">
-        <Select 
-          onValueChange={setSortBy} 
-          defaultValue={sortBy}
-        >
-          <SelectTrigger className="h-8 text-sm flex-1">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent 
-            position="popper" 
-            className="z-50 bg-popover"
-            sideOffset={4}
-            align="start"
-            avoidCollisions={false}
-            autoFocus={false}
-          >
-            {sortOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
+      <div className="flex flex-col gap-2 w-full">
         <Select 
           onValueChange={(value) => setFilterGenre(value === "all" ? [] : [value])} 
           defaultValue="all"
         >
-          <SelectTrigger className="h-8 text-sm flex-1">
+          <SelectTrigger className="h-8 text-sm">
             <SelectValue placeholder="Select venue type" />
           </SelectTrigger>
           <SelectContent 
@@ -90,6 +67,29 @@ export function ClubFilters({
             {sortedGenres.map((genre) => (
               <SelectItem key={genre} value={genre}>
                 {genre === "all" ? "All Venues" : formatGenre(genre)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select 
+          onValueChange={setSortBy} 
+          defaultValue={sortBy}
+        >
+          <SelectTrigger className="h-8 text-sm">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent 
+            position="popper" 
+            className="z-50 bg-popover"
+            sideOffset={4}
+            align="start"
+            avoidCollisions={false}
+            autoFocus={false}
+          >
+            {sortOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
               </SelectItem>
             ))}
           </SelectContent>
