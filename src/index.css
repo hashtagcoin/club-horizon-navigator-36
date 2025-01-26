@@ -58,6 +58,10 @@
 .club-card {
   @apply bg-white hover:bg-secondary rounded-xl;
   height: 120px;
+  width: 100%;
+  max-width: 400px;
+  min-width: 280px;
+  margin: 0 auto;
   transition-property: background-color, border-color;
   transition-duration: 300ms;
 }
