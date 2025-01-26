@@ -17,7 +17,7 @@ const transformClubData = (data: any[]): Club[] => {
       id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: getRandomTraffic(), // Randomly assign traffic level
+      traffic: getRandomTraffic(), // Now truly random for each club
       openingHours: {
         Monday: club.monday_hours_open && club.monday_hours_close 
           ? `${club.monday_hours_open} - ${club.monday_hours_close}`
@@ -45,9 +45,10 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100), // Random number since not in DB
+      usersAtClub: Math.floor(Math.random() * 100), // Random number of users
       hasSpecial: Math.random() < 0.3, // 30% chance of special
-      genre: club.venue_type || 'Various'
+      genre: club.venue_type || 'Various',
+      isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
     return transformedClub;
