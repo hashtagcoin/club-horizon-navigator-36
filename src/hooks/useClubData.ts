@@ -17,36 +17,20 @@ const transformClubData = (data: any[]): Club[] => {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: getRandomTraffic(),
-      openingHours: {
-        Monday: club.monday_hours_open && club.monday_hours_close 
-          ? `${club.monday_hours_open} - ${club.monday_hours_close}`
-          : 'Closed',
-        Tuesday: club.tuesday_hours_open && club.tuesday_hours_close
-          ? `${club.tuesday_hours_open} - ${club.tuesday_hours_close}`
-          : 'Closed',
-        Wednesday: club.wednesday_hours_open && club.wednesday_hours_close
-          ? `${club.wednesday_hours_open} - ${club.wednesday_hours_close}`
-          : 'Closed',
-        Thursday: club.thursday_hours_open && club.thursday_hours_close
-          ? `${club.thursday_hours_open} - ${club.thursday_hours_close}`
-          : 'Closed',
-        Friday: club.friday_hours_open && club.friday_hours_close
-          ? `${club.friday_hours_open} - ${club.friday_hours_close}`
-          : 'Closed',
-        Saturday: club.saturday_hours_open && club.saturday_hours_close
-          ? `${club.saturday_hours_open} - ${club.saturday_hours_close}`
-          : 'Closed',
-        Sunday: club.sunday_hours_open && club.sunday_hours_close
-          ? `${club.sunday_hours_open} - ${club.sunday_hours_close}`
-          : 'Closed'
-      },
       position: {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100),
-      hasSpecial: Math.random() < 0.3,
+      traffic: getRandomTraffic(),
+      openingHours: {
+        Monday: `${club.monday_hours_open || '23:59'} - ${club.monday_hours_close || '23:59'}`,
+        Tuesday: `${club.tuesday_hours_open || '23:59'} - ${club.tuesday_hours_close || '23:59'}`,
+        Wednesday: `${club.wednesday_hours_open || '23:59'} - ${club.wednesday_hours_close || '23:59'}`,
+        Thursday: `${club.thursday_hours_open || '23:59'} - ${club.thursday_hours_close || '23:59'}`,
+        Friday: `${club.friday_hours_open || '23:59'} - ${club.friday_hours_close || '23:59'}`,
+        Saturday: `${club.saturday_hours_open || '23:59'} - ${club.saturday_hours_close || '23:59'}`,
+        Sunday: `${club.sunday_hours_open || '23:59'} - ${club.sunday_hours_close || '23:59'}`
+      },
       genre: {
         Monday: club.music_Mon || 'Various',
         Tuesday: club.music_Tues || 'Various',
@@ -56,6 +40,8 @@ const transformClubData = (data: any[]): Club[] => {
         Saturday: club.music_Sat || 'Various',
         Sunday: club.music_Sun || 'Various'
       },
+      usersAtClub: Math.floor(Math.random() * 100),
+      hasSpecial: Math.random() < 0.3,
       isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
