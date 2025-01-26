@@ -13,7 +13,8 @@ interface ClubCardProps {
   newMessageCount: number;
 }
 
-const formatType = (type: string) => {
+const formatType = (type: string | undefined) => {
+  if (!type) return 'Various';
   return type
     .toLowerCase()
     .split(' ')

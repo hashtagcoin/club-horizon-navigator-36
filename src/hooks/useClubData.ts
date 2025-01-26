@@ -13,7 +13,7 @@ const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
   const transformed = data.map((club) => {
-    const transformedClub = {
+    const transformedClub: Club = {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
