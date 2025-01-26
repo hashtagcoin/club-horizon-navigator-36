@@ -19,6 +19,26 @@ const calculateDistance = (
   return R * c;
 };
 
+const getClosingHour = (timeString: string): number => {
+  if (!timeString || timeString === 'Closed') return -1;
+  
+  const [opening, closing] = timeString.split(' - ').map(time => time.trim());
+  
+  // Handle special cases
+  if (opening === '23:59' || !closing) return -1; // Closed
+  if (opening === '23:58') return 24; // 24HR
+  if (opening === '23:57' || closing === '23:57') return -1; // TBC
+  
+  // Parse regular closing time
+  if (closing) {
+    const [hours] = closing.split(':').map(Number);
+    // If closing time is before 6 AM, add 24 to make it sortable
+    return hours < 6 ? hours + 24 : hours;
+  }
+  
+  return -1;
+};
+
 export function useClubFilters() {
   const [sortBy, setSortBy] = useState("closest");
   const [filterGenre, setFilterGenre] = useState<string[]>([]);
@@ -29,17 +49,6 @@ export function useClubFilters() {
   const [selectedDay, setSelectedDay] = useState(() => {
     return new Date().toLocaleString('en-us', {weekday: 'long'});
   });
-
-  // Memoize the closing hour calculation
-  const getClosingHour = useMemo(() => (club: Club, day: string) => {
-    const hours = club.openingHours[day];
-    if (!hours || hours === "Closed") return -1;
-    const closingTime = hours.split(" - ")[1];
-    if (!closingTime) return -1;
-    const [hourStr] = closingTime.split(":");
-    const hour = parseInt(hourStr);
-    return hour < 6 ? hour + 24 : hour;
-  }, []);
 
   // Debounced filter function
   const debouncedFilter = useMemo(
@@ -131,10 +140,11 @@ export function useClubFilters() {
       filtered = filtered.filter(club => club.hasSpecial);
     }
 
+    // Sort by closing time if sortByOpenLate is true
     if (sortByOpenLate) {
       filtered.sort((a, b) => {
-        const aClosingHour = getClosingHour(a, selectedDay);
-        const bClosingHour = getClosingHour(b, selectedDay);
+        const aClosingHour = getClosingHour(a.openingHours[selectedDay]);
+        const bClosingHour = getClosingHour(b.openingHours[selectedDay]);
         return bClosingHour - aClosingHour;
       });
       return filtered;

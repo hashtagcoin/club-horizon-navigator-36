@@ -21,6 +21,26 @@ const formatType = (type: string) => {
     .join(' ');
 };
 
+const formatTime = (timeString: string) => {
+  if (!timeString || timeString === 'Closed') return '';
+  
+  const [opening, closing] = timeString.split(' - ').map(time => time.trim());
+  
+  if (opening === '23:59') {
+    return 'Closed';
+  }
+  
+  if (opening === '23:58') {
+    return '24HR';
+  }
+  
+  if (opening === '23:57' || closing === '23:57') {
+    return 'TBC';
+  }
+  
+  return `${opening}${closing ? ` - ${closing}` : ''}`;
+};
+
 export const ClubCard = memo(({
   club,
   selectedDay,
@@ -61,7 +81,9 @@ export const ClubCard = memo(({
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center space-x-1">
             <Clock className="h-3 w-3 text-black" />
-            <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
+            <span className="text-xs text-black truncate max-w-[150px]">
+              {formatTime(club.openingHours[selectedDay])}
+            </span>
           </div>
           <Button
             size="sm"
