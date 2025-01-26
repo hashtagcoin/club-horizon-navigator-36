@@ -12,7 +12,9 @@ export interface Club {
   openingHours: {
     [key: string]: string;
   };
-  genre: string;
+  genre: {
+    [key: string]: string;
+  };
   usersAtClub: number;
   hasSpecial: boolean;
   isUserAdded?: boolean;
