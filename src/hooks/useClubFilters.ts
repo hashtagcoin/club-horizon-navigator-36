@@ -69,7 +69,7 @@ export function useClubFilters() {
         club =>
           club.name.toLowerCase().includes(query) ||
           club.address.toLowerCase().includes(query) ||
-          club.genre.toLowerCase().includes(query)
+          (club.genre[selectedDay] || '').toLowerCase().includes(query)
       );
     }
 
@@ -77,7 +77,7 @@ export function useClubFilters() {
     if (filterGenre.length > 0) {
       filtered = filtered.filter(club =>
         filterGenre.some(genre =>
-          club.genre.toLowerCase().includes(genre.toLowerCase())
+          (club.genre[selectedDay] || '').toLowerCase().includes(genre.toLowerCase())
         )
       );
     }

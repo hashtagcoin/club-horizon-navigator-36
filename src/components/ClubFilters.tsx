@@ -14,9 +14,11 @@ interface ClubFiltersProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   genres: string[];
+  selectedDay: string;
 }
 
 const formatGenre = (genre: string) => {
+  if (!genre || typeof genre !== 'string') return 'Various';
   return genre
     .toLowerCase()
     .split(' ')
@@ -39,7 +41,8 @@ export function ClubFilters({
   setFilterGenre,
   searchQuery,
   setSearchQuery,
-  genres
+  genres,
+  selectedDay
 }: ClubFiltersProps) {
   const sortedGenres = ["all", ...genres.sort()];
 

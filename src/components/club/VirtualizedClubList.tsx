@@ -41,7 +41,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const OVERSCAN_COUNT = 5;
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 120 : 800;
 
-  const genres = Array.from(new Set(clubs.map(club => club.genre)));
+  const genres = Array.from(new Set(clubs.map(club => club.genre[selectedDay] || 'Various')));
 
   const getItemsToRender = useCallback(() => {
     if (!clubs.length) return { items: [], startIndex: 0 };
@@ -88,6 +88,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             genres={genres}
+            selectedDay={selectedDay}
           />
         </div>
       </div>
