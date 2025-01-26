@@ -12,7 +12,7 @@ const getRandomTraffic = (): 'Low' | 'Medium' | 'High' => {
 const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
-  const transformed = data.map((club) => {
+  const transformed = data.map((club): Club => {
     const transformedClub: Club = {
       id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
@@ -32,13 +32,13 @@ const transformClubData = (data: any[]): Club[] => {
         Sunday: `${club.sunday_hours_open || '23:59'} - ${club.sunday_hours_close || '23:59'}`
       },
       genre: {
-        Monday: club.music_Mon || 'Various',
-        Tuesday: club.music_Tues || 'Various',
-        Wednesday: club.music_Wed || 'Various',
-        Thursday: club.music_Thurs || 'Various',
-        Friday: club.music_Fri || 'Various',
-        Saturday: club.music_Sat || 'Various',
-        Sunday: club.music_Sun || 'Various'
+        Monday: String(club.music_Mon || 'Various'),
+        Tuesday: String(club.music_Tues || 'Various'),
+        Wednesday: String(club.music_Wed || 'Various'),
+        Thursday: String(club.music_Thurs || 'Various'),
+        Friday: String(club.music_Fri || 'Various'),
+        Saturday: String(club.music_Sat || 'Various'),
+        Sunday: String(club.music_Sun || 'Various')
       },
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,

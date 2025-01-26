@@ -54,8 +54,8 @@ export const ClubCard = memo(({
   newMessageCount
 }: ClubCardProps) => {
   const dayKey = selectedDay as keyof typeof club.genre;
-  const genre = club.genre[dayKey] || 'Various';
-  const openingHours = club.openingHours[dayKey] || 'Closed';
+  const genreValue = club.genre[dayKey];
+  const openingHoursValue = club.openingHours[dayKey];
 
   return (
     <Card
@@ -83,7 +83,7 @@ export const ClubCard = memo(({
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
             <span className="text-xs text-black truncate max-w-[150px]">
-              {formatType(genre)}
+              {formatType(String(genreValue))}
             </span>
           </div>
           <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
@@ -92,7 +92,7 @@ export const ClubCard = memo(({
           <div className="flex items-center space-x-1">
             <Clock className="h-3 w-3 text-black" />
             <span className="text-xs text-black truncate max-w-[150px]">
-              {formatTime(openingHours)}
+              {formatTime(String(openingHoursValue))}
             </span>
           </div>
           <Button
