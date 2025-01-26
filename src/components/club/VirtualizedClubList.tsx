@@ -94,7 +94,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 
       <div 
         ref={containerRef}
-        className="flex-1 overflow-auto virtualized-list pl-3"
+        className="flex-1 overflow-auto virtualized-list pl-1"
         onScroll={handleScroll}
       >
         <div
