@@ -53,7 +53,7 @@ export const ClubCard = memo(({
   onOpenChat,
   newMessageCount
 }: ClubCardProps) => {
-  const dayKey = selectedDay as keyof typeof club.genre;
+  const dayKey = selectedDay as keyof typeof club.openingHours;
   const genreValue = club.genre[dayKey];
   const openingHoursValue = club.openingHours[dayKey];
 
@@ -119,8 +119,8 @@ export const ClubCard = memo(({
     prevProps.club.traffic === nextProps.club.traffic &&
     prevProps.club.hasSpecial === nextProps.club.hasSpecial &&
     prevProps.club.isUserAdded === nextProps.club.isUserAdded &&
-    prevProps.club.genre[prevProps.selectedDay] === nextProps.club.genre[nextProps.selectedDay] &&
-    prevProps.club.openingHours[prevProps.selectedDay] === nextProps.club.openingHours[nextProps.selectedDay] &&
+    prevProps.club.genre[prevProps.selectedDay as keyof typeof prevProps.club.genre] === nextProps.club.genre[nextProps.selectedDay as keyof typeof nextProps.club.genre] &&
+    prevProps.club.openingHours[prevProps.selectedDay as keyof typeof prevProps.club.openingHours] === nextProps.club.openingHours[nextProps.selectedDay as keyof typeof nextProps.club.openingHours] &&
     prevProps.club.usersAtClub === nextProps.club.usersAtClub &&
     prevProps.selectedDay === nextProps.selectedDay &&
     prevProps.isSelected === nextProps.isSelected &&
