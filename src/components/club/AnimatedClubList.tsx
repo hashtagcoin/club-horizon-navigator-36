@@ -1,7 +1,7 @@
 import { animated, SpringValue } from '@react-spring/web';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from 'lucide-react';
-import { ClubList } from './ClubList';
+import { VirtualizedClubList } from './VirtualizedClubList';
 import { Club } from '@/types/club';
 
 interface AnimatedClubListProps {
@@ -29,7 +29,13 @@ export const AnimatedClubList = ({
   bind,
   isCollapsed,
   onToggle,
-  ...clubListProps
+  clubs,
+  selectedClub,
+  selectedDay,
+  onSelectClub,
+  onOpenChat,
+  newMessageCounts,
+  isLoading
 }: AnimatedClubListProps) => {
   return (
     <>
@@ -46,16 +52,23 @@ export const AnimatedClubList = ({
         }}
         className="bg-white shadow-xl"
       >
-        <ClubList {...clubListProps} />
+        <VirtualizedClubList
+          clubs={clubs}
+          selectedClub={selectedClub}
+          selectedDay={selectedDay}
+          onSelectClub={onSelectClub}
+          onOpenChat={onOpenChat}
+          newMessageCounts={newMessageCounts}
+          isLoading={isLoading}
+        />
       </animated.div>
 
-      {/* Toggle button - shown when collapsed */}
       <div
         style={{
           position: 'fixed',
           top: '50%',
           left: isCollapsed ? 0 : '50%',
-          transform: 'translateY(-50%)', // Center vertically
+          transform: 'translateY(-50%)',
           zIndex: 25,
           transition: 'left 0.3s ease-in-out',
         }}
