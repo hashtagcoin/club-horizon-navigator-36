@@ -57,25 +57,27 @@ export const ClubCard = memo(({
             <span className="text-xs text-black truncate max-w-[150px]">{formatType(club.genre)}</span>
           </div>
         </div>
-        <div className="flex items-center space-x-1 mt-1">
-          <Clock className="h-3 w-3 text-black" />
-          <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
-        </div>
-        <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
-          <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
-          <Button
-            size="sm"
-            variant="outline"
-            className="relative h-6 w-6 p-0"
-            onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
-          >
-            <MessageCircle className="h-3 w-3" />
-            {newMessageCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] rounded-full w-3 h-3 flex items-center justify-center">
-                {newMessageCount}
-              </span>
-            )}
-          </Button>
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center space-x-1">
+            <Clock className="h-3 w-3 text-black" />
+            <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
+            <Button
+              size="sm"
+              variant="outline"
+              className="relative h-6 w-6 p-0"
+              onClick={(e) => { e.stopPropagation(); onOpenChat(club); }}
+            >
+              <MessageCircle className="h-3 w-3" />
+              {newMessageCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] rounded-full w-3 h-3 flex items-center justify-center">
+                  {newMessageCount}
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
