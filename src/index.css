@@ -55,11 +55,6 @@
   height: calc(100vh - 120px);
 }
 
-.club-list-container {
-  height: 100%;
-  overflow: hidden;
-}
-
 .club-card {
   @apply bg-white hover:bg-secondary rounded-xl;
   height: 120px;

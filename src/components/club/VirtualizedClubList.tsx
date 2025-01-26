@@ -1,7 +1,6 @@
-import { FC, useCallback, useState, useRef, useEffect } from 'react';
+import { FC, useCallback, useState, useRef } from 'react';
 import { Club } from '@/types/club';
 import { ClubCard } from '@/components/ClubCard';
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface VirtualizedClubListProps {
   clubs: Club[];
@@ -26,7 +25,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Fixed measurements
-  const ITEM_HEIGHT = 128; // 120px card + 8px total spacing
+  const ITEM_HEIGHT = 128; // 120px card + 8px spacing
   const OVERSCAN_COUNT = 5;
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 120 : 800;
 
@@ -45,16 +44,9 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
     };
   }, [scrollTop, clubs.length, containerHeight]);
 
-  const handleScroll = (e: any) => {
-    const viewport = e.target.querySelector('[data-radix-scroll-area-viewport]');
-    if (viewport) {
-      setScrollTop(viewport.scrollTop);
-    }
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    setScrollTop(e.currentTarget.scrollTop);
   };
-
-  useEffect(() => {
-    setScrollTop(0);
-  }, [clubs.length]);
 
   if (isLoading) {
     return <div className="p-4 text-center">Loading venues...</div>;
@@ -66,44 +58,39 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   return (
     <div 
       ref={containerRef}
-      className="h-full relative"
+      className="h-full overflow-auto px-2"
+      onScroll={handleScroll}
     >
-      <ScrollArea 
-        className="h-full w-full"
-        onScroll={handleScroll}
+      <div
+        style={{
+          height: totalHeight,
+          position: 'relative',
+          width: '100%'
+        }}
       >
-        <div
-          style={{
-            height: totalHeight,
-            position: 'relative',
-            width: '100%',
-            padding: '0 8px'
-          }}
-        >
-          {visibleClubs.map((club, index) => (
-            <div
-              key={club.id}
-              style={{
-                position: 'absolute',
-                top: (startIndex + index) * ITEM_HEIGHT,
-                left: 0,
-                right: 0,
-                height: ITEM_HEIGHT,
-                padding: '4px'
-              }}
-            >
-              <ClubCard
-                club={club}
-                selectedDay={selectedDay}
-                isSelected={selectedClub?.id === club.id}
-                onSelect={onSelectClub}
-                onOpenChat={onOpenChat}
-                newMessageCount={newMessageCounts[club.id] || 0}
-              />
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+        {visibleClubs.map((club, index) => (
+          <div
+            key={club.id}
+            style={{
+              position: 'absolute',
+              top: (startIndex + index) * ITEM_HEIGHT,
+              left: 0,
+              right: 0,
+              height: ITEM_HEIGHT,
+              padding: '4px'
+            }}
+          >
+            <ClubCard
+              club={club}
+              selectedDay={selectedDay}
+              isSelected={selectedClub?.id === club.id}
+              onSelect={onSelectClub}
+              onOpenChat={onOpenChat}
+              newMessageCount={newMessageCounts[club.id] || 0}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
