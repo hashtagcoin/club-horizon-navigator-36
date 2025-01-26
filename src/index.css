@@ -75,7 +75,7 @@
 
 .club-card {
   @apply bg-white hover:bg-secondary rounded-xl;
-  height: 115px;
+  height: 104px;
   width: 100%;
   max-width: none;
   min-width: 0;

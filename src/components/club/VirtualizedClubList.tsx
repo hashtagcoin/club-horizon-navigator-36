@@ -38,7 +38,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Fixed measurements
-  const ITEM_HEIGHT = 143; // 135px card + 8px spacing
+  const ITEM_HEIGHT = 132; // 104px card + 8px spacing
   const OVERSCAN_COUNT = 5;
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 120 : 800;
 
