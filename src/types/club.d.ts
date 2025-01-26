@@ -8,7 +8,6 @@ export interface Club {
   };
   traffic: 'Low' | 'Medium' | 'High';
   openingHours: {
-    [key: string]: string;
     Monday: string;
     Tuesday: string;
     Wednesday: string;
@@ -18,7 +17,6 @@ export interface Club {
     Sunday: string;
   };
   genre: {
-    [key: string]: string;
     Monday: string;
     Tuesday: string;
     Wednesday: string;
