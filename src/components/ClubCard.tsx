@@ -62,8 +62,8 @@ export const ClubCard = memo(({
             <Clock className="h-3 w-3 text-black" />
             <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
+          <div className="flex flex-col items-center">
+            <span className="text-xs font-medium text-black mb-1">{club.usersAtClub}</span>
             <Button
               size="sm"
               variant="outline"
