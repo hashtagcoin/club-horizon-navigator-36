@@ -52,7 +52,7 @@
 
 /* Custom scrollbar styles */
 .virtualized-list::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 .virtualized-list::-webkit-scrollbar-track {
@@ -61,7 +61,7 @@
 
 .virtualized-list::-webkit-scrollbar-thumb {
   background: black;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .virtualized-list::-webkit-scrollbar-button {
@@ -77,9 +77,9 @@
   @apply bg-white hover:bg-secondary rounded-xl;
   height: 115px;
   width: 100%;
-  max-width: 400px;
-  min-width: 280px;
-  margin: 0 auto;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
   transition-property: background-color, border-color;
   transition-duration: 300ms;
 }

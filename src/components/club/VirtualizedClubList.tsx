@@ -98,7 +98,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
       {/* Scrollable Club List */}
       <div 
         ref={containerRef}
-        className="flex-1 overflow-auto px-2 virtualized-list"
+        className="flex-1 overflow-auto virtualized-list"
         onScroll={handleScroll}
       >
         <div
@@ -117,7 +117,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
                 left: 0,
                 right: 0,
                 height: ITEM_HEIGHT,
-                padding: '4px'
+                padding: '4px 0'
               }}
             >
               <ClubCard
