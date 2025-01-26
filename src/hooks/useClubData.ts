@@ -47,7 +47,15 @@ const transformClubData = (data: any[]): Club[] => {
       },
       usersAtClub: Math.floor(Math.random() * 100),
       hasSpecial: Math.random() < 0.3,
-      genre: club.music_type || 'Various',
+      genre: {
+        Monday: club.music_Mon || 'Various',
+        Tuesday: club.music_Tues || 'Various',
+        Wednesday: club.music_Wed || 'Various',
+        Thursday: club.music_Thurs || 'Various',
+        Friday: club.music_Fri || 'Various',
+        Saturday: club.music_Sat || 'Various',
+        Sunday: club.music_Sun || 'Various'
+      },
       isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
@@ -78,15 +86,27 @@ export const useClubData = () => {
   });
 };
 
-// Add new function to fetch unique music genres
+// Update the useGenres function to fetch genres for the current day
 export const useGenres = () => {
+  const currentDay = new Date().toLocaleString('en-us', { weekday: 'long' });
+  const columnMap: { [key: string]: string } = {
+    'Monday': 'music_Mon',
+    'Tuesday': 'music_Tues',
+    'Wednesday': 'music_Wed',
+    'Thursday': 'music_Thurs',
+    'Friday': 'music_Fri',
+    'Saturday': 'music_Sat',
+    'Sunday': 'music_Sun'
+  };
+
   return useQuery({
-    queryKey: ['genres'],
+    queryKey: ['genres', currentDay],
     queryFn: async () => {
+      const column = columnMap[currentDay];
       const { data, error } = await supabase
         .from('Clublist_Australia')
-        .select('music_type')
-        .not('music_type', 'is', null);
+        .select(column)
+        .not(column, 'is', null);
       
       if (error) {
         console.error('Supabase error fetching genres:', error);
@@ -94,7 +114,7 @@ export const useGenres = () => {
       }
 
       // Get unique genres and filter out null/empty values
-      const uniqueGenres = [...new Set(data.map(item => item.music_type))]
+      const uniqueGenres = [...new Set(data.map(item => item[column]))]
         .filter(genre => genre && genre.trim());
 
       console.log('Unique genres from database:', uniqueGenres);

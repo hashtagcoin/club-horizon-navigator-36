@@ -77,7 +77,9 @@ export const ClubCard = memo(({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
-            <span className="text-xs text-black truncate max-w-[150px]">{formatType(club.genre)}</span>
+            <span className="text-xs text-black truncate max-w-[150px]">
+              {formatType(club.genre[selectedDay as keyof typeof club.genre])}
+            </span>
           </div>
           <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
         </div>
@@ -85,7 +87,7 @@ export const ClubCard = memo(({
           <div className="flex items-center space-x-1">
             <Clock className="h-3 w-3 text-black" />
             <span className="text-xs text-black truncate max-w-[150px]">
-              {formatTime(club.openingHours[selectedDay])}
+              {formatTime(club.openingHours[selectedDay as keyof typeof club.openingHours])}
             </span>
           </div>
           <Button
@@ -112,7 +114,7 @@ export const ClubCard = memo(({
     prevProps.club.traffic === nextProps.club.traffic &&
     prevProps.club.hasSpecial === nextProps.club.hasSpecial &&
     prevProps.club.isUserAdded === nextProps.club.isUserAdded &&
-    prevProps.club.genre === nextProps.club.genre &&
+    prevProps.club.genre[prevProps.selectedDay] === nextProps.club.genre[nextProps.selectedDay] &&
     prevProps.club.openingHours[prevProps.selectedDay] === nextProps.club.openingHours[nextProps.selectedDay] &&
     prevProps.club.usersAtClub === nextProps.club.usersAtClub &&
     prevProps.selectedDay === nextProps.selectedDay &&
