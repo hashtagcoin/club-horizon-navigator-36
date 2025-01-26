@@ -32,6 +32,12 @@ export const AnimatedClubList = ({
   clubs,
   selectedClub,
   selectedDay,
+  sortBy,
+  setSortBy,
+  filterGenre,
+  setFilterGenre,
+  searchQuery,
+  setSearchQuery,
   onSelectClub,
   onOpenChat,
   newMessageCounts,
@@ -56,6 +62,12 @@ export const AnimatedClubList = ({
           clubs={clubs}
           selectedClub={selectedClub}
           selectedDay={selectedDay}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          filterGenre={filterGenre}
+          setFilterGenre={setFilterGenre}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
           onSelectClub={onSelectClub}
           onOpenChat={onOpenChat}
           newMessageCounts={newMessageCounts}
