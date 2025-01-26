@@ -57,7 +57,7 @@ export const ClubCard = memo(({
             <span className="text-xs text-black truncate max-w-[150px]">{formatType(club.genre)}</span>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-1">
+        <div className="flex items-center justify-between mt-1 pr-0">
           <div className="flex items-center space-x-1">
             <Clock className="h-3 w-3 text-black" />
             <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
