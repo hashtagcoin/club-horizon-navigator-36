@@ -14,10 +14,10 @@ const transformClubData = (data: any[]): Club[] => {
   
   const transformed = data.map((club) => {
     const transformedClub = {
-      id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
+      id: club.id || Math.random(),
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: getRandomTraffic(), // Now truly random for each club
+      traffic: getRandomTraffic(),
       openingHours: {
         Monday: club.monday_hours_open && club.monday_hours_close 
           ? `${club.monday_hours_open} - ${club.monday_hours_close}`
@@ -45,9 +45,9 @@ const transformClubData = (data: any[]): Club[] => {
         lat: club.latitude || -33.8688,
         lng: club.longitude || 151.2093
       },
-      usersAtClub: Math.floor(Math.random() * 100), // Random number of users
-      hasSpecial: Math.random() < 0.3, // 30% chance of special
-      genre: club.venue_type || 'Various',
+      usersAtClub: Math.floor(Math.random() * 100),
+      hasSpecial: Math.random() < 0.3,
+      genre: club.music_type || 'Various',
       isUserAdded: false
     };
     console.log('Transformed club:', transformedClub);
@@ -74,6 +74,31 @@ export const useClubData = () => {
       
       console.log('Supabase response:', data);
       return transformClubData(data || []);
+    }
+  });
+};
+
+// Add new function to fetch unique music genres
+export const useGenres = () => {
+  return useQuery({
+    queryKey: ['genres'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('Clublist_Australia')
+        .select('music_type')
+        .not('music_type', 'is', null);
+      
+      if (error) {
+        console.error('Supabase error fetching genres:', error);
+        throw error;
+      }
+
+      // Get unique genres and filter out null/empty values
+      const uniqueGenres = [...new Set(data.map(item => item.music_type))]
+        .filter(genre => genre && genre.trim());
+
+      console.log('Unique genres from database:', uniqueGenres);
+      return uniqueGenres;
     }
   });
 };

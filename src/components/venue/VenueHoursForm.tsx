@@ -1,4 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useGenres } from "@/hooks/useClubData";
 
 interface VenueHoursFormProps {
   day: string;
@@ -13,7 +14,6 @@ interface VenueHoursFormProps {
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ":00");
-const MUSIC_GENRES = ["EDM", "Rock n Roll", "House", "Afrobeats", "RnB"];
 
 export function VenueHoursForm({ 
   day, 
@@ -22,6 +22,8 @@ export function VenueHoursForm({
   onHoursChange, 
   onGenreChange 
 }: VenueHoursFormProps) {
+  const { data: genres = [], isLoading: isLoadingGenres } = useGenres();
+
   return (
     <div className="space-y-2">
       <h3 className="font-medium">{day}</h3>
@@ -29,12 +31,13 @@ export function VenueHoursForm({
         <Select
           value={genre}
           onValueChange={onGenreChange}
+          disabled={isLoadingGenres}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select genre" />
           </SelectTrigger>
           <SelectContent>
-            {MUSIC_GENRES.map(genre => (
+            {genres.map(genre => (
               <SelectItem key={genre} value={genre}>
                 {genre}
               </SelectItem>
