@@ -53,7 +53,13 @@ export function ClubFilters({
           <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent position="popper" className="z-50 bg-popover">
+          <SelectContent 
+            position="popper" 
+            className="z-50 bg-popover"
+            sideOffset={4}
+            align="start"
+            avoidCollisions={false}
+          >
             {sortOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -69,7 +75,13 @@ export function ClubFilters({
           <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Select venue type" />
           </SelectTrigger>
-          <SelectContent position="popper" className="z-50 bg-popover">
+          <SelectContent 
+            position="popper" 
+            className="z-50 bg-popover"
+            sideOffset={4}
+            align="start"
+            avoidCollisions={false}
+          >
             {sortedGenres.map((genre) => (
               <SelectItem key={genre} value={genre}>
                 {genre === "all" ? "All Venues" : formatGenre(genre)}
