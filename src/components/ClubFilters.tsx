@@ -59,6 +59,7 @@ export function ClubFilters({
             sideOffset={4}
             align="start"
             avoidCollisions={false}
+            autoFocus={false}
           >
             {sortOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
@@ -81,6 +82,7 @@ export function ClubFilters({
             sideOffset={4}
             align="start"
             avoidCollisions={false}
+            autoFocus={false}
           >
             {sortedGenres.map((genre) => (
               <SelectItem key={genre} value={genre}>
