@@ -45,7 +45,7 @@ export const AnimatedClubList = ({
           x,
           width: '50%',
           position: 'absolute',
-          height: '100%',
+          height: 'calc(100vh - 120px)',
           touchAction: 'none',
           zIndex: 20,
           transform: x.to(x => `translateX(${x}px)`)

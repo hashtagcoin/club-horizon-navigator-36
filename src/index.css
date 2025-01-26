@@ -56,7 +56,7 @@
 }
 
 .club-list-container {
-  height: calc(100vh - 180px);
+  height: 100%;
   overflow: hidden;
 }
 

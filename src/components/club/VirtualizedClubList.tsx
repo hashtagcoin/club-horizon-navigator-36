@@ -26,9 +26,9 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Fixed measurements
-  const ITEM_HEIGHT = 136; // 120px card + 16px total margin
+  const ITEM_HEIGHT = 128; // 120px card + 8px total spacing
   const OVERSCAN_COUNT = 5;
-  const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 180 : 800;
+  const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 120 : 800;
 
   const getItemsToRender = useCallback(() => {
     if (!clubs.length) return { items: [], startIndex: 0 };
@@ -66,7 +66,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   return (
     <div 
       ref={containerRef}
-      style={{ height: `calc(100vh - 180px)`, position: 'relative' }}
+      className="h-full relative"
     >
       <ScrollArea 
         className="h-full w-full"
@@ -76,7 +76,8 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
           style={{
             height: totalHeight,
             position: 'relative',
-            width: '100%'
+            width: '100%',
+            padding: '0 8px'
           }}
         >
           {visibleClubs.map((club, index) => (
@@ -88,7 +89,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
                 left: 0,
                 right: 0,
                 height: ITEM_HEIGHT,
-                padding: '8px'
+                padding: '4px'
               }}
             >
               <ClubCard
