@@ -31,11 +31,11 @@ export const ClubCard = memo(({
 }: ClubCardProps) => {
   return (
     <Card
-      className={`cursor-pointer relative bg-white transition-none ${isSelected ? 'selected-club-card' : ''}`}
+      className={`cursor-pointer relative bg-white transition-none h-[120px] ${isSelected ? 'selected-club-card' : ''}`}
       onClick={() => onSelect(club)}
     >
-      <CardHeader className="flex justify-between items-start p-2">
-        <CardTitle className="text-left text-base text-black">{club.name}</CardTitle>
+      <CardHeader className="flex justify-between items-start p-2 h-12">
+        <CardTitle className="text-left text-base text-black truncate max-w-[200px]">{club.name}</CardTitle>
         <div className="flex items-center gap-2">
           <div className="flex items-center space-x-0.5" aria-label={`${club.traffic} Traffic`}>
             <User className={`h-4 w-4 ${club.traffic === 'High' || club.traffic === 'Medium' || club.traffic === 'Low' ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
@@ -50,16 +50,16 @@ export const ClubCard = memo(({
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-0 px-2 pb-2">
+      <CardContent className="pt-0 px-2 pb-2 h-[72px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
-            <span className="text-xs text-black">{formatType(club.genre)}</span>
+            <span className="text-xs text-black truncate max-w-[150px]">{formatType(club.genre)}</span>
           </div>
         </div>
         <div className="flex items-center space-x-1 mt-1">
           <Clock className="h-3 w-3 text-black" />
-          <span className="text-xs text-black">{club.openingHours[selectedDay]}</span>
+          <span className="text-xs text-black truncate max-w-[150px]">{club.openingHours[selectedDay]}</span>
         </div>
         <div className="absolute bottom-1 right-2 flex flex-col items-end space-y-1">
           <span className="text-xs font-medium text-black">{club.usersAtClub}</span>
