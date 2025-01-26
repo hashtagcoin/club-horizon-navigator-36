@@ -71,7 +71,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="pl-5 py-3 border-b border-gray-200">
+      <div className="py-3 border-b border-gray-200">
         <div className="flex items-center mb-3">
           <div className="bg-black text-white px-4 py-2 rounded text-2xl font-bold">
             {clubs.length}
