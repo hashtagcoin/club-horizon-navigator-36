@@ -58,7 +58,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   return (
     <div 
       ref={containerRef}
-      className="h-full overflow-auto px-2"
+      className="h-full overflow-auto px-2 virtualized-list"
       onScroll={handleScroll}
     >
       <div

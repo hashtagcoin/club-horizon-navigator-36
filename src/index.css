@@ -50,6 +50,24 @@
   }
 }
 
+/* Custom scrollbar styles */
+.virtualized-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.virtualized-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.virtualized-list::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 4px;
+}
+
+.virtualized-list::-webkit-scrollbar-button {
+  display: none;
+}
+
 .map-container {
   @apply rounded-xl overflow-hidden shadow-xl p-4 pb-28;
   height: calc(100vh - 120px);
