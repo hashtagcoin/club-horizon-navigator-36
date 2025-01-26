@@ -50,7 +50,7 @@ export const ClubCard = memo(({
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-0 px-2 pb-1">
+      <CardContent className="pt-0 px-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Music className="h-3 w-3 text-black" />
