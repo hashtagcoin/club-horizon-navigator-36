@@ -37,12 +37,10 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Fixed measurements
-  const ITEM_HEIGHT = 143; // 104px card + 39px spacing
+  const ITEM_HEIGHT = 143;
   const OVERSCAN_COUNT = 5;
   const containerHeight = typeof window !== 'undefined' ? window.innerHeight - 120 : 800;
 
-  // Get unique genres from clubs
   const genres = Array.from(new Set(clubs.map(club => club.genre)));
 
   const getItemsToRender = useCallback(() => {
@@ -73,9 +71,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Static Header Section */}
       <div className="px-4 py-3 border-b border-gray-200">
-        {/* Venue Counter */}
         <div className="flex items-center mb-3">
           <div className="bg-black text-white px-3 py-1 rounded">
             {clubs.length}
@@ -83,7 +79,6 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
           <span className="ml-2 text-gray-700">venues</span>
         </div>
         
-        {/* Filters */}
         <ClubFilters
           sortBy={sortBy}
           setSortBy={setSortBy}
@@ -95,10 +90,9 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
         />
       </div>
 
-      {/* Scrollable Club List */}
       <div 
         ref={containerRef}
-        className="flex-1 overflow-auto virtualized-list"
+        className="flex-1 overflow-auto virtualized-list pl-5"
         onScroll={handleScroll}
       >
         <div
