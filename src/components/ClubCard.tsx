@@ -37,8 +37,11 @@ const formatTime = (timeString: string) => {
   if (opening === '23:57' || closing === '23:57') {
     return 'TBC';
   }
+
+  const formattedOpening = opening === '00:00' ? 'Midnight' : opening;
+  const formattedClosing = closing === '00:00' ? 'Midnight' : closing;
   
-  return `${opening}${closing ? ` - ${closing}` : ''}`;
+  return `${formattedOpening}${formattedClosing ? ` - ${formattedClosing}` : ''}`;
 };
 
 export const ClubCard = memo(({
