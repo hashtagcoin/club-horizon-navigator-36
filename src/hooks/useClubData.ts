@@ -2,6 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Club } from "@/types/club";
 
+const getRandomTraffic = (): 'Low' | 'Medium' | 'High' => {
+  const random = Math.random();
+  if (random < 0.33) return 'Low';
+  if (random < 0.66) return 'Medium';
+  return 'High';
+};
+
 const transformClubData = (data: any[]): Club[] => {
   console.log('Raw data from Supabase:', data);
   
@@ -10,7 +17,7 @@ const transformClubData = (data: any[]): Club[] => {
       id: club.id || Math.random(), // Fallback since Clublist_Australia might not have id
       name: club.name || 'Unknown Club',
       address: club.address || 'Address not available',
-      traffic: club.traffic || 'Low',
+      traffic: getRandomTraffic(), // Randomly assign traffic level
       openingHours: {
         Monday: club.monday_hours_open && club.monday_hours_close 
           ? `${club.monday_hours_open} - ${club.monday_hours_close}`
