@@ -44,7 +44,7 @@ export function ClubFilters({
   const sortedGenres = ["all", ...genres.sort()];
 
   return (
-    <div className="p-0 w-full">
+    <div className="p-0 w-full relative">
       <div className="flex gap-2 items-center w-full">
         <Select 
           onValueChange={setSortBy} 
@@ -53,7 +53,7 @@ export function ClubFilters({
           <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" className="z-50 bg-popover">
             {sortOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -69,7 +69,7 @@ export function ClubFilters({
           <SelectTrigger className="h-8 text-sm flex-1">
             <SelectValue placeholder="Select venue type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" className="z-50 bg-popover">
             {sortedGenres.map((genre) => (
               <SelectItem key={genre} value={genre}>
                 {genre === "all" ? "All Venues" : formatGenre(genre)}
