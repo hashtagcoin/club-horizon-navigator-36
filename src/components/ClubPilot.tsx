@@ -4,6 +4,7 @@ import { MainLayout } from './layout/MainLayout';
 import { useClubData } from '@/hooks/useClubData';
 import { useJsApiLoader, Libraries } from '@react-google-maps/api';
 import { useState } from 'react';
+import { MapSection } from './map/MapSection';
 
 const libraries: Libraries = ['places', 'geometry'];
 
@@ -22,9 +23,17 @@ export default function ClubPilot() {
   const [showSpecials, setShowSpecials] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [isGeneralChat, setIsGeneralChat] = useState(true);
+  const [selectedClub, setSelectedClub] = useState(null);
+  const [selectedDay, setSelectedDay] = useState('Monday');
 
   const toggleGeneralChat = () => {
     setIsGeneralChat(!isGeneralChat);
+  };
+
+  // Default map center (Sydney, Australia)
+  const defaultCenter = {
+    lat: -33.8688,
+    lng: 151.2093
   };
 
   return (
@@ -43,7 +52,20 @@ export default function ClubPilot() {
           isGeneralChat={isGeneralChat}
           toggleGeneralChat={toggleGeneralChat}
         >
-          {/* Pass clubs and loading state to children if needed */}
+          <MapSection
+            isListCollapsed={false}
+            isLoaded={isLoaded}
+            filteredClubs={clubs}
+            selectedClub={selectedClub}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+            mapCenter={defaultCenter}
+            mapZoom={14}
+            userLocation={defaultCenter}
+            directions={null}
+            onClubSelect={setSelectedClub}
+            locationManagement={{}}
+          />
         </MainLayout>
       </LocationProvider>
     </ClubProvider>
