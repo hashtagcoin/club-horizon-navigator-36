@@ -1,4 +1,4 @@
-import { FC, useCallback, useState, useRef } from 'react';
+import { FC, useCallback, useState, useRef, useEffect } from 'react';
 import { Club } from '@/types/club';
 import { ClubCard } from '@/components/ClubCard';
 import { ClubFilters } from '@/components/ClubFilters';
@@ -43,6 +43,20 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
 
   const genres = Array.from(new Set(clubs.map(club => club.genre[selectedDay] || 'Various')));
 
+  // Handle club selection and scrolling
+  const handleClubSelect = (club: Club) => {
+    onSelectClub(club);
+    if (containerRef.current) {
+      // Add a small delay to ensure smooth animation
+      setTimeout(() => {
+        containerRef.current?.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 50);
+    }
+  };
+
   const getItemsToRender = useCallback(() => {
     if (!clubs.length) return { items: [], startIndex: 0 };
     
@@ -62,12 +76,30 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
     setScrollTop(e.currentTarget.scrollTop);
   };
 
+  // Effect to handle initial scroll when selected club changes
+  useEffect(() => {
+    if (selectedClub && containerRef.current) {
+      const selectedIndex = clubs.findIndex(club => club.id === selectedClub.id);
+      if (selectedIndex !== -1) {
+        containerRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [selectedClub, clubs]);
+
   if (isLoading) {
     return <div className="p-4 text-center">Loading venues...</div>;
   }
 
   const { items: visibleClubs, startIndex } = getItemsToRender();
   const totalHeight = clubs.length * ITEM_HEIGHT;
+
+  // Reorder clubs to show selected club first
+  const orderedClubs = selectedClub
+    ? [selectedClub, ...clubs.filter(club => club.id !== selectedClub.id)]
+    : clubs;
 
   return (
     <div className="flex flex-col h-full">
@@ -121,7 +153,7 @@ export const VirtualizedClubList: FC<VirtualizedClubListProps> = ({
                 club={club}
                 selectedDay={selectedDay}
                 isSelected={selectedClub?.id === club.id}
-                onSelect={onSelectClub}
+                onSelect={handleClubSelect}
                 onOpenChat={onOpenChat}
                 newMessageCount={newMessageCounts[club.id] || 0}
               />
